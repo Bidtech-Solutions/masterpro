@@ -1,0 +1,166 @@
+{
+  "common": {
+    "brand": "MasterPro Real Estate",
+    "skipToContent": "Skip to main content",
+    "seeAll": "See All",
+    "previous": "Previous",
+    "next": "Next",
+    "detail": "Details",
+    "contactAgent": "Contact Agent",
+    "perMonth": "/month",
+    "perYear": "/year",
+    "negotiable": "Negotiable",
+    "photoAlt": "{title} — photo {n}",
+    "propertyCount": "{count, plural, =0 {No properties} one {# property} other {# properties}}",
+    "sale": "For Sale",
+    "rent": "For Rent",
+    "primary": "Primary",
+    "secondary": "Secondary",
+    "pageOf": "Page {page} of {total}",
+    "spec": {
+      "bedrooms": "{n} Beds",
+      "bathrooms": "{n} Baths",
+      "landArea": "Land {area}",
+      "buildingArea": "Floor {area}"
+    },
+    "errorTitle": "Something went wrong",
+    "errorDescription": "We couldn't load the data. Please try again shortly.",
+    "retry": "Try again"
+  },
+  "nav": {
+    "home": "Home",
+    "properties": "Properties",
+    "joinAgent": "Join as Agent",
+    "login": "Sign In",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "language": "Language",
+    "mainNav": "Main navigation"
+  },
+  "footer": {
+    "tagline": "Your trusted property partner for buying, selling and renting residential and commercial property with verified legality.",
+    "propertyTypes": "Property Types",
+    "popularCities": "Popular Cities",
+    "company": "Company",
+    "houseForSale": "Houses for Sale",
+    "apartmentForRent": "Apartments for Rent",
+    "shophouse": "Shophouses",
+    "boardingHouse": "Boarding Houses",
+    "land": "Land",
+    "newDevelopment": "New Developments (Primary)",
+    "contactOffice": "Contact Office",
+    "copyright": "© {year} MasterPro Real Estate. All rights reserved.",
+    "social": "MasterPro on {name}"
+  },
+  "home": {
+    "heroTitle": "Ask About Your Dream Property",
+    "heroTitlePrefix": "with",
+    "heroTitleAccent": "the Property Masters",
+    "heroSubtitle": "Houses, apartments, shophouses, boarding houses and land — for sale or rent — with trusted professional agents keeping your transaction safe.",
+    "searchLocation": "Location",
+    "searchLocationAll": "All Locations",
+    "searchType": "Property Type",
+    "searchTypeAll": "All Property Types",
+    "searchPrice": "Price Range",
+    "searchPriceAll": "Any Price",
+    "searchSubmit": "Search Properties",
+    "latestSale": "Latest Properties",
+    "latestRent": "Latest Rentals",
+    "latestAccent": "for You",
+    "partnersTitle": "Our",
+    "partnersAccent": "Partners",
+    "popularTitle": "Explore This Week's Most Viewed Properties",
+    "popularSubtitle": "Find the best homes and investments in the fastest-growing locations.",
+    "popularCta": "See Popular Properties"
+  },
+  "properties": {
+    "title": "Properties",
+    "titleSale": "Properties for Sale",
+    "titleRent": "Properties for Rent",
+    "found": "{count, plural, =0 {No properties found} one {# property found} other {# properties found}}",
+    "empty": "No matching properties yet",
+    "emptyHint": "Try changing or removing some of your search filters.",
+    "resetFilters": "Reset filters",
+    "pagination": "Pagination"
+  },
+  "propertyDetail": {
+    "code": "Code: {code}"
+  },
+  "joinAgent": {
+    "title": "Become a MasterPro Property Agent",
+    "subtitle": "Earn attractive commissions backed by MasterPro listings, mentoring and systems.",
+    "ctaWhatsapp": "Register via WhatsApp",
+    "whatsappMessage": "Hello MasterPro Admin, I would like to register as a MasterPro property agent. My name is: ",
+    "commissionTitle": "Commission Structure",
+    "saleCommission": "Sales Commission",
+    "rentCommission": "Rental Commission",
+    "priceRange": "Price",
+    "commission": "Commission",
+    "splitTitle": "Commission Split",
+    "role": {
+      "agentSelling": "Selling Agent",
+      "agentListing": "Listing Agent",
+      "manager": "Manager",
+      "masterCool": "Master Cool",
+      "masterpro": "MasterPro"
+    },
+    "roleDesc": {
+      "agentSelling": "The agent who closes the sale (brings the buyer)",
+      "agentListing": "The agent who secures the seller's approval to market the property",
+      "manager": "Mentors the agent through the buying/selling process",
+      "masterCool": "Owner of the premises where MasterPro's office is located",
+      "masterpro": "The company funding office operations"
+    },
+    "tier": {
+      "saleBelow1b": "Below IDR 1 billion",
+      "sale1to3b": "IDR 1 – 3 billion",
+      "saleAbove3b": "Above IDR 3 billion",
+      "rentBelow25m": "Below IDR 25 million",
+      "rent25to50m": "> IDR 25 – 50 million",
+      "rentAbove50m": "Above IDR 50 million"
+    }
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The page you are looking for does not exist or has been moved.",
+    "backHome": "Back to Home",
+    "browse": "Browse Properties"
+  },
+  "seo": {
+    "defaultTitle": "MasterPro Real Estate — Buy, Sell & Rent Property",
+    "defaultDescription": "Find houses, apartments, shophouses, boarding houses and land for sale or rent, with professional MasterPro agents.",
+    "propertiesDescription": "Catalogue of properties for sale and rent from MasterPro agents: houses, apartments, shophouses, boarding houses and land.",
+    "joinAgentDescription": "MasterPro property agent partnership programme: commission structure, registration steps and admin contact."
+  },
+  "dashboard": {
+    "title": "MasterPro Dashboard",
+    "loginTitle": "Sign in to the Dashboard",
+    "loginPanelTitle": "Manage your property listings with ease",
+    "email": "Email",
+    "password": "Password",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "submitLogin": "Sign In",
+    "forgotPassword": "Forgot your password? Contact a MasterPro admin.",
+    "loggingIn": "Processing…",
+    "errorInvalid": "Incorrect email or password",
+    "errorInactive": "Your account is deactivated, contact an admin",
+    "errorRateLimited": "Too many attempts. Try again in {seconds} seconds.",
+    "errorGeneric": "Something went wrong. Please try again.",
+    "errorEmail": "Enter a valid email",
+    "errorPasswordRequired": "Password is required",
+    "menu": {
+      "overview": "Overview",
+      "properties": "Properties",
+      "agents": "Agents",
+      "users": "Users",
+      "account": "My Account"
+    },
+    "logout": "Sign Out",
+    "roleAdmin": "Admin",
+    "roleAgent": "Agent",
+    "welcome": "Welcome, {name}",
+    "overviewPlaceholder": "Summary statistics will appear here (GET /dashboard/summary).",
+    "loading": "Loading…"
+  }
+}

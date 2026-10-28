@@ -1,0 +1,135 @@
+/*
+ * Token desain MasterPro — sumber: docs/DESIGN.md §0, §2–§4, §11.
+ * Jangan menambah warna/ukuran ad-hoc di komponen; tambahkan token di sini (docs-first).
+ */
+@import "tailwindcss";
+
+@theme {
+  /* Font (variabel diisi next/font di root layout) */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-jakarta), var(--font-inter), ui-sans-serif, sans-serif;
+  --font-accent: var(--font-playfair), Georgia, serif;
+
+  /* Brand */
+  --color-navy-950: #071737;
+  --color-navy-900: #0a1f4d;
+  --color-navy-800: #0d2b6b;
+  --color-navy-700: #163a85;
+  --color-blue-700: #0957c3;
+  --color-blue-600: #0b6bea;
+  --color-blue-500: #1e88f5;
+  --color-blue-100: #dcebff;
+  --color-blue-50: #eef5ff;
+  --color-sky-400: #3fc1f5;
+  --color-sky-300: #5ecfff;
+
+  /* Netral (hex sesuai DESIGN.md §2.2) */
+  --color-slate-900: #0f172a;
+  --color-slate-700: #334155;
+  --color-slate-500: #64748b;
+  --color-slate-400: #94a3b8;
+  --color-slate-300: #cbd5e1;
+  --color-slate-200: #e2e8f0;
+  --color-slate-100: #f1f5f9;
+  --color-slate-50: #f8fafc;
+
+  /* Semantik */
+  --color-primary: var(--color-blue-600);
+  --color-primary-hover: var(--color-blue-700);
+  --color-success: #16a34a;
+  --color-warning: #d97706;
+  --color-danger: #dc2626;
+  --color-rent: #0e7490;
+  --color-whatsapp: #25d366;
+  --color-whatsapp-hover: #1ebe5a;
+  --color-whatsapp-foreground: #063b1d;
+
+  /* Tipografi (DESIGN.md §3) */
+  --text-display: 3rem;
+  --text-display--line-height: 3.5rem;
+  --text-display-mobile: 2.125rem;
+  --text-display-mobile--line-height: 2.625rem;
+  --text-h1: 2.25rem;
+  --text-h1--line-height: 2.75rem;
+  --text-h2: 1.75rem;
+  --text-h2--line-height: 2.25rem;
+  --text-h3: 1.25rem;
+  --text-h3--line-height: 1.75rem;
+  --text-price-lg: 2rem;
+  --text-price-lg--line-height: 2.5rem;
+  --text-price: 1.25rem;
+  --text-price--line-height: 1.75rem;
+  --text-body-lg: 1.125rem;
+  --text-body-lg--line-height: 1.75rem;
+  --text-body: 1rem;
+  --text-body--line-height: 1.5rem;
+  --text-body-sm: 0.875rem;
+  --text-body-sm--line-height: 1.25rem;
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1rem;
+
+  /* Bentuk */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  --shadow-card: 0 1px 2px rgb(13 43 107 / 0.06), 0 4px 12px rgb(13 43 107 / 0.06);
+  --shadow-card-hover: 0 8px 24px rgb(13 43 107 / 0.12);
+  --shadow-popover: 0 12px 32px rgb(13 43 107 / 0.16);
+  --shadow-nav: 0 4px 12px rgb(13 43 107 / 0.06);
+
+  --animate-marquee: marquee 28s linear infinite;
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+}
+
+@utility bg-brand-gradient {
+  background-image: linear-gradient(135deg, #5ecfff 0%, #1e88f5 35%, #0b6bea 70%, #0d2b6b 100%);
+}
+
+@utility container-page {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 80rem;
+  padding-inline: 1.5rem;
+  @media (width >= 48rem) {
+    padding-inline: 2rem;
+  }
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-white font-sans text-slate-900 antialiased;
+  }
+  ::selection {
+    @apply bg-blue-100 text-blue-700;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-blue-600;
+  }
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

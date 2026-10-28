@@ -1,0 +1,205 @@
+# MasterPro — stack produksi lengkap dalam satu file (PRD §15.3).
+# Dijalankan di VPS (/opt/masterpro) oleh GitHub Actions:
+#   docker compose -f docker-compose.prod.yml --env-file .env up -d
+# Hanya Traefik yang membuka port publik 80/443. .env dibuat CI dari GitHub Secrets.
+name: masterpro
+
+x-logging: &logging
+  driver: json-file
+  options: { max-size: "10m", max-file: "3" }
+
+services:
+  traefik:
+    image: traefik:v3.7
+    restart: unless-stopped
+    logging: *logging
+    command:
+      - --global.checknewversion=false
+      - --global.sendanonymoususage=false
+      - --log.level=INFO
+      - --accesslog=true
+      - --accesslog.format=json
+      - --ping=true
+      - --api.dashboard=false
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.network=masterpro_edge
+      - --entrypoints.web.address=:80
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --entrypoints.websecure.address=:443
+      - --entrypoints.websecure.http.tls.certresolver=le
+      - --certificatesresolvers.le.acme.email=${ACME_EMAIL}
+      - --certificatesresolvers.le.acme.storage=/letsencrypt/acme.json
+      - --certificatesresolvers.le.acme.httpchallenge=true
+      - --certificatesresolvers.le.acme.httpchallenge.entrypoint=web
+      # Bila DNS diproksi Cloudflare, aktifkan trusted IP Cloudflare agar IP klien asli terbaca:
+      # - --entrypoints.websecure.forwardedheaders.trustedips=173.245.48.0/20,103.21.244.0/22,...
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik_letsencrypt:/letsencrypt
+    networks:
+      edge:
+        aliases:
+          - ${MEDIA_DOMAIN}
+    security_opt: [ "no-new-privileges:true" ]
+    healthcheck:
+      test: [ "CMD", "traefik", "healthcheck", "--ping" ]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    deploy:
+      resources: { limits: { memory: 128m } }
+    labels:
+      - traefik.enable=true
+      # --- middleware bersama ---
+      - traefik.http.middlewares.mp-www-redirect.redirectregex.regex=^https?://www\.(.*)
+      - traefik.http.middlewares.mp-www-redirect.redirectregex.replacement=https://$${1}
+      - traefik.http.middlewares.mp-www-redirect.redirectregex.permanent=true
+      - traefik.http.middlewares.mp-secure-headers.headers.stsSeconds=31536000
+      - traefik.http.middlewares.mp-secure-headers.headers.stsIncludeSubdomains=true
+      - traefik.http.middlewares.mp-secure-headers.headers.contentTypeNosniff=true
+      - traefik.http.middlewares.mp-secure-headers.headers.frameDeny=true
+      - traefik.http.middlewares.mp-secure-headers.headers.referrerPolicy=strict-origin-when-cross-origin
+      - traefik.http.middlewares.mp-secure-headers.headers.permissionsPolicy=camera=(), microphone=(), geolocation=()
+      - traefik.http.middlewares.mp-compress.compress=true
+      - traefik.http.middlewares.mp-api-ratelimit.ratelimit.average=30
+      - traefik.http.middlewares.mp-api-ratelimit.ratelimit.burst=60
+      # Bila di belakang Cloudflare:
+      # - traefik.http.middlewares.mp-api-ratelimit.ratelimit.sourcecriterion.requestheadername=CF-Connecting-IP
+      - traefik.http.middlewares.mp-deny-public.ipallowlist.sourcerange=127.0.0.1/32
+      - traefik.http.middlewares.mp-media-prefix.addprefix.prefix=/${S3_BUCKET}
+
+  frontend:
+    image: ${IMAGE_REGISTRY}/masterpro-frontend:${IMAGE_TAG}
+    restart: unless-stopped
+    logging: *logging
+    environment:                      # sengaja eksplisit: frontend tidak menerima secret DB/JWT/S3
+      NODE_ENV: production
+      INTERNAL_API_URL: ${INTERNAL_API_URL}
+      REVALIDATE_SECRET: ${REVALIDATE_SECRET}
+      NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL}
+      NEXT_PUBLIC_MEDIA_URL: ${NEXT_PUBLIC_MEDIA_URL}
+    volumes:
+      - frontend_cache:/app/.next/cache
+    networks: [ edge, internal ]
+    depends_on:
+      backend: { condition: service_healthy }
+    deploy:
+      resources: { limits: { memory: 640m } }
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.mp-web.loadbalancer.server.port=3000
+      - traefik.http.routers.mp-web.rule=Host(`${DOMAIN}`) || Host(`www.${DOMAIN}`)
+      - traefik.http.routers.mp-web.entrypoints=websecure
+      - traefik.http.routers.mp-web.tls.certresolver=le
+      - traefik.http.routers.mp-web.priority=10
+      - traefik.http.routers.mp-web.service=mp-web
+      - traefik.http.routers.mp-web.middlewares=mp-www-redirect,mp-secure-headers,mp-compress
+      # blokir /internal/* dari publik (hanya untuk jaringan Docker)
+      - traefik.http.routers.mp-web-internal.rule=(Host(`${DOMAIN}`) || Host(`www.${DOMAIN}`)) && PathPrefix(`/internal`)
+      - traefik.http.routers.mp-web-internal.entrypoints=websecure
+      - traefik.http.routers.mp-web-internal.tls.certresolver=le
+      - traefik.http.routers.mp-web-internal.priority=100
+      - traefik.http.routers.mp-web-internal.service=mp-web
+      - traefik.http.routers.mp-web-internal.middlewares=mp-deny-public
+
+  backend:
+    image: ${IMAGE_REGISTRY}/masterpro-backend:${IMAGE_TAG}
+    restart: unless-stopped
+    logging: *logging
+    env_file: .env
+    environment:
+      APP_ENV: production
+      DB_NAME: ${POSTGRES_DB}
+      DB_USER: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+    networks: [ edge, internal ]
+    depends_on:
+      postgres: { condition: service_healthy }
+      rustfs: { condition: service_started }
+    deploy:
+      resources: { limits: { memory: 256m } }
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.mp-api.loadbalancer.server.port=8080
+      - traefik.http.routers.mp-api.rule=(Host(`${DOMAIN}`) || Host(`www.${DOMAIN}`)) && PathPrefix(`/api`)
+      - traefik.http.routers.mp-api.entrypoints=websecure
+      - traefik.http.routers.mp-api.tls.certresolver=le
+      - traefik.http.routers.mp-api.priority=50
+      - traefik.http.routers.mp-api.service=mp-api
+      - traefik.http.routers.mp-api.middlewares=mp-www-redirect,mp-secure-headers,mp-api-ratelimit
+
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    logging: *logging
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks: [ internal ]
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    deploy:
+      resources: { limits: { memory: 512m } }
+
+  rustfs-perms:
+    image: alpine:3.22
+    user: root
+    command: [ "sh", "-c", "chown -R 10001:10001 /data" ]
+    volumes:
+      - rustfs_data:/data
+    restart: "no"
+    logging: *logging
+
+  rustfs:
+    image: rustfs/rustfs:1.0.4
+    restart: unless-stopped
+    logging: *logging
+    environment:
+      RUSTFS_ACCESS_KEY: ${S3_ACCESS_KEY}
+      RUSTFS_SECRET_KEY: ${S3_SECRET_KEY}
+      RUSTFS_VOLUMES: /data
+      RUSTFS_ADDRESS: ":9000"
+      RUSTFS_CONSOLE_ENABLE: "true"
+      RUSTFS_CONSOLE_ADDRESS: ":9001"
+    volumes:
+      - rustfs_data:/data
+    ports:
+      - "127.0.0.1:9101:9001"   # console hanya via SSH tunnel
+    networks: [ edge, internal ]
+    depends_on:
+      rustfs-perms: { condition: service_completed_successfully }
+    deploy:
+      resources: { limits: { memory: 512m } }
+    labels:
+      - traefik.enable=true
+      - traefik.http.services.mp-media.loadbalancer.server.port=9000
+      - traefik.http.services.mp-media.loadbalancer.passhostheader=false
+      - traefik.http.routers.mp-media.rule=Host(`${MEDIA_DOMAIN}`) && (Method(`GET`) || Method(`HEAD`))
+      - traefik.http.routers.mp-media.entrypoints=websecure
+      - traefik.http.routers.mp-media.tls.certresolver=le
+      - traefik.http.routers.mp-media.service=mp-media
+      - traefik.http.routers.mp-media.middlewares=mp-media-prefix,mp-compress
+
+networks:
+  edge:
+    name: masterpro_edge
+  internal:
+    name: masterpro_internal
+    internal: true
+
+volumes:
+  traefik_letsencrypt:
+  frontend_cache:
+  postgres_data:
+  rustfs_data:

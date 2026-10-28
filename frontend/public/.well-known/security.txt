@@ -1,0 +1,4 @@
+Contact: mailto:security@masterpro.co.id
+Expires: 2027-10-28T00:00:00.000Z
+Preferred-Languages: id, en
+Canonical: https://masterpro.co.id/.well-known/security.txt

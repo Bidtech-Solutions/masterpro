@@ -1,0 +1,166 @@
+{
+  "common": {
+    "brand": "MasterPro Real Estate",
+    "skipToContent": "Lewati ke konten utama",
+    "seeAll": "Lihat Semua",
+    "previous": "Sebelumnya",
+    "next": "Berikutnya",
+    "detail": "Detail",
+    "contactAgent": "Hubungi Agen",
+    "perMonth": "/bulan",
+    "perYear": "/tahun",
+    "negotiable": "Bisa nego",
+    "photoAlt": "{title} — foto {n}",
+    "propertyCount": "{count, plural, =0 {Tidak ada properti} other {# properti}}",
+    "sale": "Dijual",
+    "rent": "Disewa",
+    "primary": "Primary",
+    "secondary": "Secondary",
+    "pageOf": "Halaman {page} dari {total}",
+    "spec": {
+      "bedrooms": "{n} KT",
+      "bathrooms": "{n} KM",
+      "landArea": "LT {area}",
+      "buildingArea": "LB {area}"
+    },
+    "errorTitle": "Terjadi kendala",
+    "errorDescription": "Data belum dapat dimuat. Silakan coba beberapa saat lagi.",
+    "retry": "Coba lagi"
+  },
+  "nav": {
+    "home": "Beranda",
+    "properties": "Properti",
+    "joinAgent": "Daftar Agen",
+    "login": "Masuk",
+    "openMenu": "Buka menu",
+    "closeMenu": "Tutup menu",
+    "language": "Bahasa",
+    "mainNav": "Navigasi utama"
+  },
+  "footer": {
+    "tagline": "Solusi properti terpercaya Anda. Mitra transaksi jual, beli, dan sewa properti residensial serta komersial dengan legalitas terverifikasi.",
+    "propertyTypes": "Tipe Properti",
+    "popularCities": "Kota Populer",
+    "company": "Perusahaan",
+    "houseForSale": "Rumah Dijual",
+    "apartmentForRent": "Apartemen Disewa",
+    "shophouse": "Ruko",
+    "boardingHouse": "Gedung Kos",
+    "land": "Tanah",
+    "newDevelopment": "Perumahan Baru (Primary)",
+    "contactOffice": "Hubungi Kantor",
+    "copyright": "© {year} MasterPro Real Estate. Hak cipta dilindungi.",
+    "social": "Media sosial MasterPro di {name}"
+  },
+  "home": {
+    "heroTitle": "Tanyakan Properti Impianmu",
+    "heroTitlePrefix": "ke",
+    "heroTitleAccent": "Master-nya Properti",
+    "heroSubtitle": "Rumah, apartemen, ruko, kos, dan tanah — dijual maupun disewa — didampingi agen profesional terpercaya untuk keamanan transaksi Anda.",
+    "searchLocation": "Lokasi",
+    "searchLocationAll": "Semua Lokasi",
+    "searchType": "Tipe Properti",
+    "searchTypeAll": "Semua Tipe Properti",
+    "searchPrice": "Rentang Harga",
+    "searchPriceAll": "Semua Harga",
+    "searchSubmit": "Cari Properti",
+    "latestSale": "Properti Dijual",
+    "latestRent": "Properti Disewa",
+    "latestAccent": "Terbaru",
+    "partnersTitle": "Mitra",
+    "partnersAccent": "Kami",
+    "popularTitle": "Jelajahi Properti Paling Banyak Dilihat Pekan Ini",
+    "popularSubtitle": "Dapatkan referensi hunian dan investasi terbaik di lokasi yang paling berkembang.",
+    "popularCta": "Lihat Properti Populer"
+  },
+  "properties": {
+    "title": "Properti",
+    "titleSale": "Properti Dijual",
+    "titleRent": "Properti Disewa",
+    "found": "{count, plural, =0 {Tidak ada properti ditemukan} other {# properti ditemukan}}",
+    "empty": "Belum ada properti yang cocok",
+    "emptyHint": "Coba ubah atau hapus sebagian filter pencarian Anda.",
+    "resetFilters": "Reset filter",
+    "pagination": "Navigasi halaman"
+  },
+  "propertyDetail": {
+    "code": "Kode: {code}"
+  },
+  "joinAgent": {
+    "title": "Bergabung Menjadi Agen Properti MasterPro",
+    "subtitle": "Raih komisi menarik dengan dukungan listing, pendampingan, dan sistem dari MasterPro.",
+    "ctaWhatsapp": "Daftar via WhatsApp",
+    "whatsappMessage": "Halo Admin MasterPro, saya ingin mendaftar sebagai agen properti MasterPro. Nama saya: ",
+    "commissionTitle": "Struktur Komisi",
+    "saleCommission": "Komisi Penjualan",
+    "rentCommission": "Komisi Penyewaan",
+    "priceRange": "Harga",
+    "commission": "Komisi",
+    "splitTitle": "Pembagian Komisi",
+    "role": {
+      "agentSelling": "Agen Selling",
+      "agentListing": "Agen Listing",
+      "manager": "Manager",
+      "masterCool": "Master Cool",
+      "masterpro": "MasterPro"
+    },
+    "roleDesc": {
+      "agentSelling": "Agen yang melakukan penjualan (mendapatkan pembeli)",
+      "agentListing": "Agen yang mendapatkan persetujuan penjual untuk menjual properti",
+      "manager": "Pendamping agen dalam proses jual/beli",
+      "masterCool": "Pemilik tempat di mana MasterPro berkantor",
+      "masterpro": "Perusahaan yang membiayai operasional kantor"
+    },
+    "tier": {
+      "saleBelow1b": "Di bawah Rp 1 miliar",
+      "sale1to3b": "Rp 1 – 3 miliar",
+      "saleAbove3b": "Di atas Rp 3 miliar",
+      "rentBelow25m": "Di bawah Rp 25 juta",
+      "rent25to50m": "> Rp 25 – 50 juta",
+      "rentAbove50m": "Di atas Rp 50 juta"
+    }
+  },
+  "notFound": {
+    "title": "Halaman tidak ditemukan",
+    "description": "Halaman yang Anda cari tidak ada atau sudah dipindahkan.",
+    "backHome": "Kembali ke Beranda",
+    "browse": "Lihat Properti"
+  },
+  "seo": {
+    "defaultTitle": "MasterPro Real Estate — Jual Beli & Sewa Properti",
+    "defaultDescription": "Cari rumah, apartemen, ruko, kos, dan tanah dijual maupun disewa, didampingi agen properti profesional MasterPro.",
+    "propertiesDescription": "Katalog properti dijual dan disewa dari agen MasterPro: rumah, apartemen, ruko, kos, dan tanah.",
+    "joinAgentDescription": "Program kemitraan agen properti MasterPro: struktur komisi, alur pendaftaran, dan kontak admin."
+  },
+  "dashboard": {
+    "title": "Dashboard MasterPro",
+    "loginTitle": "Masuk ke Dashboard",
+    "loginPanelTitle": "Kelola listing properti Anda dengan mudah",
+    "email": "Email",
+    "password": "Password",
+    "showPassword": "Tampilkan password",
+    "hidePassword": "Sembunyikan password",
+    "submitLogin": "Masuk",
+    "forgotPassword": "Lupa password? Hubungi admin MasterPro.",
+    "loggingIn": "Memproses…",
+    "errorInvalid": "Email atau password salah",
+    "errorInactive": "Akun Anda dinonaktifkan, hubungi admin",
+    "errorRateLimited": "Terlalu banyak percobaan. Coba lagi dalam {seconds} detik.",
+    "errorGeneric": "Terjadi kesalahan. Coba lagi.",
+    "errorEmail": "Masukkan email yang valid",
+    "errorPasswordRequired": "Password wajib diisi",
+    "menu": {
+      "overview": "Ringkasan",
+      "properties": "Properti",
+      "agents": "Agen",
+      "users": "Pengguna",
+      "account": "Akun Saya"
+    },
+    "logout": "Keluar",
+    "roleAdmin": "Admin",
+    "roleAgent": "Agen",
+    "welcome": "Selamat datang, {name}",
+    "overviewPlaceholder": "Statistik ringkasan akan tampil di sini (GET /dashboard/summary).",
+    "loading": "Memuat…"
+  }
+}

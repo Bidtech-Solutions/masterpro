@@ -1,0 +1,27 @@
+# Rahasia — JANGAN di-commit
+.env
+.env.*
+!.env.example
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Frontend
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/coverage/
+frontend/next-env.d.ts
+frontend/*.tsbuildinfo
+
+# Backend
+backend/tmp/
+backend/coverage.*
+backend/*.test
+
+# Lain-lain
+*.log
