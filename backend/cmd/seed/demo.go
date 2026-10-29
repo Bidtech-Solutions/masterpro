@@ -24,7 +24,7 @@ import (
 var demoImages embed.FS
 
 const (
-	demoAgentEmail    = "agen.demo@masterpro.local"
+	demoAgentEmail    = "agen.demo@masterpro.co.id"
 	demoAgentPassword = "AgenDemo123"
 	cityBatam         = 2171
 	provinceKepri     = 21
