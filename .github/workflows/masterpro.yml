@@ -153,6 +153,7 @@ jobs:
     needs: [ meta, frontend-image, backend-image, deploy-bundle ]
     runs-on: ubuntu-latest
     environment: production
+    permissions: { contents: read, packages: read }
     steps:
       - uses: actions/download-artifact@v4
         with: { name: deploy-bundle, path: bundle }
@@ -183,7 +184,6 @@ jobs:
           COMPOSE_PROJECT_NAME=masterpro
           DOMAIN=${{ vars.DOMAIN }}
           MEDIA_DOMAIN=${{ vars.MEDIA_DOMAIN }}
-          ACME_EMAIL=${{ vars.ACME_EMAIL }}
           IMAGE_REGISTRY=${{ needs.meta.outputs.registry }}
           IMAGE_TAG=${{ needs.meta.outputs.tag }}
           POSTGRES_DB=masterpro
@@ -192,7 +192,7 @@ jobs:
           APP_ENV=production
           APP_PORT=8080
           LOG_LEVEL=info
-          DB_HOST=postgres
+          DB_HOST=mp-postgres
           DB_PORT=5432
           DB_SSLMODE=disable
           RUN_MIGRATIONS=true
@@ -202,18 +202,18 @@ jobs:
           COOKIE_SECURE=true
           CORS_ALLOWED_ORIGINS=https://${{ vars.DOMAIN }}
           TRUSTED_PLATFORM=
-          S3_ENDPOINT=rustfs:9000
+          S3_ENDPOINT=mp-rustfs:9000
           S3_USE_SSL=false
           S3_REGION=us-east-1
           S3_ACCESS_KEY=${S3_ACCESS_KEY}
           S3_SECRET_KEY=${S3_SECRET_KEY}
           S3_BUCKET=masterpro-media
           MEDIA_PUBLIC_URL=https://${{ vars.MEDIA_DOMAIN }}
-          FRONTEND_INTERNAL_URL=http://frontend:3000
+          FRONTEND_INTERNAL_URL=http://mp-frontend:3000
           REVALIDATE_SECRET=${REVALIDATE_SECRET}
           NEXT_PUBLIC_SITE_URL=https://${{ vars.DOMAIN }}
           NEXT_PUBLIC_MEDIA_URL=https://${{ vars.MEDIA_DOMAIN }}
-          INTERNAL_API_URL=http://backend:8080
+          INTERNAL_API_URL=http://mp-backend:8080
           EOF
 
       - name: Kirim bundle ke /opt/masterpro
@@ -229,10 +229,11 @@ jobs:
           EOF
 
       - name: Login GHCR di VPS
+        # Token otomatis milik run ini (berlaku sementara); tidak perlu PAT/secret tambahan.
         env:
-          GHCR_PULL_USER: ${{ secrets.GHCR_PULL_USER }}
-          GHCR_PULL_TOKEN: ${{ secrets.GHCR_PULL_TOKEN }}
-        run: echo "$GHCR_PULL_TOKEN" | ssh vps "docker login ghcr.io -u '$GHCR_PULL_USER' --password-stdin"
+          GHCR_USER: ${{ github.actor }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: echo "$GHCR_TOKEN" | ssh vps "docker login ghcr.io -u '$GHCR_USER' --password-stdin"
 
       - name: Pull & jalankan
         run: |
@@ -241,8 +242,9 @@ jobs:
           cd /opt/masterpro
           DC="docker compose -f docker-compose.prod.yml --env-file .env"
           $DC pull
+          docker logout ghcr.io
           $DC up -d --remove-orphans
-          for svc in backend frontend; do
+          for svc in mp-backend mp-frontend; do
             status=""
             for i in $(seq 1 36); do
               status=$(docker inspect -f '{{.State.Health.Status}}' "$($DC ps -q $svc)" 2>/dev/null || true)
@@ -258,7 +260,7 @@ jobs:
         run: |
           ssh vps 'bash -s' <<'EOF'
           cd /opt/masterpro
-          docker compose -f docker-compose.prod.yml exec -T frontend node -e '
+          docker compose -f docker-compose.prod.yml exec -T mp-frontend node -e '
             fetch("http://127.0.0.1:3000/internal/revalidate", { method: "POST",
               headers: { "content-type": "application/json", "x-revalidate-secret": process.env.REVALIDATE_SECRET },
               body: JSON.stringify({ all: true, tags: ["properties:list", "reference"] }) })
