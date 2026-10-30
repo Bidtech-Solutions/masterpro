@@ -1,24 +1,20 @@
 import type { MetadataRoute } from "next";
 
-import { site } from "@/config/site";
-import { getPathname } from "@/i18n/navigation";
 import { routing, type AppPathname } from "@/i18n/routing";
 import { cacheTags, serverGet } from "@/lib/api/server";
+import { absoluteUrl, alternateLanguages } from "@/lib/seo";
 
 export const revalidate = 3600;
 
 const staticPages: Exclude<AppPathname, "/properties/[slug]">[] = ["/", "/properties", "/join-agent"];
 
-type Href = Parameters<typeof getPathname>[0]["href"];
+type Href = Parameters<typeof absoluteUrl>[0];
 
-function entry(href: Href, lastModified?: string): MetadataRoute.Sitemap[number] {
-  const languages: Record<string, string> = {};
-  for (const l of routing.locales)
-    languages[l] = new URL(getPathname({ href, locale: l }), site.url).toString();
+function entry(href: Href, lastModified?: string | Date): MetadataRoute.Sitemap[number] {
   return {
-    url: new URL(getPathname({ href, locale: routing.defaultLocale }), site.url).toString(),
+    url: absoluteUrl(href, routing.defaultLocale),
     lastModified,
-    alternates: { languages },
+    alternates: { languages: alternateLanguages(href) },
   };
 }
 

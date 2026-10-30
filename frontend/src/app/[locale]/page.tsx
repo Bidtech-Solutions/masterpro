@@ -8,6 +8,7 @@ import { HeroSearch } from "@/components/home/hero-search";
 import { PartnerMarquee } from "@/components/home/partner-marquee";
 import { PopularCta } from "@/components/home/popular-cta";
 import { PropertyCarousel } from "@/components/home/property-carousel";
+import { SeoContent } from "@/components/home/seo-content";
 import { PropertyCard } from "@/components/property/property-card";
 import type { Locale } from "@/i18n/routing";
 import { getCitiesWithListings, getLatestProperties, getPropertyTypes } from "@/lib/api/endpoints";
@@ -18,7 +19,12 @@ export const revalidate = 300; // PRD §9.2
 export async function generateMetadata({ params }: PageProps<"/[locale]">): Promise<Metadata> {
   const locale = (await params).locale as Locale;
   const t = await getTranslations({ locale, namespace: "seo" });
-  return buildMetadata({ locale, href: "/", description: t("defaultDescription") });
+  return buildMetadata({
+    locale,
+    href: "/",
+    title: { absolute: t("defaultTitle") },
+    description: t("defaultDescription"),
+  });
 }
 
 /** Beranda (PRD §5.2, desain docs/stitch/home.png). */
@@ -40,7 +46,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
         <div className="absolute inset-0">
           <Image
             src="/images/hero.jpg"
-            alt=""
+            alt={t("heroImageAlt")}
             fill
             priority
             sizes="100vw"
@@ -91,6 +97,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
 
       <PartnerMarquee />
       <PopularCta />
+      <SeoContent />
       <JsonLd data={websiteJsonLd(locale)} />
     </>
   );

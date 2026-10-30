@@ -95,6 +95,7 @@ Referensi produk: brighton.co.id, rumah123.com, pinhome.id, 99.co/id.
 
 - Website katalog bilingual (`/id`, `/en`): Beranda, Properti (katalog + pencarian + filter), Detail Properti, Daftar Agen, halaman 404.
 - SEO teknis: metadata, Open Graph, JSON-LD, `robots.txt`, `sitemap.xml`, `llms.txt`, `llms-full.txt`, `/.well-known/security.txt`.
+- Analitik: Google Analytics 4 (gtag) hanya di website publik, bukan `/dashboard`; aktif bila `NEXT_PUBLIC_GA_ID` terisi (§14). GA memasang cookie non-esensial; halaman Kebijakan Privasi/consent belum ada (lihat WEB-G-02) dan menjadi tindak lanjut.
 - Dashboard: autentikasi, manajemen pengguna, modul agen, modul properti (CRUD, status, foto), ekspor Excel, akun saya, ringkasan.
 - Backend REST API Go, PostgreSQL, object storage RustFS, deployment Docker + Traefik + GitHub Actions.
 
@@ -1090,6 +1091,7 @@ Satu file `.env` di root dipakai oleh kedua compose. `.env.example` wajib memuat
 | `SEED_ADMIN_NAME` / `SEED_ADMIN_EMAIL` / `SEED_ADMIN_PASSWORD` | seed            | contoh                                        | diisi manual saat seed, lalu dihapus                            |
 | `NEXT_PUBLIC_SITE_URL`                                             | FE (build)      | `http://localhost`                          | `https://masterpro.co.id`                                     |
 | `NEXT_PUBLIC_MEDIA_URL`                                            | FE (build)      | `http://media.localhost`                    | `https://media.masterpro.co.id`                               |
+| `NEXT_PUBLIC_GA_ID`                                                | FE (build)      | `G-L84CL85R4S` (publik)                     | sama; CI membacanya dari `.env.example` saat build image (bukan GitHub Variable); kosong = analytics mati |
 | `INTERNAL_API_URL`                                                 | FE (server)     | `http://backend:8080`                       | `http://mp-backend:8080`                                      |
 
 > `NEXT_PUBLIC_*` di-*inline* saat build → di CI diberikan sebagai build-arg dari GitHub Variables.
@@ -1191,6 +1193,10 @@ File workflow adalah sumber kebenaran (divalidasi `actionlint`). Ringkasan job:
 1. VPS tujuan (RAM lapang, lihat §19 R-01) dengan Docker Engine + Compose plugin dan **Traefik yang sudah berjalan** (container `Traefik-Proxy`, network `traefik-network`, entrypoint `websecure`, certresolver `letsencrypt` dengan TLS challenge); firewall hanya membuka 22, 80, 443.
 2. Buat user `deploy` (grup `docker`), pasang public key, lalu sebagai root: `install -d -m 750 -o deploy -g deploy /opt/masterpro`. Isi semua Secrets/Variables §16.2.
 3. DNS: `A masterpro.co.id`, `A www`, `A media` → IP VPS (harus sudah aktif saat deploy pertama; bila lewat Cloudflare, awan abu-abu dulu sampai sertifikat terbit karena TLS challenge).
+   - Email (SPF/DMARC): aplikasi v1 tidak mengirim email, tetapi domain dipakai untuk mailbox `info@`/`security@`. Tanpa rekaman ini email domain mudah dipalsukan dan deliverability turun.
+     - Domain **tidak** dipakai mengirim email: `TXT @ "v=spf1 -all"` dan `TXT _dmarc "v=DMARC1; p=reject; adkim=s; aspf=s"`.
+     - Memakai penyedia email (mis. Google Workspace): `TXT @ "v=spf1 include:_spf.google.com ~all"` (sesuaikan penyedia), aktifkan DKIM dari penyedia, lalu mulai dengan `TXT _dmarc "v=DMARC1; p=none; rua=mailto:<alamat laporan>"` dan naikkan ke `quarantine`/`reject` setelah laporan bersih.
+     - Rekaman DNS diterapkan manual di panel DNS (registrar/Cloudflare); cek dengan `dig TXT masterpro.co.id` dan `dig TXT _dmarc.masterpro.co.id`.
 4. Merge ke `main` → pipeline deploy.
 5. Seed admin: `docker compose -f docker-compose.prod.yml exec -e SEED_ADMIN_NAME=.. -e SEED_ADMIN_EMAIL=.. -e SEED_ADMIN_PASSWORD=.. mp-backend /app/seed`. Admin mengganti password setelah login pertama. (`/app/seed demo` ditolak di produksi.)
 

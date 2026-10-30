@@ -71,7 +71,33 @@
     "partnersAccent": "Partners",
     "popularTitle": "Explore This Week's Most Viewed Properties",
     "popularSubtitle": "Find the best homes and investments in the fastest-growing locations.",
-    "popularCta": "See Popular Properties"
+    "popularCta": "See Popular Properties",
+    "heroImageAlt": "Modern two-storey house with large glass windows and a lawn at dusk",
+    "seoContent": {
+      "introTitle": "Buy, Sell and Rent Property in Batam with Professional Agents",
+      "introP1": "MasterPro Real Estate is a property platform for finding houses, apartments, shophouses, boarding houses and land for sale or rent in Batam and the surrounding area. Every listing is handled by a MasterPro property agent, so you can ask about the price, size and documents directly before making a deal.",
+      "introP2": "Use the search at the top of the page to filter properties by location, type and price range. Contact the agent on WhatsApp to schedule a viewing, negotiate and understand the buying or renting process from start to finish.",
+      "whyTitle": "Why Search for Property on MasterPro",
+      "why1Title": "Guided by professional agents",
+      "why1Text": "Every property is listed by a MasterPro agent you can contact directly, so you get guidance from the first search to the final handover.",
+      "why2Title": "A complete range of properties",
+      "why2Text": "From landed houses, apartments, shophouses and boarding houses to land plots for living or investment, for sale or for rent.",
+      "why3Title": "Clear, easy-to-compare information",
+      "why3Text": "Price, land area, building area, number of rooms and certificate type are shown consistently on every listing so they are easy to compare.",
+      "areaTitle": "Property in Batam Kota, Lubuk Baja and Beyond",
+      "areaText": "Batam keeps growing as an industrial, trade and tourism hub in the Riau Islands. Areas such as Batam Kota, Lubuk Baja, Batam Centre, Nagoya and Sekupang are in high demand for family homes, shophouses for business, and boarding houses and apartments for rent. Browse the latest listings in these areas or use the location filter to find houses and properties closest to your workplace, school and transport links.",
+      "faqTitle": "Frequently Asked Questions",
+      "faq1Q": "How do I find a house for sale in Batam on MasterPro?",
+      "faq1A": "Choose a location, property type and price range in the search box on the home page, then press Search Properties. Open a matching listing and contact the agent through the WhatsApp button to ask questions or book a viewing.",
+      "faq2Q": "Does MasterPro also offer properties for rent?",
+      "faq2A": "Yes. Besides houses and land for sale, there are apartments, shophouses, boarding houses and houses for rent. Use the for-sale or for-rent filter on the Properties page.",
+      "faq3Q": "Is there a fee to view listings and contact an agent?",
+      "faq3A": "Viewing listings and contacting agents through this site is free. Transaction costs such as commission and taxes are explained by the agent for the property you choose.",
+      "faq4Q": "How do I become a MasterPro property agent?",
+      "faq4A": "Open the Join as Agent page to see the commission structure and registration steps, then contact the admin on WhatsApp.",
+      "faq5Q": "What documents do I need to prepare when buying a property?",
+      "faq5A": "You generally need an ID, a tax number (NPWP) and proof of payment ability or a mortgage application. The agent will help check the certificate and the property's documents before the transaction."
+    }
   },
   "properties": {
     "title": "Properties",
@@ -127,10 +153,10 @@
     "browse": "Browse Properties"
   },
   "seo": {
-    "defaultTitle": "MasterPro Real Estate — Buy, Sell & Rent Property",
-    "defaultDescription": "Find houses, apartments, shophouses, boarding houses and land for sale or rent, with professional MasterPro agents.",
-    "propertiesDescription": "Catalogue of properties for sale and rent from MasterPro agents: houses, apartments, shophouses, boarding houses and land.",
-    "joinAgentDescription": "MasterPro property agent partnership programme: commission structure, registration steps and admin contact."
+    "defaultTitle": "MasterPro Real Estate — Buy, Sell & Rent Property in Batam",
+    "defaultDescription": "Find houses, apartments, shophouses, boarding houses and land for sale or rent in Batam Kota, Lubuk Baja and nearby areas with professional MasterPro agents.",
+    "propertiesDescription": "Catalogue of Batam properties for sale and rent from MasterPro agents: houses, apartments, shophouses, boarding houses and land. Filter by location and price.",
+    "joinAgentDescription": "Join MasterPro as a property agent in Batam: see the commission structure and registration steps, then contact the admin on WhatsApp to start your partnership."
   },
   "dashboard": {
     "title": "MasterPro Dashboard",

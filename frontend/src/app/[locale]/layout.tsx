@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 
 import "@/styles/globals.css";
 
+import { GoogleAnalytics } from "@/components/common/google-analytics";
 import { JsonLd } from "@/components/common/json-ld";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
@@ -59,6 +60,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
           <SiteFooter />
         </NextIntlClientProvider>
         <JsonLd data={organizationJsonLd()} />
+        <GoogleAnalytics />
       </body>
     </html>
   );

@@ -26,7 +26,7 @@ export async function PartnerMarquee() {
                   <li key={p.name} className="flex h-20 w-44 items-center justify-center">
                     <Image
                       src={p.logo}
-                      alt={copy === 0 ? p.name : ""}
+                      alt={p.name}
                       width={p.width}
                       height={p.height}
                       className="h-12 w-auto object-contain opacity-70 grayscale transition-all duration-300 hover:opacity-100 hover:grayscale-0 md:h-14"

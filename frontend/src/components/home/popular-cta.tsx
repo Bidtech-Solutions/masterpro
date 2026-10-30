@@ -17,7 +17,7 @@ export async function PopularCta() {
           <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-5/12 [mask-image:linear-gradient(to_right,transparent,rgba(0,0,0,0.4)_30%,black)] md:block">
             <Image
               src="/images/hero.jpg"
-              alt=""
+              alt={t("heroImageAlt")}
               fill
               sizes="40vw"
               className="object-cover opacity-30 mix-blend-overlay"

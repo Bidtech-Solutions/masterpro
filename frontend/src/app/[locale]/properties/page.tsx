@@ -21,9 +21,19 @@ export async function generateMetadata({
   const tp = await getTranslations({ locale, namespace: "properties" });
   // Filter selain listing/type/city/page → noindex (PRD §9.3).
   const indexable = Object.keys(sp).every((k) => ["listing", "type", "city", "page"].includes(k));
+  // Canonical memuat filter yang boleh diindeks agar halaman terfilter tidak ber-canonical ke katalog polos.
+  const query: Record<string, string> = {};
+  if (indexable) {
+    for (const k of ["listing", "type", "city"]) {
+      const v = [sp[k]].flat()[0];
+      if (v) query[k] = v;
+    }
+    const page = Number([sp.page].flat()[0]);
+    if (Number.isInteger(page) && page > 1) query.page = String(page);
+  }
   return buildMetadata({
     locale,
-    href: "/properties",
+    href: Object.keys(query).length > 0 ? { pathname: "/properties", query } : "/properties",
     title: tp("title"),
     description: t("propertiesDescription"),
     noindex: !indexable,

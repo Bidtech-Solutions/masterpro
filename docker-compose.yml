@@ -34,6 +34,7 @@ services:
       REVALIDATE_SECRET: ${REVALIDATE_SECRET}
       NEXT_PUBLIC_SITE_URL: ${NEXT_PUBLIC_SITE_URL}
       NEXT_PUBLIC_MEDIA_URL: ${NEXT_PUBLIC_MEDIA_URL}
+      NEXT_PUBLIC_GA_ID: ${NEXT_PUBLIC_GA_ID:-}
       WATCHPACK_POLLING: "true"
     volumes:
       - ./frontend:/app

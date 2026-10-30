@@ -71,7 +71,33 @@
     "partnersAccent": "Kami",
     "popularTitle": "Jelajahi Properti Paling Banyak Dilihat Pekan Ini",
     "popularSubtitle": "Dapatkan referensi hunian dan investasi terbaik di lokasi yang paling berkembang.",
-    "popularCta": "Lihat Properti Populer"
+    "popularCta": "Lihat Properti Populer",
+    "heroImageAlt": "Rumah modern dua lantai dengan jendela kaca besar dan halaman rumput saat senja",
+    "seoContent": {
+      "introTitle": "Jual Beli dan Sewa Properti di Batam Bersama Agen Profesional",
+      "introP1": "MasterPro Real Estate adalah platform properti untuk mencari rumah, apartemen, ruko, kos, dan tanah yang dijual maupun disewa di Batam dan sekitarnya. Setiap listing dikelola oleh agen properti MasterPro, sehingga informasi harga, luas, dan kelengkapan dokumen dapat Anda tanyakan langsung sebelum bertransaksi.",
+      "introP2": "Gunakan pencarian di bagian atas halaman untuk menyaring properti berdasarkan lokasi, tipe, dan rentang harga. Hubungi agen melalui WhatsApp untuk menjadwalkan survei, bernegosiasi, dan memahami proses jual beli maupun sewa dari awal hingga selesai.",
+      "whyTitle": "Mengapa Mencari Properti di MasterPro",
+      "why1Title": "Didampingi agen profesional",
+      "why1Text": "Setiap properti ditayangkan oleh agen MasterPro yang dapat dihubungi langsung, sehingga Anda mendapat pendampingan dari pencarian sampai serah terima.",
+      "why2Title": "Pilihan properti lengkap",
+      "why2Text": "Mulai dari rumah tapak, apartemen, ruko, kos, hingga tanah kavling untuk hunian maupun investasi, baik dijual maupun disewa.",
+      "why3Title": "Informasi jelas dan mudah dibandingkan",
+      "why3Text": "Harga, luas tanah, luas bangunan, jumlah kamar, dan jenis sertifikat ditampilkan konsisten pada setiap listing sehingga mudah dibandingkan.",
+      "areaTitle": "Properti di Batam Kota, Lubuk Baja, dan Sekitarnya",
+      "areaText": "Kota Batam terus berkembang sebagai pusat industri, perdagangan, dan pariwisata di Kepulauan Riau. Kawasan seperti Batam Kota, Lubuk Baja, Batam Centre, Nagoya, dan Sekupang banyak dicari untuk rumah tinggal, ruko usaha, serta kos dan apartemen sewa. Jelajahi listing terbaru di area tersebut atau gunakan filter lokasi untuk menemukan rumah dan properti yang paling dekat dengan tempat kerja, sekolah, dan akses transportasi Anda.",
+      "faqTitle": "Pertanyaan yang Sering Diajukan",
+      "faq1Q": "Bagaimana cara mencari rumah dijual di Batam melalui MasterPro?",
+      "faq1A": "Pilih lokasi, tipe properti, dan rentang harga pada kotak pencarian di beranda, lalu tekan Cari Properti. Buka listing yang sesuai dan hubungi agen melalui tombol WhatsApp untuk bertanya atau menjadwalkan survei.",
+      "faq2Q": "Apakah MasterPro juga menyediakan properti untuk disewa?",
+      "faq2A": "Ya. Selain rumah dan tanah yang dijual, tersedia apartemen, ruko, kos, dan rumah yang disewa. Gunakan filter dijual atau disewa di halaman Properti.",
+      "faq3Q": "Apakah ada biaya untuk melihat listing dan menghubungi agen?",
+      "faq3A": "Melihat listing dan menghubungi agen melalui situs ini gratis. Rincian biaya transaksi, seperti komisi dan pajak, dijelaskan oleh agen sesuai properti yang Anda pilih.",
+      "faq4Q": "Bagaimana cara menjadi agen properti MasterPro?",
+      "faq4A": "Buka halaman Daftar Agen untuk melihat struktur komisi dan alur pendaftaran, lalu hubungi admin melalui WhatsApp.",
+      "faq5Q": "Dokumen apa yang perlu disiapkan saat membeli properti?",
+      "faq5A": "Umumnya Anda perlu identitas diri, NPWP, serta bukti kemampuan pembayaran atau pengajuan KPR. Agen akan membantu memeriksa sertifikat dan kelengkapan dokumen properti sebelum transaksi."
+    }
   },
   "properties": {
     "title": "Properti",
@@ -127,10 +153,10 @@
     "browse": "Lihat Properti"
   },
   "seo": {
-    "defaultTitle": "MasterPro Real Estate — Jual Beli & Sewa Properti",
-    "defaultDescription": "Cari rumah, apartemen, ruko, kos, dan tanah dijual maupun disewa, didampingi agen properti profesional MasterPro.",
-    "propertiesDescription": "Katalog properti dijual dan disewa dari agen MasterPro: rumah, apartemen, ruko, kos, dan tanah.",
-    "joinAgentDescription": "Program kemitraan agen properti MasterPro: struktur komisi, alur pendaftaran, dan kontak admin."
+    "defaultTitle": "MasterPro Real Estate — Jual Beli & Sewa Properti Batam",
+    "defaultDescription": "Cari rumah, apartemen, ruko, kos, dan tanah dijual maupun disewa di Batam Kota, Lubuk Baja, dan sekitarnya bersama agen properti profesional MasterPro.",
+    "propertiesDescription": "Katalog properti Batam dijual dan disewa dari agen MasterPro: rumah, apartemen, ruko, kos, dan tanah. Filter lokasi, tipe, dan harga sesuai kebutuhan Anda.",
+    "joinAgentDescription": "Bergabung jadi agen properti MasterPro di Batam: lihat struktur komisi, alur pendaftaran, dan hubungi admin lewat WhatsApp untuk memulai kemitraan."
   },
   "dashboard": {
     "title": "Dashboard MasterPro",

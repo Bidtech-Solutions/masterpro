@@ -94,6 +94,10 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Baca NEXT_PUBLIC_GA_ID dari .env.example
+        # ID pengukuran GA bersifat publik; sumber tunggalnya .env.example (bukan GitHub Variable).
+        id: ga
+        run: echo "id=$(grep -E '^NEXT_PUBLIC_GA_ID=' .env.example | cut -d= -f2- | tr -d '[:space:]')" >> "$GITHUB_OUTPUT"
       - uses: docker/build-push-action@v6
         with:
           context: ./frontend
@@ -102,6 +106,7 @@ jobs:
           build-args: |
             NEXT_PUBLIC_SITE_URL=https://${{ vars.DOMAIN }}
             NEXT_PUBLIC_MEDIA_URL=https://${{ vars.MEDIA_DOMAIN }}
+            NEXT_PUBLIC_GA_ID=${{ steps.ga.outputs.id }}
           tags: |
             ${{ needs.meta.outputs.registry }}/masterpro-frontend:${{ needs.meta.outputs.tag }}
             ${{ needs.meta.outputs.registry }}/masterpro-frontend:latest

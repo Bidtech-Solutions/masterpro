@@ -6,6 +6,8 @@ export const site = {
   name: "MasterPro Real Estate",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost",
   mediaUrl: process.env.NEXT_PUBLIC_MEDIA_URL ?? "http://media.localhost",
+  /** ID pengukuran Google Analytics 4 (G-…); kosong = analytics nonaktif. */
+  gaId: process.env.NEXT_PUBLIC_GA_ID ?? "",
   logo: "/brand/logo.png",
   logoWhite: "/brand/logo-white.png",
   ogImage: "/brand/og-default.jpg",
