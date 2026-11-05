@@ -18,14 +18,14 @@ import (
 	"github.com/bidtech-solutions/masterpro/backend/internal/storage"
 )
 
-// Foto demo dari Unsplash (lisensi Unsplash), sudah dikonversi ke WebP 1600 px.
+// Foto dari Unsplash (lisensi Unsplash), sudah dikonversi ke WebP 1600 px.
 //
 //go:embed demo/*.webp
 var demoImages embed.FS
 
 const (
-	demoAgentEmail    = "agen.demo@masterpro.co.id"
-	demoAgentPassword = "AgenDemo123"
+	demoAgentEmail    = "budi.santoso@masterpro.co.id"
+	demoAgentPassword = "AgenDemo123!"
 	cityBatam         = 2171
 	provinceKepri     = 21
 )
@@ -52,15 +52,14 @@ var demoListings = []demoListing{
 	{"Studio Apartemen Siap Huni Nagoya", "Lubuk Baja", "studio-nagoya", models.ListingRent, models.MarketSecondary, 2, 4_500_000, models.RentMonthly, 0, 28, 1, 1, 1600, 1190},
 }
 
-// seedDemo membuat 1 agen demo + 7 listing tayang beserta fotonya. Hanya untuk development.
 func seedDemo(ctx context.Context, cfg config.Config, db *gorm.DB) error {
 	if cfg.IsProduction() {
-		return errors.New("data demo tidak boleh dibuat di produksi")
+		return errors.New("data awal tidak boleh dibuat di produksi")
 	}
 	var count int64
 	db.WithContext(ctx).Model(&models.User{}).Where("lower(email) = ?", demoAgentEmail).Count(&count)
 	if count > 0 {
-		fmt.Println("Data demo sudah ada — tidak ada perubahan.")
+		fmt.Println("Data sudah ada — tidak ada perubahan.")
 		return nil
 	}
 	store, err := storage.New(storage.Config{
@@ -103,7 +102,6 @@ func seedDemo(ctx context.Context, cfg config.Config, db *gorm.DB) error {
 				return fmt.Errorf("listing %q: %w", d.title, err)
 			}
 		}
-		fmt.Printf("Data demo dibuat: agen %s (password %s) + %d listing.\n", demoAgentEmail, demoAgentPassword, len(demoListings))
 		return nil
 	})
 }
@@ -124,7 +122,7 @@ func createDemoListing(ctx context.Context, tx *gorm.DB, store *storage.Client, 
 		AgentID: agentID, CreatedBy: userID,
 		ListingType: d.listing, MarketType: d.market, PropertyTypeID: d.typeID, Status: models.StatusActive,
 		Title:       d.title,
-		Description: d.title + " — listing demo untuk development. Lokasi strategis, lingkungan nyaman, dan akses mudah ke fasilitas umum.",
+		Description: d.title + " — lokasi strategis di " + d.district + ", lingkungan nyaman, dan akses mudah ke fasilitas umum.",
 		Price:       d.price, IsPriceNegotiable: d.listing == models.ListingSale,
 		ProvinceID: provinceKepri, CityID: cityBatam, District: &district,
 		BuildingArea: &d.building, Bedrooms: &d.beds, Bathrooms: &d.baths,
@@ -152,6 +150,6 @@ func createDemoListing(ctx context.Context, tx *gorm.DB, store *storage.Client, 
 		return err
 	}
 	img := models.PropertyImage{ID: uuid.Must(uuid.NewV7()), PropertyID: p.ID, ObjectKey: key,
-		Width: d.width, Height: d.height, SizeBytes: int32(len(data)), IsCover: true, CreatedAt: published} //nolint:gosec // ukuran file demo kecil
+		Width: d.width, Height: d.height, SizeBytes: int32(len(data)), IsCover: true, CreatedAt: published} //nolint:gosec // ukuran file kecil
 	return tx.Create(&img).Error
 }
