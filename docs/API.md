@@ -159,6 +159,7 @@ Melebihi batas → `429 RATE_LIMITED` + header `Retry-After` (detik).
 | 403 | `CSRF_HEADER_MISSING` | Header `X-Requested-With` tidak ada |
 | 404 | `NOT_FOUND` | Resource tidak ada / bukan milik agen / listing publik tidak `active` |
 | 409 | `EMAIL_TAKEN` | Email sudah dipakai |
+| 409 | `ALREADY_AUTHENTICATED` | Browser sudah memiliki sesi login aktif (harus logout terlebih dahulu) |
 | 409 | `INVALID_STATUS_TRANSITION` | Transisi status tidak diizinkan (PRD §7.2) |
 | 409 | `LAST_ACTIVE_ADMIN` | Menonaktifkan admin aktif terakhir |
 | 413 | `PAYLOAD_TOO_LARGE` | File > 10 MB atau body > 60 MB |
@@ -527,7 +528,7 @@ Query: `has_listings` (`true` → hanya yang punya listing tayang). **200** → 
 { "success": true, "data": { "user": { /* User */ }, "access_expires_at": "2026-10-28T03:30:00Z" } }
 ```
 
-Error: `401 INVALID_CREDENTIALS`, `403 ACCOUNT_INACTIVE`, `422 VALIDATION_ERROR`, `429 RATE_LIMITED`. Sukses memperbarui `last_login_at`.
+Error: `401 INVALID_CREDENTIALS`, `403 ACCOUNT_INACTIVE`, `409 ALREADY_AUTHENTICATED`, `422 VALIDATION_ERROR`, `429 RATE_LIMITED`. Sukses memperbarui `last_login_at`.
 
 ### 8.2 `POST /auth/refresh` 🌐 (cookie `mp_refresh`)
 
@@ -573,7 +574,7 @@ Semua field opsional. `whatsapp_number`, `bio`, `service_area` hanya untuk agen 
 { "current_password": "lama123", "new_password": "BaruAman2026", "new_password_confirmation": "BaruAman2026" }
 ```
 
-Aturan password: 8–72 karakter, minimal 1 huruf dan 1 angka, tidak sama dengan password lama. **204**. Sesi lain dicabut; sesi saat ini tetap. Error: `401 INVALID_CURRENT_PASSWORD`, `422 VALIDATION_ERROR`.
+Aturan password (*Password Complexity Policy*): 8–72 karakter, minimal 1 huruf besar (A–Z), 1 huruf kecil (a–z), 1 angka (0–9), dan 1 karakter spesial/simbol, serta tidak sama dengan password lama. **204**. Sesi lain dicabut; sesi saat ini tetap. Error: `401 INVALID_CURRENT_PASSWORD`, `422 VALIDATION_ERROR`.
 
 ---
 
