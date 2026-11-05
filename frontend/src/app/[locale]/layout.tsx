@@ -41,7 +41,14 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
   const messages = await getMessages();
   const t = await getTranslations("common");
   // Hanya namespace yang dipakai Client Component dikirim ke browser.
-  const clientMessages = { common: messages.common, nav: messages.nav, home: messages.home };
+  const clientMessages = {
+    common: messages.common,
+    nav: messages.nav,
+    home: messages.home,
+    properties: messages.properties,
+    propertyDetail: messages.propertyDetail,
+    joinAgent: messages.joinAgent,
+  };
 
   return (
     <html lang={locale} className={fontVariables}>

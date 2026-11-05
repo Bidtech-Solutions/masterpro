@@ -27,4 +27,4 @@ export type PriceRangeValue = (typeof priceRanges)[number]["value"];
 export const homeCarouselSize = 10;
 
 /** Item per halaman katalog (WEB-P-06). */
-export const catalogPageSize = 12;
+export const catalogPageSize = 8;

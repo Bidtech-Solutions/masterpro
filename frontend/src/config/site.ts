@@ -19,7 +19,7 @@ export const site = {
     /** Nomor WhatsApp admin, format 62… tanpa "+" (PRD §7.6). */
     whatsappAdmin: "628117788990",
     whatsappDisplay: "+62 811-7788-990",
-    email: "info@masterpro.co.id",
+    email: "info@masterprorealestate.co.id",
   },
   social: [
     { name: "Instagram", href: "https://instagram.com/" },

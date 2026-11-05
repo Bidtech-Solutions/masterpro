@@ -22,6 +22,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { protocol: media.protocol.replace(":", "") as "http" | "https", hostname: media.hostname },
       { protocol: "http", hostname: "media.localhost" },
+      { protocol: "https", hostname: "images.unsplash.com" },
     ],
   },
 };

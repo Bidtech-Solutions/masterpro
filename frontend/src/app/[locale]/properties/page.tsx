@@ -1,12 +1,19 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
-import { SectionHeading } from "@/components/common/section-heading";
 import { Pagination } from "@/components/common/pagination";
+import { HeroSearch } from "@/components/home/hero-search";
 import { PropertyCard } from "@/components/property/property-card";
+import { PropertyFilterSidebar } from "@/components/property/property-filter-sidebar";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
-import { listPublicProperties, webQueryToApi } from "@/lib/api/endpoints";
+import {
+  getCitiesWithListings,
+  getPropertyTypes,
+  listPublicProperties,
+  webQueryToApi,
+} from "@/lib/api/endpoints";
 import { buildMetadata } from "@/lib/seo";
 
 // Halaman membaca searchParams → dirender dinamis; data API di-cache 60 dtk (PRD §9.2).
@@ -42,59 +49,94 @@ export async function generateMetadata({
 
 /**
  * Katalog properti (PRD §5.3).
- * TODO(WEB-P-01/02/03/05/07): bar pencarian, filter sidebar/bottom sheet, urutan, chip filter aktif, skeleton.
  */
 export default async function PropertiesPage({ params, searchParams }: PageProps<"/[locale]/properties">) {
   const locale = (await params).locale as Locale;
   setRequestLocale(locale);
   const t = await getTranslations("properties");
+  const th = await getTranslations("home");
   const sp = await searchParams;
   const query = webQueryToApi(sp);
-  const result = await listPublicProperties(query);
+
+  const [result, propertyTypes, cities] = await Promise.all([
+    listPublicProperties(query),
+    getPropertyTypes(),
+    getCitiesWithListings(),
+  ]);
+
   const items = result?.data ?? [];
   const meta = result?.meta;
 
-  const title =
-    query.listing_type === "sale"
-      ? t("titleSale")
-      : query.listing_type === "rent"
-        ? t("titleRent")
-        : t("title");
-
   return (
-    <div className="container-page py-12 md:py-16">
-      <SectionHeading as="h1" title={title} className="mb-2" />
-      <p className="mb-8 text-body-sm text-slate-500">{t("found", { count: meta?.total ?? 0 })}</p>
-
-      {items.length > 0 ? (
-        <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {items.map((p, i) => (
-            <li key={p.id}>
-              <PropertyCard property={p} locale={locale} variant="full" priority={i < 2} />
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <div className="rounded-lg border border-dashed border-slate-300 bg-slate-50 px-6 py-16 text-center">
-          <p className="mb-2 font-display text-h3 font-bold text-navy-900">{t("empty")}</p>
-          <p className="mb-6 text-body-sm text-slate-500">{t("emptyHint")}</p>
-          <Link
-            href="/properties"
-            className="font-display text-body-sm font-bold text-blue-600 hover:text-blue-700"
-          >
-            {t("resetFilters")}
-          </Link>
+    <>
+      {/* Hero Section Banner dengan Form Pencarian Horizontal */}
+      <section className="relative overflow-hidden bg-navy-950 px-4 py-12 text-white sm:px-6 md:py-16 lg:px-8">
+        <div className="absolute inset-0">
+          <Image
+            src="/images/hero.jpg"
+            alt={th("heroImageAlt")}
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0A1128]/72 via-[#0A1128]/80 to-[#0A1128]/88" />
         </div>
-      )}
+        <div className="relative z-10 mx-auto w-full max-w-7xl">
+          <div className="max-w-4xl space-y-4 lg:max-w-5xl">
+            <h1 className="font-display text-display-mobile leading-[1.15] font-extrabold tracking-tight md:text-display lg:text-[3.25rem]">
+              {th("heroTitle")} <br className="hidden sm:inline" />
+              <span className="font-accent font-normal text-blue-400 italic">
+                {th("heroTitleAccent")}
+              </span>{" "}
+              {th("heroTitleSuffix")}
+            </h1>
+            <p className="max-w-2xl pt-1 text-base leading-relaxed font-normal text-slate-300 sm:text-lg">
+              {th("heroSubtitle")}
+            </p>
+          </div>
+          <HeroSearch cities={cities} propertyTypes={propertyTypes} />
+        </div>
+      </section>
 
-      {meta && meta.total_pages > 1 ? (
-        <Pagination
-          page={meta.page}
-          totalPages={meta.total_pages}
-          searchParams={sp}
-          label={t("pagination")}
-        />
-      ) : null}
-    </div>
+      {/* Main Content: Layout Dua Kolom (Sidebar Filter & Grid Properti) */}
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 md:py-16 lg:px-8">
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-10">
+          {/* Kolom Kiri: Sidebar Filter */}
+          <PropertyFilterSidebar propertyTypes={propertyTypes} searchParams={sp} />
+
+          {/* Kolom Kanan: Grid Properti & Pagination */}
+          <div className="min-w-0 flex-1">
+            {items.length > 0 ? (
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                {items.map((p, i) => (
+                  <PropertyCard key={p.id} property={p} locale={locale} priority={i < 2} />
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-3xl border border-dashed border-slate-300 bg-slate-50 px-6 py-20 text-center">
+                <p className="mb-2 font-display text-2xl font-bold text-navy-900">{t("empty")}</p>
+                <p className="mb-6 text-sm text-slate-500">{t("emptyHint")}</p>
+                <Link
+                  href="/properties"
+                  className="inline-flex rounded-xl bg-blue-600 px-6 py-3 text-sm font-bold text-white shadow-sm transition hover:bg-blue-700 active:scale-95"
+                >
+                  {t("resetFilters")}
+                </Link>
+              </div>
+            )}
+
+            {meta && meta.total_pages > 1 ? (
+              <Pagination
+                page={meta.page}
+                totalPages={meta.total_pages}
+                searchParams={sp}
+                label={t("pagination")}
+              />
+            ) : null}
+          </div>
+        </div>
+      </div>
+    </>
   );
 }

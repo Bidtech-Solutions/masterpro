@@ -1,7 +1,13 @@
 import "server-only";
 
 import { catalogPageSize, homeCarouselSize } from "@/config/search";
-import type { ListingType, PropertyCard, PublicPropertyQuery, PublicSort } from "@/types/property";
+import type {
+  ListingType,
+  PropertyCard,
+  PropertyDetail,
+  PublicPropertyQuery,
+  PublicSort,
+} from "@/types/property";
 import type { City, PropertyType } from "@/types/reference";
 
 import { cacheTags, serverGet } from "./server";
@@ -10,7 +16,7 @@ import { cacheTags, serverGet } from "./server";
 
 export async function getLatestProperties(listing: ListingType) {
   const res = await serverGet<PropertyCard[]>("/public/properties", {
-    revalidate: 300,
+    revalidate: 0,
     tags: [cacheTags.propertiesList],
     query: { listing_type: listing, sort: "newest", per_page: homeCarouselSize },
   });
@@ -19,7 +25,7 @@ export async function getLatestProperties(listing: ListingType) {
 
 export async function listPublicProperties(query: PublicPropertyQuery) {
   return serverGet<PropertyCard[]>("/public/properties", {
-    revalidate: 60,
+    revalidate: 0,
     tags: [cacheTags.propertiesList],
     query: { per_page: catalogPageSize, ...query },
   });
@@ -27,7 +33,7 @@ export async function listPublicProperties(query: PublicPropertyQuery) {
 
 export async function getPropertyTypes() {
   const res = await serverGet<PropertyType[]>("/public/property-types", {
-    revalidate: 3600,
+    revalidate: 300,
     tags: [cacheTags.reference, cacheTags.propertiesList],
   });
   return res?.data ?? [];
@@ -35,20 +41,30 @@ export async function getPropertyTypes() {
 
 export async function getCitiesWithListings() {
   const res = await serverGet<City[]>("/public/locations/cities", {
-    revalidate: 3600,
+    revalidate: 60,
     tags: [cacheTags.reference, cacheTags.propertiesList],
     query: { has_listings: true, limit: 100 },
   });
   return res?.data ?? [];
 }
 
-/** TODO(API.md §7.2): endpoint detail belum diimplementasi backend → saat ini selalu null (404). */
+/** Detail properti (API.md §7.2). */
 export async function getPublicProperty(slug: string) {
-  const res = await serverGet<PropertyCard>(`/public/properties/${encodeURIComponent(slug)}`, {
-    revalidate: 3600,
+  const res = await serverGet<PropertyDetail>(`/public/properties/${encodeURIComponent(slug)}`, {
+    revalidate: 0,
     tags: [cacheTags.property(slug), cacheTags.propertiesList],
   });
   return res?.data ?? null;
+}
+
+/** Properti serupa (API.md §7.3). */
+export async function getSimilarProperties(slug: string, limit = 3) {
+  const res = await serverGet<PropertyCard[]>(`/public/properties/${encodeURIComponent(slug)}/similar`, {
+    revalidate: 0,
+    tags: [cacheTags.property(slug), cacheTags.propertiesList],
+    query: { limit },
+  });
+  return res?.data ?? [];
 }
 
 const sorts: PublicSort[] = ["newest", "price_asc", "price_desc", "popular", "land_area_desc"];

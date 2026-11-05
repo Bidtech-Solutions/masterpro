@@ -2,7 +2,7 @@
 
 import { Banknote, Building2, ChevronDown, MapPin, Search } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useState, type FormEvent } from "react";
 
 import { priceRanges } from "@/config/search";
 import { useRouter } from "@/i18n/navigation";
@@ -13,7 +13,7 @@ interface Props {
   propertyTypes: PropertyType[];
 }
 
-/** Kotak pencarian hero: Lokasi · Tipe · Rentang Harga (PRD WEB-H-01, DESIGN.md §0). */
+/** Kotak pencarian hero sesuai master_pro_landing_page (1).html. */
 export function HeroSearch({ cities, propertyTypes }: Props) {
   const t = useTranslations("home");
   const locale = useLocale();
@@ -34,116 +34,105 @@ export function HeroSearch({ cities, propertyTypes }: Props) {
   }
 
   return (
-    <form
-      onSubmit={submit}
-      role="search"
-      className="mx-auto max-w-6xl rounded-xl border border-slate-200/90 bg-white p-5 text-slate-900 shadow-popover md:p-6"
-    >
-      <div className="grid grid-cols-1 items-end gap-4 sm:grid-cols-2 lg:grid-cols-12">
-        <Field
-          id="hero-city"
-          label={t("searchLocation")}
-          icon={<MapPin className="size-5" />}
-          className="lg:col-span-4"
+    <div className="relative z-30 mt-10 md:mt-14">
+      <div className="rounded-2xl border border-slate-200/80 bg-white p-4 text-slate-900 shadow-2xl shadow-slate-950/40 sm:p-5 lg:p-6">
+        <form
+          id="propertySearchForm"
+          onSubmit={submit}
+          role="search"
+          className="grid grid-cols-1 items-center gap-4 md:grid-cols-4"
         >
-          <select
-            id="hero-city"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            className={selectClass}
-          >
-            <option value="">{t("searchLocationAll")}</option>
-            {cities.map((c) => (
-              <option key={c.id} value={c.slug}>
-                {c.name}, {c.province.name}
-              </option>
-            ))}
-          </select>
-        </Field>
-        <Field
-          id="hero-type"
-          label={t("searchType")}
-          icon={<Building2 className="size-5" />}
-          className="lg:col-span-3"
-        >
-          <select
-            id="hero-type"
-            value={type}
-            onChange={(e) => setType(e.target.value)}
-            className={selectClass}
-          >
-            <option value="">{t("searchTypeAll")}</option>
-            {propertyTypes.map((pt) => (
-              <option key={pt.id} value={pt.slug}>
-                {locale === "id" ? pt.name_id : pt.name_en}
-              </option>
-            ))}
-          </select>
-        </Field>
-        <Field
-          id="hero-price"
-          label={t("searchPrice")}
-          icon={<Banknote className="size-5" />}
-          className="lg:col-span-3"
-        >
-          <select
-            id="hero-price"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            className={selectClass}
-          >
-            <option value="">{t("searchPriceAll")}</option>
-            {priceRanges.map((r) => (
-              <option key={r.value} value={r.value}>
-                {r.label[locale]}
-              </option>
-            ))}
-          </select>
-        </Field>
-        <div className="sm:col-span-2 lg:col-span-2">
-          <button
-            type="submit"
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-md bg-blue-600 font-display text-body-sm font-bold text-white shadow-card transition-all hover:bg-blue-700 hover:shadow-card-hover active:scale-95"
-          >
-            <Search className="size-[18px]" aria-hidden />
-            {t("searchSubmit")}
-          </button>
-        </div>
-      </div>
-    </form>
-  );
-}
+          {/* Field 1: Lokasi */}
+          <div className="relative">
+            <label
+              htmlFor="searchLocation"
+              className="mb-1.5 block text-xs font-semibold tracking-wider text-slate-400 uppercase"
+            >
+              {t("searchLocation")}
+            </label>
+            <div className="relative flex items-center">
+              <MapPin className="pointer-events-none absolute left-3 size-5 text-slate-400" />
+              <select
+                id="searchLocation"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                className="w-full cursor-pointer appearance-none rounded-xl border border-slate-200 bg-slate-50 py-2.5 pr-3 pl-10 text-sm font-semibold text-slate-800 transition focus:bg-white focus:ring-2 focus:ring-blue-600 focus:outline-none"
+              >
+                <option value="">{t("searchLocationAll")}</option>
+                {cities.map((c) => (
+                  <option key={c.id} value={c.slug}>
+                    {c.name}, {c.province.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
 
-const selectClass =
-  "h-12 w-full cursor-pointer appearance-none bg-transparent pr-8 pl-11 text-body-sm text-navy-900 focus:outline-none";
+          {/* Field 2: Tipe Properti */}
+          <div className="relative">
+            <label
+              htmlFor="propertyType"
+              className="mb-1.5 block text-xs font-semibold tracking-wider text-slate-400 uppercase"
+            >
+              {t("searchType")}
+            </label>
+            <div className="relative flex items-center">
+              <Building2 className="pointer-events-none absolute left-3 size-5 text-slate-400" />
+              <select
+                id="propertyType"
+                value={type}
+                onChange={(e) => setType(e.target.value)}
+                className="w-full cursor-pointer appearance-none rounded-xl border border-slate-200 bg-slate-50 py-2.5 pr-8 pl-10 text-sm font-semibold text-slate-800 transition focus:bg-white focus:ring-2 focus:ring-blue-600 focus:outline-none"
+              >
+                <option value="">{t("searchTypeAll")}</option>
+                {propertyTypes.map((pt) => (
+                  <option key={pt.id} value={pt.slug}>
+                    {locale === "id" ? pt.name_id : pt.name_en}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="pointer-events-none absolute right-3 size-4 text-slate-400" />
+            </div>
+          </div>
 
-function Field({
-  id,
-  label,
-  icon,
-  className,
-  children,
-}: {
-  id: string;
-  label: string;
-  icon: ReactNode;
-  className?: string;
-  children: ReactNode;
-}) {
-  return (
-    <div className={className}>
-      <label
-        htmlFor={id}
-        className="mb-1.5 block font-display text-caption font-bold tracking-wider text-slate-500 uppercase"
-      >
-        {label}
-      </label>
-      <div className="relative flex items-center rounded-md border border-slate-200 bg-slate-50 transition-all focus-within:border-blue-600 focus-within:bg-white">
-        <span className="pointer-events-none absolute left-3.5 text-slate-400" aria-hidden>
-          {icon}
-        </span>
-        {children}
-        <ChevronDown className="pointer-events-none absolute right-3 size-4 text-slate-400" aria-hidden />
+          {/* Field 3: Rentang Harga */}
+          <div className="relative">
+            <label
+              htmlFor="priceRange"
+              className="mb-1.5 block text-xs font-semibold tracking-wider text-slate-400 uppercase"
+            >
+              {t("searchPrice")}
+            </label>
+            <div className="relative flex items-center">
+              <Banknote className="pointer-events-none absolute left-3 size-5 text-slate-400" />
+              <select
+                id="priceRange"
+                value={price}
+                onChange={(e) => setPrice(e.target.value)}
+                className="w-full cursor-pointer appearance-none rounded-xl border border-slate-200 bg-slate-50 py-2.5 pr-8 pl-10 text-sm font-semibold text-slate-800 transition focus:bg-white focus:ring-2 focus:ring-blue-600 focus:outline-none"
+              >
+                <option value="">{t("searchPriceAll")}</option>
+                {priceRanges.map((r) => (
+                  <option key={r.value} value={r.value}>
+                    {r.label[locale]}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown className="pointer-events-none absolute right-3 size-4 text-slate-400" />
+            </div>
+          </div>
+
+          {/* Field 4: Tombol Cari Properti */}
+          <div className="pt-2 md:pt-5">
+            <button
+              type="submit"
+              className="flex w-full items-center justify-center gap-2 rounded-md bg-blue-600 px-6 py-3 text-sm font-bold text-white shadow-card transition-all hover:bg-blue-700 hover:shadow-card-hover active:scale-95"
+            >
+              <Search className="size-4 stroke-[2.5]" />
+              <span>{t("searchSubmit")}</span>
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );

@@ -8,13 +8,13 @@ import { HeroSearch } from "@/components/home/hero-search";
 import { PartnerMarquee } from "@/components/home/partner-marquee";
 import { PopularCta } from "@/components/home/popular-cta";
 import { PropertyCarousel } from "@/components/home/property-carousel";
-import { SeoContent } from "@/components/home/seo-content";
+
 import { PropertyCard } from "@/components/property/property-card";
 import type { Locale } from "@/i18n/routing";
 import { getCitiesWithListings, getLatestProperties, getPropertyTypes } from "@/lib/api/endpoints";
 import { buildMetadata, websiteJsonLd } from "@/lib/seo";
 
-export const revalidate = 300; // PRD §9.2
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]">): Promise<Metadata> {
   const locale = (await params).locale as Locale;
@@ -42,7 +42,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
 
   return (
     <>
-      <section className="relative overflow-hidden bg-navy-950 py-20 text-white md:py-28">
+      <section className="relative flex min-h-[calc(100svh-5rem)] min-h-[calc(100vh-5rem)] flex-col justify-center overflow-hidden bg-navy-950 px-4 py-12 text-white sm:px-6 md:py-16 lg:px-8">
         <div className="absolute inset-0">
           <Image
             src="/images/hero.jpg"
@@ -52,19 +52,18 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
             sizes="100vw"
             className="object-cover object-center"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-navy-950/90 via-navy-900/75 to-blue-700/40" />
-          <div className="absolute inset-0 bg-gradient-to-t from-navy-950/95 via-transparent to-navy-950/50" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0A1128]/72 via-[#0A1128]/80 to-[#0A1128]/88" />
         </div>
-        <div className="relative z-10 container-page">
-          <div className="mb-12 max-w-3xl">
-            <h1 className="mb-6 font-display text-display-mobile leading-tight font-extrabold tracking-tight md:text-display">
+        <div className="relative z-10 mx-auto w-full max-w-7xl">
+          <div className="max-w-4xl space-y-4 lg:max-w-5xl">
+            <h1 className="font-display text-display-mobile leading-[1.15] font-extrabold tracking-tight md:text-display lg:text-[3.25rem]">
               {t("heroTitle")} <br className="hidden sm:inline" />
-              <span className="text-3xl font-normal text-slate-300 md:text-5xl">{t("heroTitlePrefix")} </span>
-              <span className="font-accent font-semibold tracking-normal text-sky-300 italic drop-shadow-sm">
+              <span className="font-accent font-normal text-blue-400 italic">
                 {t("heroTitleAccent")}
-              </span>
+              </span>{" "}
+              {t("heroTitleSuffix")}
             </h1>
-            <p className="max-w-2xl text-body leading-relaxed text-slate-200/95 md:text-body-lg">
+            <p className="max-w-2xl pt-1 text-base leading-relaxed font-normal text-slate-300 sm:text-lg">
               {t("heroSubtitle")}
             </p>
           </div>
@@ -97,7 +96,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
 
       <PartnerMarquee />
       <PopularCta />
-      <SeoContent />
+
       <JsonLd data={websiteJsonLd(locale)} />
     </>
   );
