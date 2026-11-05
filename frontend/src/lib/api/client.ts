@@ -11,6 +11,37 @@ import { ApiError } from "./errors";
  */
 
 const BASE = "/api/v1";
+const AUTH_CHANNEL = "mp_auth_sync";
+
+export type AuthSyncEvent = "LOGIN" | "LOGOUT";
+
+/** Mengirim sinyal perubahan status autentikasi ke seluruh tab di browser yang sama. */
+export function notifyAuthChange(event: AuthSyncEvent): void {
+  if (typeof window === "undefined" || typeof BroadcastChannel === "undefined") return;
+  try {
+    const ch = new BroadcastChannel(AUTH_CHANNEL);
+    ch.postMessage(event);
+    ch.close();
+  } catch {
+    // Abaikan bila BroadcastChannel tidak didukung
+  }
+}
+
+/** Mendengarkan perubahan status autentikasi dari tab lain di browser yang sama. */
+export function subscribeAuthChange(listener: (event: AuthSyncEvent) => void): () => void {
+  if (typeof window === "undefined" || typeof BroadcastChannel === "undefined") return () => {};
+  try {
+    const ch = new BroadcastChannel(AUTH_CHANNEL);
+    ch.onmessage = (e: MessageEvent<AuthSyncEvent>) => {
+      if (e.data === "LOGIN" || e.data === "LOGOUT") {
+        listener(e.data);
+      }
+    };
+    return () => ch.close();
+  } catch {
+    return () => {};
+  }
+}
 
 let refreshing: Promise<boolean> | null = null;
 

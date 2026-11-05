@@ -1,148 +1,224 @@
 "use client";
 
-import { Eye, EyeOff, LogIn } from "lucide-react";
+import { AlertCircle, Eye, EyeOff, Loader2, Lock, Mail } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useEffect, useState, type FormEvent } from "react";
+import { type FormEvent, useEffect, useState } from "react";
 
-import { apiRequest, refreshSession } from "@/lib/api/client";
+import { apiRequest, notifyAuthChange, refreshSession, subscribeAuthChange } from "@/lib/api/client";
 import { isApiError } from "@/lib/api/errors";
-import { loginSchema } from "@/schemas/auth";
-import type { LoginResponse } from "@/types/user";
+import type { LoginResponse, User } from "@/types/user";
 
-type MessageKey = Parameters<ReturnType<typeof useTranslations<"dashboard">>>[0];
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-/** Form login dashboard (AUTH-01, AUTH-05, AUTH-06). */
+function safeNext(value: string | null): string {
+  return value && value.startsWith("/dashboard") && !value.startsWith("//") && !value.startsWith("/dashboard/login")
+    ? value
+    : "/dashboard";
+}
+
+/**
+ * Form login dashboard (AUTH-01, AUTH-02, AUTH-06; DESIGN.md §7.1).
+ * Cookie sesi httpOnly diset langsung oleh backend pada respons 200.
+ */
 export function LoginForm() {
   const t = useTranslations("dashboard");
   const router = useRouter();
   const searchParams = useSearchParams();
-  const next = safeNext(searchParams.get("next"));
+  const nextUrl = safeNext(searchParams.get("next"));
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [bannerError, setBannerError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<{ email?: string; password?: string }>({});
 
-  // Cookie akses berumur 15 menit; bila refresh token masih valid, masuk kembali tanpa mengetik.
   useEffect(() => {
-    void refreshSession().then((ok) => ok && router.replace(next));
-  }, [next, router]);
+    let active = true;
 
-  async function onSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const form = new FormData(e.currentTarget);
-    const parsed = loginSchema.safeParse({ email: form.get("email"), password: form.get("password") });
-    if (!parsed.success) {
-      const errs: typeof fieldErrors = {};
-      for (const issue of parsed.error.issues) {
-        const key = issue.path[0] as "email" | "password";
-        errs[key] ??= t(issue.message as MessageKey);
+    async function checkExistingSession() {
+      try {
+        await apiRequest<User>("/auth/me");
+        if (active) {
+          router.replace(nextUrl);
+        }
+      } catch {
+        const refreshed = await refreshSession();
+        if (active && refreshed) {
+          router.replace(nextUrl);
+        }
       }
-      setFieldErrors(errs);
-      return;
     }
-    setFieldErrors({});
-    setError(null);
+
+    void checkExistingSession();
+
+    const unsubscribe = subscribeAuthChange((event) => {
+      if (event === "LOGIN") {
+        router.replace(nextUrl);
+      }
+    });
+
+    return () => {
+      active = false;
+      unsubscribe();
+    };
+  }, [nextUrl, router]);
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setBannerError(null);
+
+    const nextFieldErrors: { email?: string; password?: string } = {};
+    if (!emailPattern.test(email.trim())) nextFieldErrors.email = t("errorEmail");
+    if (!password) nextFieldErrors.password = t("errorPasswordRequired");
+    setFieldErrors(nextFieldErrors);
+    if (Object.keys(nextFieldErrors).length > 0) return;
+
     setSubmitting(true);
     try {
-      await apiRequest<LoginResponse>("/auth/login", { method: "POST", body: parsed.data });
-      router.replace(next);
+      await apiRequest<LoginResponse>("/auth/login", {
+        method: "POST",
+        body: { email: email.trim(), password },
+      });
+      notifyAuthChange("LOGIN");
+      router.replace(nextUrl);
+      router.refresh();
     } catch (err) {
       if (isApiError(err)) {
-        if (err.code === "INVALID_CREDENTIALS") setError(t("errorInvalid"));
-        else if (err.code === "ACCOUNT_INACTIVE") setError(t("errorInactive"));
-        else if (err.code === "RATE_LIMITED")
-          setError(t("errorRateLimited", { seconds: err.retryAfter ?? 60 }));
-        else setError(t("errorGeneric"));
+        if (err.code === "INVALID_CREDENTIALS") {
+          setBannerError(t("errorInvalid"));
+        } else if (err.code === "ACCOUNT_INACTIVE") {
+          setBannerError(t("errorInactive"));
+        } else if (err.code === "ALREADY_AUTHENTICATED") {
+          setBannerError(t("errorAlreadyAuthenticated"));
+          router.replace(nextUrl);
+        } else if (err.code === "RATE_LIMITED") {
+          setBannerError(t("errorRateLimited", { seconds: err.retryAfter ?? 60 }));
+        } else {
+          setBannerError(t("errorGeneric"));
+        }
       } else {
-        setError(t("errorGeneric"));
+        setBannerError(t("errorGeneric"));
       }
     } finally {
       setSubmitting(false);
     }
   }
 
-  const inputClass =
-    "h-11 w-full rounded-md border border-slate-300 bg-white px-3.5 text-body-sm text-slate-900 focus:border-blue-600 focus:ring-2 focus:ring-blue-600/30 focus:outline-none aria-invalid:border-danger";
-
   return (
-    <form onSubmit={onSubmit} noValidate className="space-y-5">
-      {error ? (
-        <p
-          role="alert"
-          className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-body-sm text-danger"
-        >
-          {error}
-        </p>
-      ) : null}
+    <form onSubmit={handleSubmit} noValidate className="space-y-5">
+      {/* Header Form */}
       <div>
-        <label htmlFor="email" className="mb-1.5 block text-body-sm font-medium text-slate-700">
+        <h1 className="font-display text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
+          {t("loginTitle")}
+        </h1>
+        <p className="mt-1.5 text-xs text-slate-500 sm:text-sm">
+          {t("loginSubtitle")}
+        </p>
+      </div>
+
+      {/* Pesan Error Autentikasi */}
+      {bannerError ? (
+        <div
+          role="alert"
+          className="flex items-start gap-2.5 rounded-xl border border-red-200 bg-red-50/90 px-3.5 py-2.5 text-xs font-medium text-red-700"
+        >
+          <AlertCircle className="mt-0.5 size-4 shrink-0 text-red-600" aria-hidden />
+          <span>{bannerError}</span>
+        </div>
+      ) : null}
+
+      {/* Input Email */}
+      <div>
+        <label htmlFor="email" className="block text-xs font-bold text-slate-700">
           {t("email")}
         </label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          autoComplete="username"
-          required
-          aria-invalid={!!fieldErrors.email}
-          aria-describedby={fieldErrors.email ? "email-error" : undefined}
-          className={inputClass}
-        />
+        <div className="relative mt-1.5">
+          <Mail
+            className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-slate-400"
+            aria-hidden
+          />
+          <input
+            id="email"
+            name="email"
+            type="email"
+            autoComplete="email"
+            required
+            placeholder={t("emailPlaceholder")}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            aria-invalid={Boolean(fieldErrors.email)}
+            aria-describedby={fieldErrors.email ? "email-error" : undefined}
+            className="h-11 w-full rounded-xl border border-slate-200 bg-white pr-3.5 pl-10 text-xs text-slate-900 placeholder:text-slate-400 focus:border-sky-500 focus:outline-hidden aria-[invalid=true]:border-red-500 sm:text-sm"
+          />
+        </div>
         {fieldErrors.email ? (
-          <p id="email-error" className="mt-1 text-caption text-danger">
+          <p id="email-error" className="mt-1.5 text-xs font-medium text-red-600">
             {fieldErrors.email}
           </p>
         ) : null}
       </div>
+
+      {/* Input Password */}
       <div>
-        <label htmlFor="password" className="mb-1.5 block text-body-sm font-medium text-slate-700">
+        <label htmlFor="password" className="block text-xs font-bold text-slate-700">
           {t("password")}
         </label>
-        <div className="relative">
+        <div className="relative mt-1.5">
+          <Lock
+            className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-slate-400"
+            aria-hidden
+          />
           <input
             id="password"
             name="password"
             type={showPassword ? "text" : "password"}
             autoComplete="current-password"
             required
-            aria-invalid={!!fieldErrors.password}
+            placeholder={t("passwordPlaceholder")}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            aria-invalid={Boolean(fieldErrors.password)}
             aria-describedby={fieldErrors.password ? "password-error" : undefined}
-            className={`${inputClass} pr-11`}
+            className="h-11 w-full rounded-xl border border-slate-200 bg-white pr-10 pl-10 text-xs text-slate-900 placeholder:text-slate-400 focus:border-sky-500 focus:outline-hidden aria-[invalid=true]:border-red-500 sm:text-sm"
           />
           <button
             type="button"
-            onClick={() => setShowPassword((v) => !v)}
+            onClick={() => setShowPassword((prev) => !prev)}
             aria-label={showPassword ? t("hidePassword") : t("showPassword")}
-            className="absolute inset-y-0 right-0 flex w-11 items-center justify-center text-slate-500 hover:text-navy-900"
+            className="absolute top-1/2 right-3 -translate-y-1/2 rounded-md p-1 text-slate-400 transition-colors hover:text-slate-700"
           >
-            {showPassword ? (
-              <EyeOff className="size-5" aria-hidden />
-            ) : (
-              <Eye className="size-5" aria-hidden />
-            )}
+            {showPassword ? <EyeOff className="size-4" aria-hidden /> : <Eye className="size-4" aria-hidden />}
           </button>
         </div>
         {fieldErrors.password ? (
-          <p id="password-error" className="mt-1 text-caption text-danger">
+          <p id="password-error" className="mt-1.5 text-xs font-medium text-red-600">
             {fieldErrors.password}
           </p>
         ) : null}
       </div>
+
+      {/* Tombol Masuk */}
       <button
         type="submit"
         disabled={submitting}
-        className="flex h-11 w-full items-center justify-center gap-2 rounded-md bg-blue-600 font-display text-body-sm font-bold text-white transition-colors hover:bg-blue-700 disabled:opacity-60"
+        className="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#0284C7] px-5 text-xs font-bold text-white shadow-xs transition-all hover:bg-[#0369A1] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm"
       >
-        <LogIn className="size-4" aria-hidden />
-        {submitting ? t("loggingIn") : t("submitLogin")}
+        {submitting ? (
+          <>
+            <Loader2 className="size-4 animate-spin" aria-hidden />
+            <span>{t("loggingIn")}</span>
+          </>
+        ) : (
+          <span>{t("submitLogin")}</span>
+        )}
       </button>
-      <p className="text-center text-caption text-slate-500">{t("forgotPassword")}</p>
+
+      {/* Info Bantuan */}
+      <div className="pt-2 text-center">
+        <p className="text-xs text-slate-400">{t("forgotPassword")}</p>
+      </div>
     </form>
   );
-}
-
-/** Hanya izinkan redirect internal ke /dashboard (cegah open redirect). */
-function safeNext(value: string | null): string {
-  return value && value.startsWith("/dashboard") && !value.startsWith("//") ? value : "/dashboard";
 }

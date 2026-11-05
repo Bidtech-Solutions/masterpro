@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import { createContext, useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 
-import { apiRequest } from "@/lib/api/client";
+import { apiRequest, notifyAuthChange, subscribeAuthChange } from "@/lib/api/client";
 import { isApiError } from "@/lib/api/errors";
 import type { User } from "@/types/user";
 
@@ -33,7 +33,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         (err: unknown) => {
           setLoading(false);
           if (isApiError(err) && err.status === 401) {
-            router.replace(`/dashboard/login?next=${encodeURIComponent(pathname)}`);
+            setUser(null);
+            router.replace(`/dashboard/login?next=${encodeURIComponent(pathname)}&expired=1`);
             return;
           }
           throw err;
@@ -44,15 +45,49 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     void reload();
-    // hanya saat mount; navigasi antar halaman dashboard tidak perlu memuat ulang /auth/me
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (!loading && user?.role === "agent") {
+      if (pathname.startsWith("/dashboard/users") || pathname.startsWith("/dashboard/agents")) {
+        router.replace("/dashboard");
+      }
+    }
+  }, [loading, pathname, router, user]);
+
+  useEffect(() => {
+    const unsubscribe = subscribeAuthChange((event) => {
+      if (event === "LOGOUT") {
+        setUser(null);
+        router.replace("/dashboard/login");
+      } else if (event === "LOGIN") {
+        void reload();
+      }
+    });
+
+    const handleFocus = () => {
+      if (document.visibilityState === "visible") {
+        void reload();
+      }
+    };
+
+    window.addEventListener("focus", handleFocus);
+    document.addEventListener("visibilitychange", handleFocus);
+
+    return () => {
+      unsubscribe();
+      window.removeEventListener("focus", handleFocus);
+      document.removeEventListener("visibilitychange", handleFocus);
+    };
+  }, [reload, router]);
 
   const logout = useCallback(async () => {
     try {
       await apiRequest("/auth/logout", { method: "POST" });
     } finally {
       setUser(null);
+      notifyAuthChange("LOGOUT");
       router.replace("/dashboard/login");
     }
   }, [router]);

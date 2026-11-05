@@ -14,7 +14,30 @@ const intl = createMiddleware(routing);
 export default function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
   if (pathname === "/dashboard" || pathname.startsWith("/dashboard/")) {
-    if (pathname !== "/dashboard/login" && !request.cookies.has("mp_access")) {
+    if (pathname === "/dashboard/login") {
+      if (request.nextUrl.searchParams.has("expired")) {
+        const res = NextResponse.next();
+        res.cookies.delete("mp_access");
+        return res;
+      }
+      if (request.cookies.has("mp_access")) {
+        const nextParam = request.nextUrl.searchParams.get("next");
+        const targetPath =
+          nextParam &&
+          nextParam.startsWith("/dashboard") &&
+          !nextParam.startsWith("//") &&
+          !nextParam.startsWith("/dashboard/login")
+            ? nextParam
+            : "/dashboard";
+        const url = request.nextUrl.clone();
+        const [pathOnly, queryOnly] = targetPath.split("?");
+        url.pathname = pathOnly || "/dashboard";
+        url.search = queryOnly ? `?${queryOnly}` : "";
+        return NextResponse.redirect(url);
+      }
+      return NextResponse.next();
+    }
+    if (!request.cookies.has("mp_access")) {
       const url = request.nextUrl.clone();
       url.pathname = "/dashboard/login";
       url.search = `?next=${encodeURIComponent(pathname + search)}`;
