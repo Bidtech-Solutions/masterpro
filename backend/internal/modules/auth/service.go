@@ -38,13 +38,15 @@ type Service interface {
 	Refresh(ctx context.Context, rawRefresh string, meta ClientMeta) (*Session, error)
 	Logout(ctx context.Context, sessionID uuid.UUID) error
 	Me(ctx context.Context, userID uuid.UUID) (*models.User, error)
+	HasActiveSession(ctx context.Context, rawAccess, rawRefresh string) bool
 }
 
 // Errors khusus yang perlu dibedakan handler.
 var (
-	errInvalidCredentials = apperror.New(http.StatusUnauthorized, apperror.CodeInvalidCredentials, "Email atau password salah")
-	errAccountInactive    = apperror.New(http.StatusForbidden, apperror.CodeAccountInactive, "Akun Anda dinonaktifkan, hubungi admin")
-	errRefreshInvalid     = apperror.New(http.StatusUnauthorized, apperror.CodeRefreshInvalid, "Sesi tidak valid, silakan masuk kembali")
+	errInvalidCredentials   = apperror.New(http.StatusUnauthorized, apperror.CodeInvalidCredentials, "Email atau password salah")
+	errAccountInactive      = apperror.New(http.StatusForbidden, apperror.CodeAccountInactive, "Akun Anda dinonaktifkan, hubungi admin")
+	errRefreshInvalid       = apperror.New(http.StatusUnauthorized, apperror.CodeRefreshInvalid, "Sesi tidak valid, silakan masuk kembali")
+	ErrAlreadyAuthenticated = apperror.New(http.StatusConflict, apperror.CodeAlreadyAuthenticated, "Sesi login masih aktif di browser ini. Silakan logout terlebih dahulu sebelum masuk dengan akun lain")
 	// ErrRefreshRace: refresh token baru saja dirotasi oleh request lain — jangan hapus cookie.
 	ErrRefreshRace = apperror.New(http.StatusUnauthorized, apperror.CodeRefreshInvalid, "Sesi sedang diperbarui, ulangi permintaan")
 )
@@ -163,6 +165,31 @@ func (s *service) Me(ctx context.Context, userID uuid.UUID) (*models.User, error
 		return nil, apperror.Internal(err)
 	}
 	return u, nil
+}
+
+// HasActiveSession memeriksa apakah cookie access atau refresh dari browser masih memiliki sesi aktif di DB.
+func (s *service) HasActiveSession(ctx context.Context, rawAccess, rawRefresh string) bool {
+	if rawAccess != "" {
+		if claims, err := s.tokens.Parse(rawAccess); err == nil {
+			uid, err1 := uuid.Parse(claims.Subject)
+			sid, err2 := uuid.Parse(claims.SID)
+			if err1 == nil && err2 == nil {
+				if _, status, err := s.repo.ActiveSession(ctx, uid, sid); err == nil && status == models.UserActive {
+					return true
+				}
+			}
+		}
+	}
+	if rawRefresh != "" {
+		if rt, err := s.repo.FindRefreshTokenByHash(ctx, security.HashToken(rawRefresh)); err == nil && rt != nil {
+			if rt.RevokedAt == nil && s.now().Before(rt.ExpiresAt) {
+				if u, err := s.repo.FindUserByID(ctx, rt.UserID); err == nil && u != nil && u.IsActive() {
+					return true
+				}
+			}
+		}
+	}
+	return false
 }
 
 // startSession membuat refresh token baru (rotasi bila rotateFrom != nil) dan access token.

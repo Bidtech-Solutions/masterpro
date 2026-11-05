@@ -136,6 +136,7 @@ func TestAPIIntegration(t *testing.T) {
 
 		expect(do("GET", "/api/v1/auth/me", "", nil, false), 401, "UNAUTHENTICATED")
 		expect(do("GET", "/api/v1/auth/me", "", cookies, false), 200, `"email":"admin@masterpro.co.id"`)
+		expect(do("POST", "/api/v1/auth/login", `{"email":"budi@x.id","password":"Rahasia123"}`, cookies, false), 409, "ALREADY_AUTHENTICATED")
 		expect(do("POST", "/api/v1/auth/refresh", "", cookies, false), 403, "CSRF_HEADER_MISSING")
 
 		w = do("POST", "/api/v1/auth/refresh", "", cookies, true)

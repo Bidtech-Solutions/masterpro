@@ -12,12 +12,19 @@ import (
 	"github.com/bidtech-solutions/masterpro/backend/internal/config"
 	"github.com/bidtech-solutions/masterpro/backend/internal/database"
 	"github.com/bidtech-solutions/masterpro/backend/internal/http/middleware"
+	"github.com/bidtech-solutions/masterpro/backend/internal/models"
+	"github.com/bidtech-solutions/masterpro/backend/internal/modules/account"
+	"github.com/bidtech-solutions/masterpro/backend/internal/modules/agent"
 	"github.com/bidtech-solutions/masterpro/backend/internal/modules/auth"
+	"github.com/bidtech-solutions/masterpro/backend/internal/modules/dashboard"
 	"github.com/bidtech-solutions/masterpro/backend/internal/modules/property"
 	"github.com/bidtech-solutions/masterpro/backend/internal/modules/reference"
+	"github.com/bidtech-solutions/masterpro/backend/internal/modules/report"
+	"github.com/bidtech-solutions/masterpro/backend/internal/modules/user"
 	"github.com/bidtech-solutions/masterpro/backend/internal/pkg/apperror"
 	"github.com/bidtech-solutions/masterpro/backend/internal/pkg/response"
 	"github.com/bidtech-solutions/masterpro/backend/internal/pkg/security"
+	"github.com/bidtech-solutions/masterpro/backend/internal/revalidate"
 	"github.com/bidtech-solutions/masterpro/backend/internal/storage"
 )
 
@@ -67,17 +74,49 @@ func NewRouter(d Deps) (*gin.Engine, error) {
 
 	public := v1.Group("/public", middleware.PublicCache())
 	reference.RegisterRoutes(public, reference.NewHandler(reference.NewService(reference.NewRepository(d.DB))))
-	property.RegisterPublicRoutes(public, property.NewHandler(property.NewService(property.NewRepository(d.DB, d.Config.MediaPublicURL))))
+
+	reval := revalidate.New(d.Config.FrontendInternalURL, d.Config.RevalidateSecret)
+	siteURL := "http://localhost"
+	if len(d.Config.CORSOrigins) > 0 {
+		siteURL = d.Config.CORSOrigins[0]
+	}
+
+	propertyRepo := property.NewRepository(d.DB, d.Config.MediaPublicURL)
+	propertySvc := property.NewService(propertyRepo, d.Storage, reval, d.Config.MediaPublicURL, siteURL)
+	propertyHandler := property.NewHandler(propertySvc)
+
+	property.RegisterPublicRoutes(public, propertyHandler)
 
 	auth.RegisterRoutes(v1,
 		auth.NewHandler(auth.NewService(authRepo, d.Tokens, d.Config.RefreshTTL), d.Config.MediaPublicURL, d.Config.CookieSecure),
 		authed,
 	)
 
-	// Grup dashboard untuk modul berikutnya (account, user, agent, property, report, dashboard):
-	//   dash := v1.Group("", authed, middleware.NoStore())
-	//   admin := dash.Group("", middleware.RequireRole(models.RoleAdmin))
-	// Daftarkan route-nya di sini sesuai docs/API.md §5.
+	dash := v1.Group("", authed, middleware.NoStore())
+	admin := dash.Group("", middleware.RequireRole(models.RoleAdmin))
+
+	dashboard.RegisterRoutes(dash, dashboard.NewHandler(dashboard.NewService(dashboard.NewRepository(d.DB, d.Config.MediaPublicURL))))
+	property.RegisterDashboardRoutes(dash, admin, propertyHandler)
+
+	agentRepo := agent.NewRepository(d.DB)
+	agentSvc := agent.NewService(agentRepo, d.Storage, d.Config.MediaPublicURL)
+	agentHandler := agent.NewHandler(agentSvc)
+	agent.RegisterRoutes(dash, admin, agentHandler)
+
+	accountRepo := account.NewRepository(d.DB)
+	accountSvc := account.NewService(accountRepo, d.Storage, d.Config.MediaPublicURL)
+	accountHandler := account.NewHandler(accountSvc)
+	account.RegisterRoutes(dash, accountHandler)
+
+	userRepo := user.NewRepository(d.DB)
+	userSvc := user.NewService(userRepo, d.Config.MediaPublicURL)
+	userHandler := user.NewHandler(userSvc)
+	user.RegisterRoutes(admin, userHandler)
+
+	reportRepo := report.NewRepository(d.DB)
+	reportSvc := report.NewService(reportRepo, siteURL)
+	reportHandler := report.NewHandler(reportSvc)
+	report.RegisterRoutes(admin, reportHandler)
 
 	return r, nil
 }

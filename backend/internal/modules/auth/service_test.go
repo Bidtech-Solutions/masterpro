@@ -197,11 +197,17 @@ func TestRefreshExpiredAndLogout(t *testing.T) {
 	if _, _, err := repo.ActiveSession(ctx, u.ID, sid); err != nil {
 		t.Fatalf("sesi harus aktif: %v", err)
 	}
+	if !svc.HasActiveSession(ctx, sess.AccessToken, sess.RefreshToken) {
+		t.Fatal("HasActiveSession harus true saat sesi aktif")
+	}
 	if err := svc.Logout(ctx, sid); err != nil {
 		t.Fatal(err)
 	}
 	if _, _, err := repo.ActiveSession(ctx, u.ID, sid); err == nil {
 		t.Fatal("sesi harus dicabut setelah logout")
+	}
+	if svc.HasActiveSession(ctx, sess.AccessToken, sess.RefreshToken) {
+		t.Fatal("HasActiveSession harus false setelah logout")
 	}
 
 	sess2, _, _ := svc.Login(ctx, "a@x.id", "Rahasia123", ClientMeta{})

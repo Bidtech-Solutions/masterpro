@@ -48,24 +48,28 @@ func Auth(issuer *security.TokenIssuer, sessions SessionChecker) gin.HandlerFunc
 			response.Error(c, apperror.TokenExpired())
 			return
 		case err != nil:
+			c.SetCookie(CookieAccess, "", -1, "/", "", false, true)
 			response.Error(c, apperror.Unauthenticated())
 			return
 		}
 		userID, err1 := uuid.Parse(claims.Subject)
 		sessionID, err2 := uuid.Parse(claims.SID)
 		if err1 != nil || err2 != nil {
+			c.SetCookie(CookieAccess, "", -1, "/", "", false, true)
 			response.Error(c, apperror.Unauthenticated())
 			return
 		}
 		role, status, err := sessions.ActiveSession(c.Request.Context(), userID, sessionID)
 		switch {
 		case errors.Is(err, ErrSessionNotFound):
+			c.SetCookie(CookieAccess, "", -1, "/", "", false, true)
 			response.Error(c, apperror.Unauthenticated())
 			return
 		case err != nil:
 			response.Error(c, apperror.Internal(err))
 			return
 		case status != models.UserActive:
+			c.SetCookie(CookieAccess, "", -1, "/", "", false, true)
 			response.Error(c, apperror.New(403, apperror.CodeAccountInactive, "Akun Anda dinonaktifkan, hubungi admin"))
 			return
 		}
