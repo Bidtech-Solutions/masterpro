@@ -121,7 +121,7 @@ export function MobileMenu({ initialLoggedIn = false }: MobileMenuProps) {
             aria-label={t("closeMenu")}
             onClick={() => setOpen(false)}
           />
-          <div className="absolute inset-y-0 right-0 flex w-80 max-w-[85vw] flex-col gap-5 bg-white p-6 shadow-popover overflow-y-auto">
+          <div className="absolute inset-y-0 right-0 flex w-80 max-w-[85vw] flex-col gap-5 overflow-y-auto bg-white p-6 shadow-popover">
             <button
               type="button"
               onClick={() => setOpen(false)}
@@ -146,7 +146,13 @@ export function MobileMenu({ initialLoggedIn = false }: MobileMenuProps) {
                   <div className="flex items-center gap-3 rounded-lg bg-slate-50 p-3">
                     <div className="relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-blue-100 font-display text-xs font-bold text-blue-700 ring-1 ring-blue-200">
                       {user?.avatar_url ? (
-                        <Image src={user.avatar_url} alt={user.name} fill sizes="40px" className="object-cover" />
+                        <Image
+                          src={user.avatar_url}
+                          alt={user.name}
+                          fill
+                          sizes="40px"
+                          className="object-cover"
+                        />
                       ) : (
                         <span>{initials}</span>
                       )}

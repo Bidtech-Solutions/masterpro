@@ -50,7 +50,7 @@ export function HeaderAuthButton({ initialLoggedIn = false }: HeaderAuthButtonPr
       }
     }
 
-    if (initialLoggedIn || typeof document !== "undefined" && document.cookie.includes("mp_access")) {
+    if (initialLoggedIn || (typeof document !== "undefined" && document.cookie.includes("mp_access"))) {
       void fetchUserData();
     }
 
@@ -144,7 +144,7 @@ export function HeaderAuthButton({ initialLoggedIn = false }: HeaderAuthButtonPr
         aria-haspopup="menu"
         aria-label={user?.name ? t("welcomeUser", { name: user.name }) : t("dashboard")}
         className={cn(
-          "inline-flex items-center gap-2.5 rounded-full border border-slate-200 bg-white py-1.5 pl-2 pr-3.5 text-left transition-all hover:border-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2",
+          "inline-flex items-center gap-2.5 rounded-full border border-slate-200 bg-white py-1.5 pr-3.5 pl-2 text-left transition-all hover:border-slate-300 hover:bg-slate-50 focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 focus:outline-none",
           menuOpen && "border-blue-600 ring-2 ring-blue-600/20",
         )}
       >
@@ -159,12 +159,10 @@ export function HeaderAuthButton({ initialLoggedIn = false }: HeaderAuthButtonPr
 
         {/* Info Nama & Peran (Layar sm+) */}
         <div className="hidden flex-col sm:flex">
-          <span className="max-w-[130px] truncate text-xs font-bold text-navy-900 leading-snug">
+          <span className="max-w-[130px] truncate text-xs leading-snug font-bold text-navy-900">
             {user?.name || t("dashboard")}
           </span>
-          <span className="text-[10px] font-medium text-slate-500 leading-none">
-            {roleLabel}
-          </span>
+          <span className="text-[10px] leading-none font-medium text-slate-500">{roleLabel}</span>
         </div>
 
         <ChevronDown
@@ -180,7 +178,7 @@ export function HeaderAuthButton({ initialLoggedIn = false }: HeaderAuthButtonPr
       {menuOpen && (
         <div
           role="menu"
-          className="absolute right-0 top-full mt-2 w-56 rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl transition-all z-50 animate-in fade-in zoom-in-95"
+          className="animate-in fade-in zoom-in-95 absolute top-full right-0 z-50 mt-2 w-56 rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl transition-all"
         >
           {/* Header Info Akun */}
           <div className="border-b border-slate-100 px-3 py-2.5">
@@ -188,7 +186,7 @@ export function HeaderAuthButton({ initialLoggedIn = false }: HeaderAuthButtonPr
             <p className="truncate text-[11px] text-slate-500">{user?.email || ""}</p>
             <div className="mt-1.5 flex items-center gap-1.5">
               <span className="inline-block size-1.5 rounded-full bg-emerald-500" />
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-600">
+              <span className="text-[10px] font-semibold tracking-wider text-slate-600 uppercase">
                 {roleLabel}
               </span>
             </div>
@@ -234,4 +232,3 @@ export function HeaderAuthButton({ initialLoggedIn = false }: HeaderAuthButtonPr
     </div>
   );
 }
-
