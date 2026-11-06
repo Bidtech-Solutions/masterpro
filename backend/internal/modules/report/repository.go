@@ -395,4 +395,3 @@ func (r *gormRepository) GetUserName(ctx context.Context, userID uuid.UUID) (str
 	}
 	return name, nil
 }
-

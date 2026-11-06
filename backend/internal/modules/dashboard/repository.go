@@ -174,4 +174,3 @@ func (r *Repository) GetRecentlyUpdated(ctx context.Context, agentID *uuid.UUID,
 	}
 	return result, nil
 }
-

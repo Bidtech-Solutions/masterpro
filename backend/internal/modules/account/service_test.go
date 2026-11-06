@@ -79,4 +79,3 @@ func TestAccountService_ChangePasswordComplexity(t *testing.T) {
 		t.Fatalf("unexpected error: %v", err)
 	}
 }
-

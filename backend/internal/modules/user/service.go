@@ -202,4 +202,3 @@ func (s *Service) ResetPassword(ctx context.Context, targetID uuid.UUID, req Res
 	_ = s.repo.RevokeAllUserSessions(ctx, targetID)
 	return nil
 }
-

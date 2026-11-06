@@ -15,4 +15,3 @@ type ChangePasswordRequest struct {
 	NewPassword             string `json:"new_password" binding:"required,password"`
 	NewPasswordConfirmation string `json:"new_password_confirmation" binding:"required,eqfield=NewPassword"`
 }
-

@@ -486,32 +486,32 @@ func GenerateExcel(rows []ExportPropertyRow, stats *SummaryStats, adminName stri
 
 	// Set Column Widths for Sheet 1
 	colWidths := map[string]float64{
-		"A": 6,  // No
-		"B": 13, // Kode
-		"C": 35, // Judul
-		"D": 11, // Jual/Sewa
-		"E": 11, // Pasar
-		"F": 16, // Tipe
-		"G": 18, // Provinsi
-		"H": 18, // Kota
-		"I": 16, // Kecamatan
-		"J": 30, // Alamat
-		"K": 18, // Harga
-		"L": 14, // Periode Sewa
-		"M": 8,  // Nego
-		"N": 12, // LT
-		"O": 12, // LB
-		"P": 7,  // KT
-		"Q": 7,  // KM
-		"R": 12, // Sertifikat
-		"S": 16, // Furnishing
-		"T": 12, // Status
-		"U": 22, // Agen
-		"V": 14, // Kode Agen
-		"W": 16, // WA Agen
-		"X": 10, // Dilihat
-		"Y": 10, // Klik WA
-		"Z": 18, // Tayang
+		"A":  6,  // No
+		"B":  13, // Kode
+		"C":  35, // Judul
+		"D":  11, // Jual/Sewa
+		"E":  11, // Pasar
+		"F":  16, // Tipe
+		"G":  18, // Provinsi
+		"H":  18, // Kota
+		"I":  16, // Kecamatan
+		"J":  30, // Alamat
+		"K":  18, // Harga
+		"L":  14, // Periode Sewa
+		"M":  8,  // Nego
+		"N":  12, // LT
+		"O":  12, // LB
+		"P":  7,  // KT
+		"Q":  7,  // KM
+		"R":  12, // Sertifikat
+		"S":  16, // Furnishing
+		"T":  12, // Status
+		"U":  22, // Agen
+		"V":  14, // Kode Agen
+		"W":  16, // WA Agen
+		"X":  10, // Dilihat
+		"Y":  10, // Klik WA
+		"Z":  18, // Tayang
 		"AA": 18, // Ditutup
 		"AB": 18, // Dibuat
 		"AC": 18, // Diperbarui
@@ -693,4 +693,3 @@ func GenerateExcel(rows []ExportPropertyRow, stats *SummaryStats, adminName stri
 
 	return f, nil
 }
-

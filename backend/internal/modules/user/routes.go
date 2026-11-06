@@ -11,4 +11,3 @@ func RegisterRoutes(admin *gin.RouterGroup, h *Handler) {
 	admin.PATCH("/users/:id/status", h.UpdateStatus)
 	admin.PUT("/users/:id/password", h.ResetPassword)
 }
-

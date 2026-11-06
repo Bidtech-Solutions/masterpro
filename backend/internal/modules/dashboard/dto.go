@@ -54,4 +54,3 @@ type DashboardSummaryResponse struct {
 	TopViewed       []TopViewedProperty `json:"top_viewed"`
 	RecentlyUpdated []RecentProperty    `json:"recently_updated"`
 }
-

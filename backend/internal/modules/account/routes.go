@@ -9,4 +9,3 @@ func RegisterRoutes(authed *gin.RouterGroup, h *Handler) {
 	authed.DELETE("/account/avatar", h.DeleteAvatar)
 	authed.PUT("/account/password", h.ChangePassword)
 }
-

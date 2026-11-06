@@ -214,4 +214,3 @@ func (r *repository) IsEmailTaken(ctx context.Context, email string, excludeUser
 	err := db.Count(&count).Error
 	return count > 0, err
 }
-

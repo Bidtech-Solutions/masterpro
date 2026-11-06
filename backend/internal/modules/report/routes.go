@@ -8,4 +8,3 @@ func RegisterRoutes(admin *gin.RouterGroup, h *Handler) {
 		admin.GET("/properties/export", h.Export)
 	}
 }
-
