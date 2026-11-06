@@ -234,3 +234,4 @@ export function HeaderAuthButton({ initialLoggedIn = false }: HeaderAuthButtonPr
     </div>
   );
 }
+

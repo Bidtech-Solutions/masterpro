@@ -81,9 +81,7 @@ export default function AgentsDashboardPage() {
           <h1 className="font-display text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
             {t("agentsManagementTitle")}
           </h1>
-          <p className="mt-1 text-xs text-slate-500 sm:text-sm">
-            {t("agentsManagementSubtitle")}
-          </p>
+          <p className="mt-1 text-xs text-slate-500 sm:text-sm">{t("agentsManagementSubtitle")}</p>
         </div>
 
         <NextLink
@@ -123,7 +121,8 @@ export default function AgentsDashboardPage() {
               ) : paginatedAgents.length === 0 ? (
                 <tr>
                   <td colSpan={3} className="px-6 py-12 text-center text-xs text-slate-400">
-                    Belum ada agen terdaftar di database. Klik &ldquo;{t("addAgentBtn")}&rdquo; untuk menambahkan agen pertama.
+                    Belum ada agen terdaftar di database. Klik &ldquo;{t("addAgentBtn")}&rdquo; untuk
+                    menambahkan agen pertama.
                   </td>
                 </tr>
               ) : (
@@ -133,16 +132,13 @@ export default function AgentsDashboardPage() {
                   const avatar = ag.user.avatar_url;
 
                   return (
-                    <tr
-                      key={ag.id}
-                      className="transition-colors hover:bg-slate-50/70"
-                    >
+                    <tr key={ag.id} className="transition-colors hover:bg-slate-50/70">
                       {/* 1. AGEN */}
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3.5">
                           <NextLink
                             href={`/dashboard/agents/${ag.id}`}
-                            className="relative size-11 sm:size-12 shrink-0 block hover:opacity-90 transition-opacity"
+                            className="relative block size-11 shrink-0 transition-opacity hover:opacity-90 sm:size-12"
                           >
                             <div className="size-full overflow-hidden rounded-full bg-slate-100 ring-1 ring-slate-200">
                               {avatar ? (
@@ -170,7 +166,7 @@ export default function AgentsDashboardPage() {
                           <div className="min-w-0">
                             <NextLink
                               href={`/dashboard/agents/${ag.id}`}
-                              className="font-bold text-xs sm:text-sm text-slate-900 hover:text-sky-600 transition-colors block"
+                              className="block text-xs font-bold text-slate-900 transition-colors hover:text-sky-600 sm:text-sm"
                             >
                               {ag.user.name}
                             </NextLink>
@@ -188,14 +184,12 @@ export default function AgentsDashboardPage() {
                             href={getWhatsAppLink(ag.whatsapp_number)}
                             target="_blank"
                             rel="noreferrer"
-                            className="inline-flex items-center gap-1.5 font-bold text-xs sm:text-sm text-slate-800 hover:text-emerald-600 transition-colors"
+                            className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-800 transition-colors hover:text-emerald-600 sm:text-sm"
                           >
                             <span>{formatPhoneDisplay(ag.whatsapp_number)}</span>
-                            <MessageCircle className="size-3.5 fill-emerald-500 text-emerald-500 shrink-0" />
+                            <MessageCircle className="size-3.5 shrink-0 fill-emerald-500 text-emerald-500" />
                           </a>
-                          <p className="text-xs text-slate-400">
-                            {ag.user.email}
-                          </p>
+                          <p className="text-xs text-slate-400">{ag.user.email}</p>
                         </div>
                       </td>
 
@@ -205,7 +199,7 @@ export default function AgentsDashboardPage() {
                           <NextLink
                             href={`/dashboard/agents/${ag.id}`}
                             title={t("viewAgentDetail")}
-                            className="rounded-lg p-2 text-sky-600 hover:bg-sky-50 transition-colors"
+                            className="rounded-lg p-2 text-sky-600 transition-colors hover:bg-sky-50"
                           >
                             <Eye className="size-4" />
                           </NextLink>
@@ -213,7 +207,7 @@ export default function AgentsDashboardPage() {
                           <NextLink
                             href={`/dashboard/agents/${ag.id}/edit`}
                             title={t("editAgent")}
-                            className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+                            className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
                           >
                             <Pencil className="size-4" />
                           </NextLink>
@@ -256,9 +250,7 @@ export default function AgentsDashboardPage() {
                   type="button"
                   onClick={() => setCurrentPage(pageNum)}
                   className={`size-7 rounded-lg text-xs font-bold transition-all ${
-                    isCurrent
-                      ? "bg-[#0284C7] text-white shadow-xs"
-                      : "text-slate-600 hover:bg-slate-100"
+                    isCurrent ? "bg-[#0284C7] text-white shadow-xs" : "text-slate-600 hover:bg-slate-100"
                   }`}
                 >
                   {pageNum}

@@ -214,9 +214,7 @@ export default function AccountDashboardPage() {
 
       {/* Header Bar */}
       <div>
-        <h1 className="font-display text-xl font-bold text-slate-900 sm:text-2xl">
-          {t("accountTitle")}
-        </h1>
+        <h1 className="font-display text-xl font-bold text-slate-900 sm:text-2xl">{t("accountTitle")}</h1>
         <p className="mt-1 text-xs text-slate-500 sm:text-sm">{t("accountSubtitle")}</p>
       </div>
 
@@ -331,9 +329,7 @@ export default function AccountDashboardPage() {
               <form onSubmit={handleSaveProfile} className="mt-5 space-y-5">
                 <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
                   <div className="sm:col-span-2">
-                    <label className="block text-xs font-semibold text-slate-700">
-                      {t("fullName")} *
-                    </label>
+                    <label className="block text-xs font-semibold text-slate-700">{t("fullName")} *</label>
                     <div className="relative mt-1.5">
                       <User className="absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-slate-400" />
                       <input
@@ -347,9 +343,7 @@ export default function AccountDashboardPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700">
-                      Email Kantor (Login)
-                    </label>
+                    <label className="block text-xs font-semibold text-slate-700">Email Kantor (Login)</label>
                     <div className="relative mt-1.5">
                       <Mail className="absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-slate-400" />
                       <input
@@ -363,9 +357,7 @@ export default function AccountDashboardPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700">
-                      {t("phone")}
-                    </label>
+                    <label className="block text-xs font-semibold text-slate-700">{t("phone")}</label>
                     <div className="relative mt-1.5">
                       <Phone className="absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-slate-400" />
                       <input
@@ -382,9 +374,7 @@ export default function AccountDashboardPage() {
                 {user?.role === "agent" && (
                   <div className="space-y-4 border-t border-slate-100 pt-5">
                     <div>
-                      <h4 className="text-xs font-bold text-slate-900 sm:text-sm">
-                        Profil Mitra Agen
-                      </h4>
+                      <h4 className="text-xs font-bold text-slate-900 sm:text-sm">Profil Mitra Agen</h4>
                       <p className="text-[11px] text-slate-400">
                         Informasi yang akan tampil pada kartu properti dan portal publik.
                       </p>
@@ -416,9 +406,7 @@ export default function AccountDashboardPage() {
                       </div>
 
                       <div className="sm:col-span-2">
-                        <label className="block text-xs font-semibold text-slate-700">
-                          {t("bio")}
-                        </label>
+                        <label className="block text-xs font-semibold text-slate-700">{t("bio")}</label>
                         <textarea
                           rows={3}
                           value={bio}
@@ -456,9 +444,7 @@ export default function AccountDashboardPage() {
                   <Shield className="size-5" />
                 </div>
                 <div>
-                  <h3 className="font-display text-base font-bold text-slate-900">
-                    {t("tabSecurity")}
-                  </h3>
+                  <h3 className="font-display text-base font-bold text-slate-900">{t("tabSecurity")}</h3>
                   <p className="text-xs text-slate-500">
                     Perbarui password login Anda menggunakan standar Password Complexity Policy.
                   </p>
@@ -490,19 +476,13 @@ export default function AccountDashboardPage() {
                       onClick={() => setShowCurrentPassword(!showCurrentPassword)}
                       className="absolute top-1/2 right-3.5 -translate-y-1/2 text-slate-400 hover:text-slate-700"
                     >
-                      {showCurrentPassword ? (
-                        <EyeOff className="size-4" />
-                      ) : (
-                        <Eye className="size-4" />
-                      )}
+                      {showCurrentPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                     </button>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-700">
-                    {t("newPassword")} *
-                  </label>
+                  <label className="block text-xs font-semibold text-slate-700">{t("newPassword")} *</label>
                   <div className="relative mt-1.5">
                     <Lock className="absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-slate-400" />
                     <input
@@ -517,11 +497,7 @@ export default function AccountDashboardPage() {
                       onClick={() => setShowNewPassword(!showNewPassword)}
                       className="absolute top-1/2 right-3.5 -translate-y-1/2 text-slate-400 hover:text-slate-700"
                     >
-                      {showNewPassword ? (
-                        <EyeOff className="size-4" />
-                      ) : (
-                        <Eye className="size-4" />
-                      )}
+                      {showNewPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                     </button>
                   </div>
                 </div>
@@ -544,11 +520,7 @@ export default function AccountDashboardPage() {
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                       className="absolute top-1/2 right-3.5 -translate-y-1/2 text-slate-400 hover:text-slate-700"
                     >
-                      {showConfirmPassword ? (
-                        <EyeOff className="size-4" />
-                      ) : (
-                        <Eye className="size-4" />
-                      )}
+                      {showConfirmPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                     </button>
                   </div>
                 </div>
@@ -570,14 +542,10 @@ export default function AccountDashboardPage() {
           <div className="space-y-5 lg:col-span-5">
             <div className="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-xs">
               <div className="flex items-center justify-between">
-                <h4 className="font-display text-sm font-bold text-slate-900">
-                  Password Complexity Policy
-                </h4>
+                <h4 className="font-display text-sm font-bold text-slate-900">Password Complexity Policy</h4>
                 <span
                   className={`rounded-full px-2.5 py-0.5 text-[11px] font-bold ${
-                    complexity.valid
-                      ? "bg-emerald-100 text-emerald-700"
-                      : "bg-slate-100 text-slate-600"
+                    complexity.valid ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-600"
                   }`}
                 >
                   {newPassword ? complexity.strengthLabel : "0/5 Syarat"}
@@ -613,9 +581,7 @@ export default function AccountDashboardPage() {
                   >
                     <span
                       className={`flex size-4.5 shrink-0 items-center justify-center rounded-full ${
-                        item.ok
-                          ? "bg-emerald-100 text-emerald-600"
-                          : "bg-slate-100 text-slate-400"
+                        item.ok ? "bg-emerald-100 text-emerald-600" : "bg-slate-100 text-slate-400"
                       }`}
                     >
                       <Check className="size-3" />
@@ -626,7 +592,8 @@ export default function AccountDashboardPage() {
               </ul>
 
               <div className="mt-5 rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-xs leading-relaxed text-slate-600">
-                <strong>Catatan Keamanan:</strong> Mengubah password akan otomatis mencabut sesi login lama di perangkat lain, sedangkan sesi pada perangkat Anda saat ini tetap aktif.
+                <strong>Catatan Keamanan:</strong> Mengubah password akan otomatis mencabut sesi login lama di
+                perangkat lain, sedangkan sesi pada perangkat Anda saat ini tetap aktif.
               </div>
             </div>
           </div>

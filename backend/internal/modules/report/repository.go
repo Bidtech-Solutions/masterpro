@@ -317,9 +317,10 @@ func (r *gormRepository) GetSummaryStats(ctx context.Context) (*SummaryStats, er
 		return nil, err
 	}
 	for _, lr := range ltRows {
-		if lr.ListingType == "sale" {
+		switch lr.ListingType {
+		case "sale":
 			stats.SaleCount = lr.Count
-		} else if lr.ListingType == "rent" {
+		case "rent":
 			stats.RentCount = lr.Count
 		}
 	}
@@ -390,7 +391,10 @@ func (r *gormRepository) GetSummaryStats(ctx context.Context) (*SummaryStats, er
 func (r *gormRepository) GetUserName(ctx context.Context, userID uuid.UUID) (string, error) {
 	var name string
 	err := r.db.WithContext(ctx).Table("users").Select("name").Where("id = ?", userID).Scan(&name).Error
-	if err != nil || name == "" {
+	if err != nil {
+		return "", err
+	}
+	if name == "" {
 		return "Admin", nil
 	}
 	return name, nil

@@ -16,8 +16,8 @@ func GenerateExcel(rows []ExportPropertyRow, stats *SummaryStats, adminName stri
 	sheet2 := "Ringkasan"
 
 	// Rename default sheet
-	f.SetSheetName("Sheet1", sheet1)
-	f.NewSheet(sheet2)
+	_ = f.SetSheetName("Sheet1", sheet1)
+	_, _ = f.NewSheet(sheet2)
 
 	// Time in WIB (UTC+7)
 	wibLoc := time.FixedZone("WIB", 7*3600)
@@ -262,20 +262,20 @@ func GenerateExcel(rows []ExportPropertyRow, stats *SummaryStats, adminName stri
 	// ==========================================
 
 	// Row 1: Title
-	f.MergeCell(sheet1, "A1", "AD1")
-	f.SetCellValue(sheet1, "A1", "Laporan Data Properti — MasterPro Real Estate")
-	f.SetCellStyle(sheet1, "A1", "AD1", titleStyle)
-	f.SetRowHeight(sheet1, 1, 28)
+	_ = f.MergeCell(sheet1, "A1", "AD1")
+	_ = f.SetCellValue(sheet1, "A1", "Laporan Data Properti — MasterPro Real Estate")
+	_ = f.SetCellStyle(sheet1, "A1", "AD1", titleStyle)
+	_ = f.SetRowHeight(sheet1, 1, 28)
 
 	// Row 2: Metadata Creator
-	f.SetCellValue(sheet1, "A2", fmt.Sprintf("Dibuat: %s oleh %s", dateStr, adminName))
-	f.SetCellStyle(sheet1, "A2", "AD2", metaStyle)
-	f.SetRowHeight(sheet1, 2, 18)
+	_ = f.SetCellValue(sheet1, "A2", fmt.Sprintf("Dibuat: %s oleh %s", dateStr, adminName))
+	_ = f.SetCellStyle(sheet1, "A2", "AD2", metaStyle)
+	_ = f.SetRowHeight(sheet1, 2, 18)
 
 	// Row 3: Filter Summary
-	f.SetCellValue(sheet1, "A3", fmt.Sprintf("Filter: %s", filterDesc))
-	f.SetCellStyle(sheet1, "A3", "AD3", metaStyle)
-	f.SetRowHeight(sheet1, 3, 18)
+	_ = f.SetCellValue(sheet1, "A3", fmt.Sprintf("Filter: %s", filterDesc))
+	_ = f.SetCellStyle(sheet1, "A3", "AD3", metaStyle)
+	_ = f.SetRowHeight(sheet1, 3, 18)
 
 	// Row 5: Column Headers
 	headers := []string{
@@ -472,17 +472,17 @@ func GenerateExcel(rows []ExportPropertyRow, stats *SummaryStats, adminName stri
 
 	// Footer Row (Baris Akhir Total)
 	footerRow := lastDataRow + 1
-	f.SetRowHeight(sheet1, footerRow, 24)
+	_ = f.SetRowHeight(sheet1, footerRow, 24)
 
-	f.MergeCell(sheet1, fmt.Sprintf("A%d", footerRow), fmt.Sprintf("J%d", footerRow))
-	f.SetCellValue(sheet1, fmt.Sprintf("A%d", footerRow), fmt.Sprintf("TOTAL: %d LISTING (Total Nilai Properti Tayang Dijual: Rp)", len(rows)))
-	f.SetCellStyle(sheet1, fmt.Sprintf("A%d", footerRow), fmt.Sprintf("J%d", footerRow), footerStyle)
+	_ = f.MergeCell(sheet1, fmt.Sprintf("A%d", footerRow), fmt.Sprintf("J%d", footerRow))
+	_ = f.SetCellValue(sheet1, fmt.Sprintf("A%d", footerRow), fmt.Sprintf("TOTAL: %d LISTING (Total Nilai Properti Tayang Dijual: Rp)", len(rows)))
+	_ = f.SetCellStyle(sheet1, fmt.Sprintf("A%d", footerRow), fmt.Sprintf("J%d", footerRow), footerStyle)
 
-	f.SetCellValue(sheet1, fmt.Sprintf("K%d", footerRow), totalActiveSalePrice)
-	f.SetCellStyle(sheet1, fmt.Sprintf("K%d", footerRow), fmt.Sprintf("K%d", footerRow), footerPriceStyle)
+	_ = f.SetCellValue(sheet1, fmt.Sprintf("K%d", footerRow), totalActiveSalePrice)
+	_ = f.SetCellStyle(sheet1, fmt.Sprintf("K%d", footerRow), fmt.Sprintf("K%d", footerRow), footerPriceStyle)
 
-	f.MergeCell(sheet1, fmt.Sprintf("L%d", footerRow), fmt.Sprintf("AD%d", footerRow))
-	f.SetCellStyle(sheet1, fmt.Sprintf("L%d", footerRow), fmt.Sprintf("AD%d", footerRow), footerStyle)
+	_ = f.MergeCell(sheet1, fmt.Sprintf("L%d", footerRow), fmt.Sprintf("AD%d", footerRow))
+	_ = f.SetCellStyle(sheet1, fmt.Sprintf("L%d", footerRow), fmt.Sprintf("AD%d", footerRow), footerStyle)
 
 	// Set Column Widths for Sheet 1
 	colWidths := map[string]float64{

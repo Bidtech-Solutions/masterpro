@@ -34,9 +34,7 @@ export async function generateMetadata({
 }
 
 /** Detail properti (PRD §5.4, WEB-D-01..13). */
-export default async function PropertyDetailPage({
-  params,
-}: PageProps<"/[locale]/properties/[slug]">) {
+export default async function PropertyDetailPage({ params }: PageProps<"/[locale]/properties/[slug]">) {
   const { locale, slug } = await params;
   setRequestLocale(locale as Locale);
 
@@ -77,11 +75,7 @@ export default async function PropertyDetailPage({
         </div>
 
         {/* Properti Serupa */}
-        <SimilarProperties
-          properties={similar}
-          cityName={p.location.city.name}
-          locale={locale as Locale}
-        />
+        <SimilarProperties properties={similar} cityName={p.location.city.name} locale={locale as Locale} />
 
         {/* Banner Eksplorasi Properti Populer */}
         <PopularBanner />

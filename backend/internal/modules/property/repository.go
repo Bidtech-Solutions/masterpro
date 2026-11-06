@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"math"
 	"strings"
 	"time"
 
@@ -830,7 +831,11 @@ func (r *gormRepository) AddImages(ctx context.Context, propertyID uuid.UUID, im
 		for i := range images {
 			images[i].ID = uuid.New()
 			images[i].PropertyID = propertyID
-			images[i].SortOrder = int16(count) + int16(i) + 1
+			order := count + int64(i) + 1
+			if order > math.MaxInt16 || order < 0 {
+				order = math.MaxInt16
+			}
+			images[i].SortOrder = int16(order)
 			images[i].CreatedAt = time.Now().UTC()
 			if !hasCover && i == 0 {
 				images[i].IsCover = true

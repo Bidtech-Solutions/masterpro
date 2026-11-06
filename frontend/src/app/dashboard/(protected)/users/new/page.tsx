@@ -44,11 +44,7 @@ export default function NewAdminUserPage() {
     special: /[^A-Za-z0-9\s]/.test(password),
   };
   const isPasswordStrong =
-    pwdChecks.length &&
-    pwdChecks.upper &&
-    pwdChecks.lower &&
-    pwdChecks.digit &&
-    pwdChecks.special;
+    pwdChecks.length && pwdChecks.upper && pwdChecks.lower && pwdChecks.digit && pwdChecks.special;
 
   const handleCopyPassword = async () => {
     try {
@@ -144,7 +140,8 @@ export default function NewAdminUserPage() {
           {t("addUser")}
         </h1>
         <p className="mt-1 text-xs text-slate-500 sm:text-sm">
-          Daftarkan akun staf administrator baru untuk mengelola properti, agen mitra, dan operasional MasterPro.
+          Daftarkan akun staf administrator baru untuk mengelola properti, agen mitra, dan operasional
+          MasterPro.
         </p>
       </div>
 
@@ -201,9 +198,7 @@ export default function NewAdminUserPage() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700">
-                Nomor Telepon / Seluler
-              </label>
+              <label className="block text-xs font-bold text-slate-700">Nomor Telepon / Seluler</label>
               <div className="relative mt-1.5">
                 <Phone className="absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-slate-400" />
                 <input
@@ -237,11 +232,7 @@ export default function NewAdminUserPage() {
                     className="rounded-lg p-1 text-slate-400 transition-colors hover:text-slate-700"
                     title={showPassword ? "Sembunyikan" : "Tampilkan"}
                   >
-                    {showPassword ? (
-                      <EyeOff className="size-4" />
-                    ) : (
-                      <Eye className="size-4" />
-                    )}
+                    {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
                   </button>
                   <button
                     type="button"
@@ -268,9 +259,7 @@ export default function NewAdminUserPage() {
                     <span
                       key={rule.label}
                       className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold transition-colors ${
-                        rule.ok
-                          ? "bg-emerald-100 text-emerald-700"
-                          : "bg-slate-200/70 text-slate-500"
+                        rule.ok ? "bg-emerald-100 text-emerald-700" : "bg-slate-200/70 text-slate-500"
                       }`}
                     >
                       <Check className="size-3" />
@@ -280,7 +269,8 @@ export default function NewAdminUserPage() {
                 </div>
 
                 <p className="mt-2 text-[11px] text-slate-500">
-                  Salin dan berikan password awal ini kepada staf admin terkait. Admin dapat menggantinya kapan saja melalui menu Akun Saya.
+                  Salin dan berikan password awal ini kepada staf admin terkait. Admin dapat menggantinya
+                  kapan saja melalui menu Akun Saya.
                 </p>
               </div>
             </div>

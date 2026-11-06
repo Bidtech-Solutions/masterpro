@@ -2,6 +2,7 @@ package report_test
 
 import (
 	"context"
+	"errors"
 	"net/http"
 	"testing"
 	"time"
@@ -105,8 +106,8 @@ func TestExportProperties_TooLarge(t *testing.T) {
 		t.Fatalf("expected error for >10,000 rows, got nil")
 	}
 
-	appErr, ok := err.(*apperror.Error)
-	if !ok {
+	var appErr *apperror.Error
+	if !errors.As(err, &appErr) {
 		t.Fatalf("expected *apperror.Error, got %T", err)
 	}
 	if appErr.Status != http.StatusUnprocessableEntity {

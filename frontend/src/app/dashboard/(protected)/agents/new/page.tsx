@@ -93,11 +93,7 @@ export default function NewAgentPage() {
     special: /[^A-Za-z0-9\s]/.test(password),
   };
   const isPasswordStrong =
-    pwdChecks.length &&
-    pwdChecks.upper &&
-    pwdChecks.lower &&
-    pwdChecks.digit &&
-    pwdChecks.special;
+    pwdChecks.length && pwdChecks.upper && pwdChecks.lower && pwdChecks.digit && pwdChecks.special;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -215,9 +211,7 @@ export default function NewAgentPage() {
         <h1 className="font-display text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
           {t("addNewAgentTitle")}
         </h1>
-        <p className="mt-1 text-xs text-slate-500 sm:text-sm">
-          {t("addNewAgentSubtitle")}
-        </p>
+        <p className="mt-1 text-xs text-slate-500 sm:text-sm">{t("addNewAgentSubtitle")}</p>
       </div>
 
       {/* Form Full-Width 2 Kolom (Foto di Kiri lg:col-span-4, Identitas & Akun di Kanan lg:col-span-8) */}
@@ -229,21 +223,13 @@ export default function NewAgentPage() {
               <div className="flex size-7 items-center justify-center rounded-lg bg-sky-50 text-sky-600">
                 <Camera className="size-4" />
               </div>
-              <h2 className="text-sm font-bold text-slate-900 sm:text-base">
-                Foto Profil Agen
-              </h2>
+              <h2 className="text-sm font-bold text-slate-900 sm:text-base">Foto Profil Agen</h2>
             </div>
 
             <div className="mt-6 flex flex-col items-center rounded-2xl border border-dashed border-slate-200/90 bg-slate-50/50 p-6 text-center">
               <div className="relative size-36 shrink-0 overflow-hidden rounded-full bg-sky-50 shadow-xs ring-4 ring-white">
                 {photoPreview ? (
-                  <Image
-                    src={photoPreview}
-                    alt="Preview"
-                    fill
-                    sizes="144px"
-                    className="object-cover"
-                  />
+                  <Image src={photoPreview} alt="Preview" fill sizes="144px" className="object-cover" />
                 ) : (
                   <div className="flex h-full w-full items-center justify-center text-sky-400">
                     <User className="size-16" />
@@ -259,9 +245,7 @@ export default function NewAgentPage() {
                 </button>
               </div>
 
-              <p className="mt-3 text-xs font-bold text-slate-800">
-                {name.trim() || "Nama Agen Baru"}
-              </p>
+              <p className="mt-3 text-xs font-bold text-slate-800">{name.trim() || "Nama Agen Baru"}</p>
               <p className="text-[11px] text-slate-400">
                 {specialty.trim() || "Property Consultant MasterPro"}
               </p>
@@ -294,9 +278,7 @@ export default function NewAgentPage() {
                 )}
               </div>
 
-              <p className="mt-3 text-[11px] text-slate-400">
-                Format JPG, PNG, atau WebP (Maks. 5 MB).
-              </p>
+              <p className="mt-3 text-[11px] text-slate-400">Format JPG, PNG, atau WebP (Maks. 5 MB).</p>
             </div>
           </div>
         </div>
@@ -309,9 +291,7 @@ export default function NewAgentPage() {
               <div className="flex size-7 items-center justify-center rounded-lg bg-sky-50 text-sky-600">
                 <User className="size-4" />
               </div>
-              <h2 className="text-sm font-bold text-slate-900 sm:text-base">
-                {t("cardPhotoIdentityTitle")}
-              </h2>
+              <h2 className="text-sm font-bold text-slate-900 sm:text-base">{t("cardPhotoIdentityTitle")}</h2>
             </div>
 
             <div className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2">
@@ -330,9 +310,7 @@ export default function NewAgentPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700">
-                  {t("agentSpecialtyLabel")}
-                </label>
+                <label className="block text-xs font-bold text-slate-700">{t("agentSpecialtyLabel")}</label>
                 <input
                   type="text"
                   value={specialty}
@@ -400,11 +378,7 @@ export default function NewAgentPage() {
                     className="rounded-lg p-1 text-slate-400 transition-colors hover:text-slate-700"
                     title={showPassword ? "Sembunyikan" : "Tampilkan"}
                   >
-                    {showPassword ? (
-                      <EyeOff className="size-3.5" />
-                    ) : (
-                      <Eye className="size-3.5" />
-                    )}
+                    {showPassword ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}
                   </button>
                   <button
                     type="button"
@@ -435,9 +409,7 @@ export default function NewAgentPage() {
                     <span
                       key={rule.label}
                       className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold ${
-                        rule.ok
-                          ? "bg-emerald-100 text-emerald-700"
-                          : "bg-slate-100 text-slate-500"
+                        rule.ok ? "bg-emerald-100 text-emerald-700" : "bg-slate-100 text-slate-500"
                       }`}
                     >
                       <Check className="size-2.5" />

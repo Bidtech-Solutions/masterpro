@@ -13,9 +13,7 @@ interface AgentReadinessCardProps {
   agents?: Agent[];
 }
 
-export function AgentReadinessCard({
-  agents = [],
-}: AgentReadinessCardProps) {
+export function AgentReadinessCard({ agents = [] }: AgentReadinessCardProps) {
   const t = useTranslations("dashboard");
 
   const sortedAgents = [...agents].sort((a, b) => {
@@ -49,8 +47,7 @@ export function AgentReadinessCard({
         ) : (
           <div className="mt-4 space-y-2.5">
             {sortedAgents.slice(0, 4).map((agent) => {
-              const closingCount =
-                (agent.listing_counts?.sold ?? 0) + (agent.listing_counts?.rented ?? 0);
+              const closingCount = (agent.listing_counts?.sold ?? 0) + (agent.listing_counts?.rented ?? 0);
               const activeCount = agent.listing_counts?.active ?? 0;
               const initial = (agent.user?.name || "A").charAt(0).toUpperCase();
 
@@ -76,9 +73,7 @@ export function AgentReadinessCard({
                     </div>
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
-                        <p className="truncate text-sm font-bold text-slate-900">
-                          {agent.user?.name}
-                        </p>
+                        <p className="truncate text-sm font-bold text-slate-900">{agent.user?.name}</p>
                         <span className="rounded bg-blue-100/80 px-1.5 py-0.5 font-mono text-[10px] font-bold text-blue-800">
                           {agent.agent_code}
                         </span>

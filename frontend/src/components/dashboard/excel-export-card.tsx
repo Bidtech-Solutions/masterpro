@@ -86,10 +86,10 @@ export function ExcelExportCard({ onExport, onCustomizeFilter }: ExcelExportCard
           type="button"
           onClick={handleDownload}
           disabled={isExporting}
-          className="inline-flex items-center gap-2 rounded-lg bg-[#059669] px-4 py-2 text-xs font-semibold text-white shadow-2xs transition-colors hover:bg-[#047857] active:bg-[#065F46] disabled:opacity-60 disabled:cursor-not-allowed"
+          className="inline-flex items-center gap-2 rounded-lg bg-[#059669] px-4 py-2 text-xs font-semibold text-white shadow-2xs transition-colors hover:bg-[#047857] active:bg-[#065F46] disabled:cursor-not-allowed disabled:opacity-60"
         >
           {isExporting ? (
-            <Loader2 className="size-3.5 text-white animate-spin" aria-hidden />
+            <Loader2 className="size-3.5 animate-spin text-white" aria-hidden />
           ) : (
             <Download className="size-3.5 text-white" aria-hidden />
           )}
