@@ -21,6 +21,7 @@ type Repository interface {
 	ListPublic(ctx context.Context, q PublicListQuery, p pagination.Params) ([]Card, int64, error)
 	GetPublicBySlug(ctx context.Context, slug string) (*Detail, error)
 	ListSimilar(ctx context.Context, slug string, limit int) ([]Card, error)
+	IncrementPublicCounter(ctx context.Context, slug string, eventType string) error
 
 	// Dashboard CRUD (API.md §12)
 	GetAgentIDByUserID(ctx context.Context, userID uuid.UUID) (*uuid.UUID, error)
@@ -147,7 +148,27 @@ func (r *gormRepository) GetPublicBySlug(ctx context.Context, slug string) (*Det
 	if err != nil {
 		return nil, err
 	}
+	_ = r.db.WithContext(ctx).Model(&models.Property{}).
+		Where("id = ?", p.ID).
+		UpdateColumn("view_count", gorm.Expr("view_count + 1")).Error
 	return r.toDetail(p), nil
+}
+
+func (r *gormRepository) IncrementPublicCounter(ctx context.Context, slug string, eventType string) error {
+	col := "view_count"
+	if eventType == "whatsapp_click" {
+		col = "whatsapp_click_count"
+	}
+	res := r.db.WithContext(ctx).Table("properties").
+		Where("slug = ? AND status = ? AND deleted_at IS NULL", slug, models.StatusActive).
+		UpdateColumn(col, gorm.Expr(col+" + 1"))
+	if res.Error != nil {
+		return res.Error
+	}
+	if res.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+	return nil
 }
 
 func (r *gormRepository) ListSimilar(ctx context.Context, slug string, limit int) ([]Card, error) {

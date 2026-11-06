@@ -82,7 +82,13 @@ func (r *gormRepository) GetPropertiesForExport(ctx context.Context, q ExportQue
 	}
 
 	if q.City != "" {
-		query = query.Where("c.slug = ? OR c.name ILIKE ?", q.City, "%"+q.City+"%")
+		normalizedCity := strings.ReplaceAll(strings.ToLower(strings.TrimSpace(q.City)), " ", "")
+		query = query.Where(
+			"c.slug = ? OR c.name ILIKE ? OR REPLACE(LOWER(c.name), ' ', '') LIKE ?",
+			q.City,
+			"%"+q.City+"%",
+			"%"+normalizedCity+"%",
+		)
 	}
 
 	if q.MinPrice != nil {

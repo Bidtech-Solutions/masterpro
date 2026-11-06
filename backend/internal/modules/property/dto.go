@@ -27,6 +27,11 @@ type PublicListQuery struct {
 	Sort            string   `form:"sort" binding:"omitempty,oneof=newest price_asc price_desc popular land_area_desc"`
 }
 
+// PublicEventRequest body POST /public/properties/:slug/events (API.md §7.4).
+type PublicEventRequest struct {
+	Type string `json:"type" binding:"required,oneof=view whatsapp_click"`
+}
+
 // RefMini referensi ringkas (tipe properti).
 type RefMini struct {
 	ID     int16  `json:"id"`

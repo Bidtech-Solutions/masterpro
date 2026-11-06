@@ -64,6 +64,21 @@ func (h *Handler) ListSimilar(c *gin.Context) {
 	response.OK(c, cards)
 }
 
+// TrackEvent POST /public/properties/:slug/events (API.md §7.4).
+func (h *Handler) TrackEvent(c *gin.Context) {
+	slug := c.Param("slug")
+	var req PublicEventRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.Error(c, validation.FromBindError(err))
+		return
+	}
+	if err := h.svc.TrackPublicEvent(c.Request.Context(), slug, req.Type); err != nil {
+		response.Error(c, err)
+		return
+	}
+	c.Status(http.StatusAccepted)
+}
+
 // --- Dashboard Handlers (API.md §12) ---
 
 // ListDashboard GET /properties (API.md §12.1).

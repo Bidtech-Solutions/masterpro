@@ -43,6 +43,19 @@ func (m *mockRepo) GetPublicBySlug(_ context.Context, _ string) (*Detail, error)
 func (m *mockRepo) ListSimilar(_ context.Context, _ string, _ int) ([]Card, error) {
 	return nil, nil
 }
+func (m *mockRepo) IncrementPublicCounter(_ context.Context, slug string, eventType string) error {
+	for _, p := range m.properties {
+		if p.Slug == slug && p.Status == models.StatusActive && !p.DeletedAt.Valid {
+			if eventType == "whatsapp_click" {
+				p.WhatsappClickCount++
+			} else {
+				p.ViewCount++
+			}
+			return nil
+		}
+	}
+	return gorm.ErrRecordNotFound
+}
 
 func (m *mockRepo) GetAgentIDByUserID(_ context.Context, userID uuid.UUID) (*uuid.UUID, error) {
 	if aid, ok := m.agentMap[userID]; ok {
@@ -367,5 +380,35 @@ func TestRoleScoping_AgentIsolation(t *testing.T) {
 	}
 	if appErr.Status != http.StatusNotFound {
 		t.Errorf("expected 404, got %d", appErr.Status)
+	}
+}
+
+func TestTrackPublicEvent(t *testing.T) {
+	repo := newMockRepo()
+	svc := NewService(repo, nil, nil, "https://media.test", "https://masterpro.test")
+
+	propID := uuid.New()
+	repo.properties[propID] = &models.Property{
+		ID:     propID,
+		Slug:   "rumah-batam-centre",
+		Status: models.StatusActive,
+	}
+
+	if err := svc.TrackPublicEvent(context.Background(), "rumah-batam-centre", "whatsapp_click"); err != nil {
+		t.Fatalf("expected nil error, got %v", err)
+	}
+	if repo.properties[propID].WhatsappClickCount != 1 {
+		t.Errorf("expected WhatsappClickCount=1, got %d", repo.properties[propID].WhatsappClickCount)
+	}
+
+	if err := svc.TrackPublicEvent(context.Background(), "rumah-batam-centre", "view"); err != nil {
+		t.Fatalf("expected nil error, got %v", err)
+	}
+	if repo.properties[propID].ViewCount != 1 {
+		t.Errorf("expected ViewCount=1, got %d", repo.properties[propID].ViewCount)
+	}
+
+	if err := svc.TrackPublicEvent(context.Background(), "tidak-ada", "whatsapp_click"); err == nil {
+		t.Fatal("expected 404 for unknown slug, got nil")
 	}
 }

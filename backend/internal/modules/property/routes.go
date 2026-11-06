@@ -7,7 +7,7 @@ func RegisterPublicRoutes(public *gin.RouterGroup, h *Handler) {
 	public.GET("/properties", h.ListPublic)
 	public.GET("/properties/:slug", h.GetPublic)
 	public.GET("/properties/:slug/similar", h.ListSimilar)
-	// TODO(API.md §7.4, §7.9): /events, /sitemap/properties
+	public.POST("/properties/:slug/events", h.TrackEvent)
 }
 
 // RegisterDashboardRoutes mendaftarkan endpoint CRUD properti dashboard (API.md §12).

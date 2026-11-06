@@ -29,6 +29,7 @@ type Service interface {
 	ListPublic(ctx context.Context, q PublicListQuery, p pagination.Params) ([]Card, pagination.Meta, error)
 	GetPublicBySlug(ctx context.Context, slug string) (*Detail, error)
 	ListSimilar(ctx context.Context, slug string, limit int) ([]Card, error)
+	TrackPublicEvent(ctx context.Context, slug string, eventType string) error
 
 	// Dashboard CRUD (API.md §12)
 	ListDashboard(ctx context.Context, principal middleware.Principal, q DashboardListQuery, p pagination.Params) ([]DashboardPropertyItem, pagination.Meta, error)
@@ -108,6 +109,25 @@ func (s *service) ListSimilar(ctx context.Context, slug string, limit int) ([]Ca
 		cards = []Card{}
 	}
 	return cards, nil
+}
+
+func (s *service) TrackPublicEvent(ctx context.Context, slug string, eventType string) error {
+	slug = strings.TrimSpace(slug)
+	if slug == "" {
+		return apperror.NotFound("Listing tidak ditemukan")
+	}
+	if eventType != "view" && eventType != "whatsapp_click" {
+		return apperror.Validation(apperror.FieldError{
+			Field: "type", Code: "oneof", Message: "Tipe event harus view atau whatsapp_click",
+		})
+	}
+	if err := s.repo.IncrementPublicCounter(ctx, slug, eventType); err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return apperror.NotFound("Listing tidak ditemukan")
+		}
+		return apperror.Internal(err)
+	}
+	return nil
 }
 
 // --- Dashboard Implementations ---
