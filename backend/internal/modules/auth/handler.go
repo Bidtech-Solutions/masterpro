@@ -37,6 +37,13 @@ func NewHandler(svc Service, mediaURL string, cookieSecure bool) *Handler {
 
 // Login POST /auth/login.
 func (h *Handler) Login(c *gin.Context) {
+	rawAccess, _ := c.Cookie(middleware.CookieAccess)
+	rawRefresh, _ := c.Cookie(middleware.CookieRefresh)
+	if (rawAccess != "" || rawRefresh != "") && h.svc.HasActiveSession(c.Request.Context(), rawAccess, rawRefresh) {
+		response.Error(c, ErrAlreadyAuthenticated)
+		return
+	}
+
 	var req LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.Error(c, validation.FromBindError(err))

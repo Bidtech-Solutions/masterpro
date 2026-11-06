@@ -51,21 +51,25 @@ func Setup() error {
 	return nil
 }
 
-// IsStrongPassword: 8–72 karakter, minimal satu huruf dan satu angka (API.md §9.4).
+// IsStrongPassword: 8–72 karakter, minimal 1 huruf besar, 1 huruf kecil, 1 angka, dan 1 karakter spesial (API.md §9.4).
 func IsStrongPassword(s string) bool {
 	if len(s) < 8 || len(s) > 72 {
 		return false
 	}
-	var letter, digit bool
+	var upper, lower, digit, special bool
 	for _, r := range s {
 		switch {
-		case unicode.IsLetter(r):
-			letter = true
+		case unicode.IsUpper(r):
+			upper = true
+		case unicode.IsLower(r):
+			lower = true
 		case unicode.IsDigit(r):
 			digit = true
+		case unicode.IsPunct(r) || unicode.IsSymbol(r):
+			special = true
 		}
 	}
-	return letter && digit
+	return upper && lower && digit && special
 }
 
 // FromBindError mengubah error dari c.ShouldBind* menjadi *apperror.Error.
@@ -122,7 +126,7 @@ func translate(fe validator.FieldError) apperror.FieldError {
 	case "whatsapp_id":
 		code, msg = "phone_id", "Nomor WhatsApp harus diawali 62, mis. 6281234567890"
 	case "password":
-		code, msg = "password_weak", "Password 8–72 karakter dan memuat huruf serta angka"
+		code, msg = "password_weak", "Password 8–72 karakter dan memuat huruf besar, huruf kecil, angka, serta karakter spesial"
 	case "eqfield":
 		code, msg = "mismatch", "Konfirmasi tidak sama"
 	}

@@ -22,6 +22,7 @@ const (
 	CodeCSRFHeaderMissing         = "CSRF_HEADER_MISSING"
 	CodeNotFound                  = "NOT_FOUND"
 	CodeEmailTaken                = "EMAIL_TAKEN"
+	CodeAlreadyAuthenticated      = "ALREADY_AUTHENTICATED"
 	CodeInvalidStatusTransition   = "INVALID_STATUS_TRANSITION"
 	CodeLastActiveAdmin           = "LAST_ACTIVE_ADMIN"
 	CodePayloadTooLarge           = "PAYLOAD_TOO_LARGE"

@@ -11,6 +11,37 @@ import { ApiError } from "./errors";
  */
 
 const BASE = "/api/v1";
+const AUTH_CHANNEL = "mp_auth_sync";
+
+export type AuthSyncEvent = "LOGIN" | "LOGOUT";
+
+/** Mengirim sinyal perubahan status autentikasi ke seluruh tab di browser yang sama. */
+export function notifyAuthChange(event: AuthSyncEvent): void {
+  if (typeof window === "undefined" || typeof BroadcastChannel === "undefined") return;
+  try {
+    const ch = new BroadcastChannel(AUTH_CHANNEL);
+    ch.postMessage(event);
+    ch.close();
+  } catch {
+    // Abaikan bila BroadcastChannel tidak didukung
+  }
+}
+
+/** Mendengarkan perubahan status autentikasi dari tab lain di browser yang sama. */
+export function subscribeAuthChange(listener: (event: AuthSyncEvent) => void): () => void {
+  if (typeof window === "undefined" || typeof BroadcastChannel === "undefined") return () => {};
+  try {
+    const ch = new BroadcastChannel(AUTH_CHANNEL);
+    ch.onmessage = (e: MessageEvent<AuthSyncEvent>) => {
+      if (e.data === "LOGIN" || e.data === "LOGOUT") {
+        listener(e.data);
+      }
+    };
+    return () => ch.close();
+  } catch {
+    return () => {};
+  }
+}
 
 let refreshing: Promise<boolean> | null = null;
 
@@ -60,7 +91,7 @@ export async function apiRequest<T>(path: string, opts: RequestOptions = {}): Pr
     body: opts.body === undefined ? undefined : isForm ? (opts.body as FormData) : JSON.stringify(opts.body),
   });
 
-  if (res.status === 204) return undefined as T;
+  if (res.status === 204 || res.status === 202) return undefined as T;
   const body = (await res.json().catch(() => null)) as ApiResponse<T> | null;
   if (res.ok && body?.success) return body.data;
 
@@ -70,4 +101,13 @@ export async function apiRequest<T>(path: string, opts: RequestOptions = {}): Pr
   }
   const retryAfter = Number(res.headers.get("Retry-After")) || undefined;
   throw new ApiError(res.status, error, retryAfter);
+}
+
+/** Mencatat interaksi publik (view / whatsapp_click) secara non-blocking (API.md §7.4). */
+export function trackPropertyEvent(slug: string, type: "view" | "whatsapp_click"): void {
+  if (typeof window === "undefined" || !slug) return;
+  void apiRequest(`/public/properties/${encodeURIComponent(slug)}/events`, {
+    method: "POST",
+    body: { type },
+  }).catch(() => {});
 }

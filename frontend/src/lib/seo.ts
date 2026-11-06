@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { site } from "@/config/site";
 import { getPathname } from "@/i18n/navigation";
 import { routing, type Locale } from "@/i18n/routing";
+import type { PropertyDetail } from "@/types/property";
 
 type Href = Parameters<typeof getPathname>[0]["href"];
 
@@ -100,5 +101,25 @@ export function websiteJsonLd(locale: Locale) {
       target: `${absoluteUrl("/properties", locale)}?q={search_term_string}`,
       "query-input": "required name=search_term_string",
     },
+  };
+}
+
+/** JSON-LD RealEstateListing untuk detail properti (PRD WEB-D-13). */
+export function realEstateListingJsonLd(p: PropertyDetail, locale: Locale) {
+  const url = absoluteUrl({ pathname: "/properties/[slug]", params: { slug: p.slug } }, locale);
+  return {
+    "@context": "https://schema.org",
+    "@type": "RealEstateListing",
+    name: p.title,
+    description: p.description,
+    url,
+    datePosted: p.published_at,
+    offers: {
+      "@type": "Offer",
+      price: p.price,
+      priceCurrency: "IDR",
+      availability: "https://schema.org/InStock",
+    },
+    ...(p.cover_image ? { image: p.cover_image.url } : {}),
   };
 }

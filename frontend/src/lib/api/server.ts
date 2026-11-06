@@ -16,7 +16,7 @@ export const cacheTags = {
 type QueryValue = string | number | boolean | null | undefined;
 
 export interface ServerGetOptions {
-  /** Detik; default 60. */
+  /** Detik; default 60. Gunakan 0 untuk cache: "no-store". */
   revalidate?: number;
   tags?: string[];
   query?: Record<string, QueryValue>;
@@ -44,10 +44,18 @@ export async function serverGet<T>(
   for (const [k, v] of Object.entries(opts.query ?? {})) {
     if (v !== undefined && v !== null && v !== "") url.searchParams.set(k, String(v));
   }
-  const res = await fetch(url, {
-    headers: { Accept: "application/json" },
-    next: { revalidate: opts.revalidate ?? 60, tags: opts.tags },
-  });
+  const res = await fetch(
+    url,
+    opts.revalidate === 0
+      ? {
+          headers: { Accept: "application/json" },
+          cache: "no-store",
+        }
+      : {
+          headers: { Accept: "application/json" },
+          next: { revalidate: opts.revalidate ?? 60, tags: opts.tags },
+        },
+  );
   if (res.status === 404) return null;
   const body = (await res.json().catch(() => null)) as ApiResponse<T> | null;
   if (!res.ok || !body || !body.success) {
