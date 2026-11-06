@@ -91,7 +91,7 @@ export async function apiRequest<T>(path: string, opts: RequestOptions = {}): Pr
     body: opts.body === undefined ? undefined : isForm ? (opts.body as FormData) : JSON.stringify(opts.body),
   });
 
-  if (res.status === 204) return undefined as T;
+  if (res.status === 204 || res.status === 202) return undefined as T;
   const body = (await res.json().catch(() => null)) as ApiResponse<T> | null;
   if (res.ok && body?.success) return body.data;
 
@@ -101,4 +101,13 @@ export async function apiRequest<T>(path: string, opts: RequestOptions = {}): Pr
   }
   const retryAfter = Number(res.headers.get("Retry-After")) || undefined;
   throw new ApiError(res.status, error, retryAfter);
+}
+
+/** Mencatat interaksi publik (view / whatsapp_click) secara non-blocking (API.md §7.4). */
+export function trackPropertyEvent(slug: string, type: "view" | "whatsapp_click"): void {
+  if (typeof window === "undefined" || !slug) return;
+  void apiRequest(`/public/properties/${encodeURIComponent(slug)}/events`, {
+    method: "POST",
+    body: { type },
+  }).catch(() => {});
 }

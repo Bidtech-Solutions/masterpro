@@ -5,6 +5,8 @@ import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Compass, ExternalLink, MapPin, Ship, ShoppingBag } from "lucide-react";
 
+import { KEPRI_PROVINCE_CONFIG } from "@/config/locations";
+
 interface Props {
   latitude?: number | null;
   longitude?: number | null;
@@ -21,17 +23,22 @@ export function PropertyLocationMap({
   provinceName = "Kepulauan Riau",
 }: Props) {
   const t = useTranslations("propertyDetail");
-  const [interactive, setInteractive] = useState(false);
+  const isBatam = cityName.toLowerCase().includes("batam");
+  const [interactive, setInteractive] = useState(!isBatam);
 
-  const lat = latitude ?? 1.129;
-  const lng = longitude ?? 104.053;
+  // Cari koordinat default kota jika properti tidak menyertakan latitude/longitude
+  const matchedCity = KEPRI_PROVINCE_CONFIG.cities.find(
+    (c) => c.name.toLowerCase().replace(/\s+/g, "") === cityName.toLowerCase().replace(/\s+/g, ""),
+  );
+  const lat = latitude ?? matchedCity?.defaultCoordinates.lat ?? 1.129;
+  const lng = longitude ?? matchedCity?.defaultCoordinates.lng ?? 104.053;
 
   const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
 
   return (
     <div className="rounded-2xl border border-slate-200/80 bg-white p-3 shadow-sm md:p-4">
       <div className="relative aspect-[16/8] w-full overflow-hidden rounded-xl border border-slate-200/90 bg-slate-900 md:aspect-[21/8]">
-        {interactive ? (
+        {interactive || !isBatam ? (
           /* Peta Interaktif OpenStreetMap */
           <iframe
             title={t("mapTitle")}
@@ -79,17 +86,19 @@ export function PropertyLocationMap({
           </>
         )}
 
-        {/* Tombol Kontrol Kanan Atas: Toggle Satelit/Interaktif & Buka di Google Maps */}
+        {/* Tombol Kontrol Kanan Atas: Toggle Satelit/Interaktif (khusus Batam) & Buka di Google Maps */}
         <div className="absolute top-3.5 right-3.5 z-30 flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setInteractive(!interactive)}
-            className="flex size-8 items-center justify-center rounded-full border border-white/30 bg-navy-950/80 text-white shadow-md backdrop-blur-md transition hover:bg-navy-950"
-            title={interactive ? t("mapSatelliteMode") : t("mapInteractiveMode")}
-            aria-label={t("mapToggleMode")}
-          >
-            <Compass className="size-4 text-cyan-400" />
-          </button>
+          {isBatam && (
+            <button
+              type="button"
+              onClick={() => setInteractive(!interactive)}
+              className="flex size-8 items-center justify-center rounded-full border border-white/30 bg-navy-950/80 text-white shadow-md backdrop-blur-md transition hover:bg-navy-950"
+              title={interactive ? t("mapSatelliteMode") : t("mapInteractiveMode")}
+              aria-label={t("mapToggleMode")}
+            >
+              <Compass className="size-4 text-cyan-400" />
+            </button>
+          )}
           <a
             href={googleMapsUrl}
             target="_blank"

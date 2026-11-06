@@ -97,8 +97,18 @@ export function PropertyFilterSidebar({ propertyTypes, searchParams }: Props) {
     if (listing) query.listing = listing;
     if (marketTypes.length > 0) query.market = marketTypes.join(",");
     if (selectedTypes.length > 0) query.type = selectedTypes.join(",");
-    if (minPrice) query.min_price = minPrice;
-    if (maxPrice) query.max_price = maxPrice;
+
+    let finalMin = minPrice;
+    let finalMax = maxPrice;
+    if (finalMin && finalMax && Number(finalMin) > Number(finalMax)) {
+      finalMin = maxPrice;
+      finalMax = minPrice;
+      setMinPrice(finalMin);
+      setMaxPrice(finalMax);
+    }
+
+    if (finalMin) query.min_price = finalMin;
+    if (finalMax) query.max_price = finalMax;
 
     startTransition(() => {
       router.push({ pathname: "/properties", query });

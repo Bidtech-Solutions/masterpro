@@ -1,3 +1,5 @@
+"use client";
+
 import { ArrowRight, Bath, BedDouble, Home, Images, LandPlot, MapPin, Ruler } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
@@ -5,6 +7,7 @@ import { useTranslations } from "next-intl";
 import { getPathname, Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { site } from "@/config/site";
+import { trackPropertyEvent } from "@/lib/api/client";
 import { formatArea, formatPriceFull } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { propertyInquiryMessage, whatsappUrl } from "@/lib/whatsapp";
@@ -138,6 +141,7 @@ export function PropertyCard({ property: p, locale, variant = "compact", priorit
             href={whatsappUrl(p.agent.whatsapp_number, propertyInquiryMessage(p, detailUrl, locale))}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackPropertyEvent(p.slug, "whatsapp_click")}
             className="flex items-center justify-center gap-1.5 rounded-xl bg-[#16A34A] px-3 py-2.5 text-center text-xs font-bold text-white shadow-sm shadow-emerald-600/20 transition-all hover:bg-[#15803D] hover:shadow-md hover:shadow-emerald-600/30 active:scale-95 sm:text-sm"
           >
             <WhatsAppIcon className="size-4 shrink-0 fill-current" />

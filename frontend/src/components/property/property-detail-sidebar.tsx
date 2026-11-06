@@ -1,7 +1,10 @@
+"use client";
+
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 
 import type { Locale } from "@/i18n/routing";
+import { trackPropertyEvent } from "@/lib/api/client";
 import { formatPriceFull } from "@/lib/format";
 import { whatsappUrl } from "@/lib/whatsapp";
 import type { PropertyDetail } from "@/types/property";
@@ -76,9 +79,11 @@ export function PropertyDetailSidebar({ property: p, locale }: Props) {
           <div className="min-w-0 flex-1">
             <h3 className="truncate font-display text-base font-bold text-navy-900">{p.agent.name}</h3>
             <p className="truncate text-xs font-semibold text-blue-600">
-              {t("agentTitle")} • {p.location.district ?? "Batam"}
+              {t("agentTitle")} • {p.location.district ?? p.location.city.name}
             </p>
-            <p className="mt-0.5 text-[11px] text-slate-400">{t("propertiesSold", { count: 48 })}</p>
+            <p className="mt-0.5 font-mono text-[11px] text-slate-400">
+              {t("code", { code: p.agent.agent_code })}
+            </p>
           </div>
         </div>
 
@@ -87,6 +92,7 @@ export function PropertyDetailSidebar({ property: p, locale }: Props) {
           href={waLink}
           target="_blank"
           rel="noopener noreferrer"
+          onClick={() => trackPropertyEvent(p.slug, "whatsapp_click")}
           className="group flex w-full items-center justify-center gap-2 rounded-xl bg-[#16A34A] px-5 py-3 text-center text-sm font-bold text-white shadow-sm shadow-emerald-600/20 transition-all hover:bg-[#15803D] hover:shadow-md hover:shadow-emerald-600/30 active:scale-98"
         >
           <WhatsAppIcon className="size-5 shrink-0 fill-current transition-transform duration-300 group-hover:scale-110" />
