@@ -40,6 +40,7 @@ const SLUG_TO_CATEGORY: Record<string, string> = {
   rumah: "house",
   apartemen: "apartment",
   ruko: "shophouse",
+  kos: "boarding",
   villa: "villa",
   tanah: "land",
   gudang: "warehouse",
@@ -399,6 +400,8 @@ function AgentDetailContent() {
               { id: "house", label: "Rumah" },
               { id: "apartment", label: "Apartemen" },
               { id: "shophouse", label: "Ruko" },
+              { id: "boarding", label: "Gedung Kos" },
+              { id: "land", label: "Tanah" },
             ].map((cat) => {
               const isSelected = selectedCategory === cat.id;
               return (
@@ -457,12 +460,18 @@ function AgentDetailContent() {
                       </span>
                     </div>
 
-                    <NextLink
-                      href={`/id/properties/${item.slug}`}
-                      className="block truncate font-display text-sm font-black text-slate-900 transition-colors hover:text-sky-600 sm:text-base"
-                    >
-                      {item.title}
-                    </NextLink>
+                    {item.status === "active" ? (
+                      <NextLink
+                        href={`/id/properties/${item.slug}`}
+                        className="block truncate font-display text-sm font-black text-slate-900 transition-colors hover:text-sky-600 sm:text-base"
+                      >
+                        {item.title}
+                      </NextLink>
+                    ) : (
+                      <span className="block truncate font-display text-sm font-black text-slate-900 sm:text-base">
+                        {item.title}
+                      </span>
+                    )}
 
                     <p className="line-clamp-1 text-xs text-slate-400">
                       {item.addressSpecs}
@@ -482,13 +491,19 @@ function AgentDetailContent() {
 
                   <div className="flex items-center gap-3 text-xs sm:justify-end">
                     <span className="text-slate-400">{item.views} views</span>
-                    <NextLink
-                      href={`/id/properties/${item.slug}`}
-                      className="inline-flex items-center gap-1 font-semibold text-sky-600 transition-colors hover:text-sky-700"
-                    >
-                      <span>{t("viewDetailLink")}</span>
-                      <span>&gt;</span>
-                    </NextLink>
+                    {item.status === "active" ? (
+                      <NextLink
+                        href={`/id/properties/${item.slug}`}
+                        className="inline-flex items-center gap-1 font-semibold text-sky-600 transition-colors hover:text-sky-700"
+                      >
+                        <span>{t("viewDetailLink")}</span>
+                        <span>&gt;</span>
+                      </NextLink>
+                    ) : (
+                      <span className="font-mono text-[11px] text-slate-400">
+                        {item.code}
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>

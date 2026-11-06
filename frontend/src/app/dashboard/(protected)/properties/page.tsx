@@ -40,9 +40,16 @@ function getInitials(name: string): string {
 
 function formatPriceDisplay(price: number, listingType: ListingType, rentPeriod: string | null): string {
   if (listingType === "rent") {
-    const million = Math.round(price / 1000000);
-    const suffix = rentPeriod === "monthly" ? "Jt/bln" : "Jt/thn";
-    return `Rp ${million} ${suffix}`;
+    const periodSuffix = rentPeriod === "monthly" ? "/bln" : "/thn";
+    if (price >= 1_000_000_000) {
+      const b = (price / 1_000_000_000).toLocaleString("id-ID", { maximumFractionDigits: 2 });
+      return `Rp ${b} M${periodSuffix}`;
+    }
+    if (price >= 1_000_000) {
+      const m = (price / 1_000_000).toLocaleString("id-ID", { maximumFractionDigits: 2 });
+      return `Rp ${m} Jt${periodSuffix}`;
+    }
+    return `Rp ${price.toLocaleString("id-ID")}${periodSuffix}`;
   }
   return `Rp ${price.toLocaleString("id-ID")}`;
 }
@@ -72,6 +79,33 @@ export default function PropertiesDashboardPage() {
   // Status popover state
   const [openStatusMenuId, setOpenStatusMenuId] = useState<string | null>(null);
   const [openActionMenuId, setOpenActionMenuId] = useState<string | null>(null);
+
+  // Tutup popover saat klik di luar atau tekan Escape
+  useEffect(() => {
+    if (!openStatusMenuId && !openActionMenuId) return;
+
+    function handleMouseDown(e: MouseEvent) {
+      const target = e.target as HTMLElement | null;
+      if (target && !target.closest("[data-popover-container]")) {
+        setOpenStatusMenuId(null);
+        setOpenActionMenuId(null);
+      }
+    }
+
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") {
+        setOpenStatusMenuId(null);
+        setOpenActionMenuId(null);
+      }
+    }
+
+    document.addEventListener("mousedown", handleMouseDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("mousedown", handleMouseDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [openStatusMenuId, openActionMenuId]);
 
   // Export Excel loading state
   const [isExporting, setIsExporting] = useState(false);
@@ -159,8 +193,12 @@ export default function PropertiesDashboardPage() {
       // Property Type
       if (typeFilter !== "all" && p.property_type.slug !== typeFilter) return false;
 
-      // City Filter
-      if (cityFilter !== "all" && p.location.city.name !== cityFilter) return false;
+      // City Filter (normalisasi spasi agar "Kota Tanjungpinang" cocok dengan "Kota Tanjung Pinang")
+      if (cityFilter !== "all") {
+        const normPropCity = p.location.city.name.toLowerCase().replace(/\s+/g, "");
+        const normFilterCity = cityFilter.toLowerCase().replace(/\s+/g, "");
+        if (normPropCity !== normFilterCity) return false;
+      }
 
       // Agent Filter
       if (agentFilter !== "all" && p.agent.id !== agentFilter && p.agent.name !== agentFilter) return false;
@@ -632,6 +670,9 @@ export default function PropertiesDashboardPage() {
               <option value="Kota Tanjungpinang">Kota Tanjungpinang</option>
               <option value="Kabupaten Bintan">Kabupaten Bintan</option>
               <option value="Kabupaten Karimun">Kabupaten Karimun</option>
+              <option value="Kabupaten Natuna">Kabupaten Natuna</option>
+              <option value="Kabupaten Lingga">Kabupaten Lingga</option>
+              <option value="Kabupaten Kepulauan Anambas">Kabupaten Kepulauan Anambas</option>
             </select>
           </div>
 
@@ -897,10 +938,13 @@ export default function PropertiesDashboardPage() {
                         )}
 
                         {/* Status Badge (Kiri Atas) */}
-                        <div className="absolute top-3 left-3 z-10">
+                        <div className="absolute top-3 left-3 z-10" data-popover-container>
                           <button
                             type="button"
-                            onClick={() => setOpenStatusMenuId(isStatusOpen ? null : prop.id)}
+                            onClick={() => {
+                              setOpenActionMenuId(null);
+                              setOpenStatusMenuId(isStatusOpen ? null : prop.id);
+                            }}
                             className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold shadow-xs backdrop-blur-md transition-all ${getStatusBadgeStyle(
                               prop.status,
                             )}`}
@@ -961,12 +1005,18 @@ export default function PropertiesDashboardPage() {
                           </div>
 
                           {/* Judul & Lokasi */}
-                          <NextLink
-                            href={publicUrl}
-                            className="mt-1 block font-bold text-sm text-slate-800 transition-colors hover:text-sky-600 line-clamp-1"
-                          >
-                            {prop.title}
-                          </NextLink>
+                          {prop.status === "active" ? (
+                            <NextLink
+                              href={publicUrl}
+                              className="mt-1 block font-bold text-sm text-slate-800 transition-colors hover:text-sky-600 line-clamp-1"
+                            >
+                              {prop.title}
+                            </NextLink>
+                          ) : (
+                            <span className="mt-1 block font-bold text-sm text-slate-800 line-clamp-1">
+                              {prop.title}
+                            </span>
+                          )}
                           <p className="mt-0.5 flex items-center gap-1 text-xs text-slate-400">
                             <MapPin className="size-3 text-slate-400 shrink-0" />
                             <span className="truncate">
@@ -1043,17 +1093,30 @@ export default function PropertiesDashboardPage() {
                               </>
                             ) : (
                               <>
-                                <NextLink
-                                  href={publicUrl}
-                                  target="_blank"
-                                  className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors"
-                                  title={t("actionViewWeb")}
-                                >
-                                  <ExternalLink className="size-3.5" />
-                                </NextLink>
+                                {prop.status === "active" ? (
+                                  <NextLink
+                                    href={publicUrl}
+                                    target="_blank"
+                                    className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+                                    title={t("actionViewWeb")}
+                                  >
+                                    <ExternalLink className="size-3.5" />
+                                  </NextLink>
+                                ) : (
+                                  <span
+                                    className="cursor-not-allowed rounded-lg p-1.5 text-slate-300"
+                                    title={`${t("actionViewWeb")} (${getStatusLabel(prop.status)})`}
+                                  >
+                                    <ExternalLink className="size-3.5" />
+                                  </span>
+                                )}
                                 <button
                                   type="button"
-                                  onClick={() => setOpenStatusMenuId(isStatusOpen ? null : prop.id)}
+                                  data-popover-container
+                                  onClick={() => {
+                                    setOpenActionMenuId(null);
+                                    setOpenStatusMenuId(isStatusOpen ? null : prop.id);
+                                  }}
                                   className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors"
                                   title={t("actionChangeStatus")}
                                 >
@@ -1143,12 +1206,18 @@ export default function PropertiesDashboardPage() {
 
                       {/* 2. JUDUL & SPESIFIKASI */}
                       <td className="px-4 py-3.5 max-w-[280px]">
-                        <NextLink
-                          href={publicUrl}
-                          className="font-bold text-xs sm:text-sm text-slate-900 transition-colors hover:text-sky-600 line-clamp-1"
-                        >
-                          {prop.title}
-                        </NextLink>
+                        {prop.status === "active" ? (
+                          <NextLink
+                            href={publicUrl}
+                            className="font-bold text-xs sm:text-sm text-slate-900 transition-colors hover:text-sky-600 line-clamp-1"
+                          >
+                            {prop.title}
+                          </NextLink>
+                        ) : (
+                          <span className="block font-bold text-xs sm:text-sm text-slate-900 line-clamp-1">
+                            {prop.title}
+                          </span>
+                        )}
                         <p className="mt-0.5 flex items-center gap-1 text-[11px] text-slate-400">
                           <MapPin className="size-3 text-slate-400 shrink-0" />
                           <span className="truncate">
@@ -1199,12 +1268,13 @@ export default function PropertiesDashboardPage() {
 
                       {/* 6. STATUS (Interactive Dropdown Badge) */}
                       <td className="px-4 py-3.5 whitespace-nowrap relative">
-                        <div className="relative inline-block text-left">
+                        <div className="relative inline-block text-left" data-popover-container>
                           <button
                             type="button"
-                            onClick={() =>
-                              setOpenStatusMenuId(isStatusOpen ? null : prop.id)
-                            }
+                            onClick={() => {
+                              setOpenActionMenuId(null);
+                              setOpenStatusMenuId(isStatusOpen ? null : prop.id);
+                            }}
                             className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold shadow-2xs transition-all hover:opacity-90 ${getStatusBadgeStyle(
                               prop.status,
                             )}`}
@@ -1262,20 +1332,31 @@ export default function PropertiesDashboardPage() {
                       {/* 8. AKSI (Web, Edit, More) */}
                       <td className="px-4 py-3.5 text-center whitespace-nowrap relative">
                         <div className="flex items-center justify-center gap-1">
-                          {/* 1. View in Web */}
-                          <NextLink
-                            href={publicUrl}
-                            target="_blank"
-                            title={t("actionViewWeb")}
-                            className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
-                          >
-                            <ExternalLink className="size-3.5" />
-                          </NextLink>
+                          {/* 1. View in Web (hanya aktif jika status active) */}
+                          {prop.status === "active" ? (
+                            <NextLink
+                              href={publicUrl}
+                              target="_blank"
+                              title={t("actionViewWeb")}
+                              className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
+                            >
+                              <ExternalLink className="size-3.5" />
+                            </NextLink>
+                          ) : (
+                            <span
+                              title={`${t("actionViewWeb")} (${getStatusLabel(prop.status)})`}
+                              className="cursor-not-allowed rounded-lg p-1.5 text-slate-300"
+                            >
+                              <ExternalLink className="size-3.5" />
+                            </span>
+                          )}
 
                           {/* 2. Edit */}
                           <button
                             type="button"
+                            data-popover-container
                             onClick={() => {
+                              setOpenActionMenuId(null);
                               setOpenStatusMenuId(prop.id);
                             }}
                             title={t("actionEdit")}
@@ -1285,12 +1366,13 @@ export default function PropertiesDashboardPage() {
                           </button>
 
                           {/* 3. More Actions Menu */}
-                          <div className="relative inline-block">
+                          <div className="relative inline-block" data-popover-container>
                             <button
                               type="button"
-                              onClick={() =>
-                                setOpenActionMenuId(isActionOpen ? null : prop.id)
-                              }
+                              onClick={() => {
+                                setOpenStatusMenuId(null);
+                                setOpenActionMenuId(isActionOpen ? null : prop.id);
+                              }}
                               title={t("thActions")}
                               className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
                             >

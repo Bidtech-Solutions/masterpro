@@ -62,12 +62,32 @@ export default function NewPropertyPage() {
   const [photos, setPhotos] = useState<PhotoItem[]>([]);
 
   // State
+  const [createdPropertyId, setCreatedPropertyId] = useState<string | null>(null);
   const [isPublishing, setIsPublishing] = useState(false);
   const [isSavingDraft, setIsSavingDraft] = useState(false);
   const [toast, setToast] = useState<{ message: string; isError?: boolean } | null>(null);
 
   // Completion calculation matching checklist items
   const completionItems: CompletionItem[] = useMemo(() => {
+    const isSpecsComplete =
+      propertyType === "tanah"
+        ? landArea !== "" && landArea > 0
+        : propertyType === "apartemen"
+          ? buildingArea !== "" &&
+            buildingArea > 0 &&
+            bedrooms !== "" &&
+            bedrooms >= 0 &&
+            bathrooms !== "" &&
+            bathrooms >= 0
+          : landArea !== "" &&
+            landArea > 0 &&
+            buildingArea !== "" &&
+            buildingArea > 0 &&
+            bedrooms !== "" &&
+            bedrooms >= 0 &&
+            bathrooms !== "" &&
+            bathrooms >= 0;
+
     return [
       {
         id: "c-title-desc",
@@ -87,17 +107,7 @@ export default function NewPropertyPage() {
       {
         id: "c-specs",
         label: t("checkSpecs"),
-        isComplete:
-          propertyType === "tanah"
-            ? landArea !== "" && landArea > 0
-            : landArea !== "" &&
-              landArea > 0 &&
-              buildingArea !== "" &&
-              buildingArea > 0 &&
-              bedrooms !== "" &&
-              bedrooms >= 0 &&
-              bathrooms !== "" &&
-              bathrooms >= 0,
+        isComplete: isSpecsComplete,
       },
       {
         id: "c-cover-photo",
@@ -159,6 +169,16 @@ export default function NewPropertyPage() {
         setIsPublishing(false);
         return;
       }
+      if (propertyType !== "apartemen" && (landArea === "" || Number(landArea) <= 0)) {
+        setToast({ message: "Luas tanah wajib diisi dan lebih dari 0 m²", isError: true });
+        setIsPublishing(false);
+        return;
+      }
+      if (propertyType !== "tanah" && (buildingArea === "" || Number(buildingArea) <= 0)) {
+        setToast({ message: "Luas bangunan wajib diisi dan lebih dari 0 m²", isError: true });
+        setIsPublishing(false);
+        return;
+      }
       if (photos.length === 0) {
         setToast({ message: "Minimal 1 foto wajib diunggah untuk menayangkan listing", isError: true });
         setIsPublishing(false);
@@ -188,42 +208,54 @@ export default function NewPropertyPage() {
       tanah: 5,
     };
 
-    try {
-      // 1. Create property (initial status draft)
-      const res = await apiRequest<{ id: string; slug: string }>("/properties", {
-        method: "POST",
-        body: {
-          listing_type: listingType,
-          market_type: marketType,
-          property_type_id: typeMap[propertyType] ?? 1,
-          title: title.trim(),
-          description: description.trim(),
-          price: price,
-          rent_period: listingType === "rent" ? (rentPeriod ?? "monthly") : null,
-          is_price_negotiable: isNegotiable,
-          province_id: provinceId,
-          city_id: cityId,
-          district: district.trim() || undefined,
-          address: address.trim() || undefined,
-          latitude: latitude ?? undefined,
-          longitude: longitude ?? undefined,
-          land_area: landArea !== "" ? Number(landArea) : undefined,
-          building_area: buildingArea !== "" && propertyType !== "tanah" ? Number(buildingArea) : undefined,
-          bedrooms: bedrooms !== "" && propertyType !== "tanah" ? Number(bedrooms) : undefined,
-          bathrooms: bathrooms !== "" && propertyType !== "tanah" ? Number(bathrooms) : undefined,
-          maid_bedrooms: maidBedrooms !== "" && propertyType !== "tanah" ? Number(maidBedrooms) : undefined,
-          floors: floors && propertyType !== "tanah" ? Number(floors.replace(/\D/g, "")) || undefined : undefined,
-          carports: carports && propertyType !== "tanah" ? Number(carports.replace(/\D/g, "")) || undefined : undefined,
-          electricity_va: electricity ? Number(electricity) : undefined,
-          water_source: waterSource || undefined,
-          certificate: certificate || undefined,
-          furnishing: furnishing || undefined,
-          facing: facing || undefined,
-          year_built: yearBuilt ? Number(yearBuilt) : undefined,
-        },
-      });
+    const payload = {
+      listing_type: listingType,
+      market_type: marketType,
+      property_type_id: typeMap[propertyType] ?? 1,
+      title: title.trim(),
+      description: description.trim(),
+      price: price,
+      rent_period: listingType === "rent" ? (rentPeriod ?? "monthly") : null,
+      is_price_negotiable: isNegotiable,
+      province_id: provinceId,
+      city_id: cityId,
+      district: district.trim() || undefined,
+      address: address.trim() || undefined,
+      latitude: latitude ?? undefined,
+      longitude: longitude ?? undefined,
+      land_area: landArea !== "" && propertyType !== "apartemen" ? Number(landArea) : undefined,
+      building_area: buildingArea !== "" && propertyType !== "tanah" ? Number(buildingArea) : undefined,
+      bedrooms: bedrooms !== "" && propertyType !== "tanah" ? Number(bedrooms) : undefined,
+      bathrooms: bathrooms !== "" && propertyType !== "tanah" ? Number(bathrooms) : undefined,
+      maid_bedrooms: maidBedrooms !== "" && propertyType !== "tanah" ? Number(maidBedrooms) : undefined,
+      floors: floors && propertyType !== "tanah" ? Number(floors.replace(/\D/g, "")) || undefined : undefined,
+      carports: carports && propertyType !== "tanah" ? Number(carports.replace(/\D/g, "")) || undefined : undefined,
+      electricity_va: electricity ? Number(electricity) : undefined,
+      water_source: waterSource || undefined,
+      certificate: certificate || undefined,
+      furnishing: furnishing || undefined,
+      facing: facing || undefined,
+      year_built: yearBuilt ? Number(yearBuilt) : undefined,
+    };
 
-      const newId = res.id;
+    try {
+      let newId = createdPropertyId;
+
+      if (!newId) {
+        // 1. Create property (initial status draft)
+        const res = await apiRequest<{ id: string; slug: string }>("/properties", {
+          method: "POST",
+          body: payload,
+        });
+        newId = res.id;
+        setCreatedPropertyId(newId);
+      } else {
+        // Jika draf sudah dibuat pada percobaan sebelumnya, perbarui datanya tanpa membuat duplikat
+        await apiRequest(`/properties/${newId}`, {
+          method: "PATCH",
+          body: payload,
+        });
+      }
 
       // 2. Upload actual binary photos if any
       const photosWithFiles = photos.filter((p) => p.rawFile);
