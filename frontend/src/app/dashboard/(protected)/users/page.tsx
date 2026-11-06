@@ -269,10 +269,8 @@ export default function UsersDashboardPage() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="flex items-center gap-2.5">
-            <h1 className="font-display text-xl font-bold text-slate-900 sm:text-2xl">
-              {t("usersTitle")}
-            </h1>
-            <span className="rounded-full bg-navy-100 px-2.5 py-0.5 text-xs font-bold text-navy-800">
+            <h1 className="font-display text-xl font-bold text-slate-900 sm:text-2xl">{t("usersTitle")}</h1>
+            <span className="bg-navy-100 rounded-full px-2.5 py-0.5 text-xs font-bold text-navy-800">
               {users.length} Akun
             </span>
           </div>
@@ -406,9 +404,7 @@ export default function UsersDashboardPage() {
                                 {u.agent.agent_code} • Lihat Profil Agen
                               </NextLink>
                             ) : (
-                              <p className="font-mono text-[10px] text-slate-400">
-                                ID: {u.id.slice(0, 8)}
-                              </p>
+                              <p className="font-mono text-[10px] text-slate-400">ID: {u.id.slice(0, 8)}</p>
                             )}
                           </div>
                         </div>
@@ -583,9 +579,7 @@ export default function UsersDashboardPage() {
       {resetTargetUser && (
         <div className="backdrop-blur-2xs fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
           <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
-            <h3 className="font-display text-lg font-bold text-slate-900">
-              {t("actionResetPassword")}
-            </h3>
+            <h3 className="font-display text-lg font-bold text-slate-900">{t("actionResetPassword")}</h3>
             <p className="mt-1 text-xs text-slate-500">
               Reset password untuk <strong>{resetTargetUser.name}</strong> ({resetTargetUser.email}).
             </p>
@@ -628,9 +622,7 @@ export default function UsersDashboardPage() {
                         item.ok ? "font-semibold text-emerald-700" : "text-slate-500"
                       }`}
                     >
-                      <Check
-                        className={`size-3.5 ${item.ok ? "text-emerald-600" : "text-slate-300"}`}
-                      />
+                      <Check className={`size-3.5 ${item.ok ? "text-emerald-600" : "text-slate-300"}`} />
                       <span>{item.label}</span>
                     </div>
                   ))}

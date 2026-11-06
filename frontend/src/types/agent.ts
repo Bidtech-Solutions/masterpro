@@ -36,4 +36,3 @@ export interface AgentOption {
   name: string;
   status: "active" | "inactive";
 }
-

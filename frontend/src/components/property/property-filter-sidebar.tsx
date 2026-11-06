@@ -60,9 +60,7 @@ export function PropertyFilterSidebar({ propertyTypes, searchParams }: Props) {
 
   // Handler toggle market segment (Primary / Secondary)
   function handleMarketToggle(val: "primary" | "secondary") {
-    setMarketTypes((prev) =>
-      prev.includes(val) ? prev.filter((item) => item !== val) : [...prev, val],
-    );
+    setMarketTypes((prev) => (prev.includes(val) ? prev.filter((item) => item !== val) : [...prev, val]));
   }
 
   // Handler toggle tipe properti
@@ -133,8 +131,7 @@ export function PropertyFilterSidebar({ propertyTypes, searchParams }: Props) {
   // Format nama tipe properti sesuai gambar referensi
   function getTypeName(pt: PropertyType) {
     if (pt.slug === "rumah") return locale === "id" ? "Rumah Tinggal" : "Houses";
-    if (pt.slug === "apartemen")
-      return locale === "id" ? "Apartemen & Kondominium" : "Apartments & Condos";
+    if (pt.slug === "apartemen") return locale === "id" ? "Apartemen & Kondominium" : "Apartments & Condos";
     if (pt.slug === "ruko") return locale === "id" ? "Ruko / Shophouse" : "Shophouses";
     if (pt.slug === "kos") return locale === "id" ? "Kost / Guesthouse" : "Boarding Houses";
     if (pt.slug === "tanah") return locale === "id" ? "Tanah & Lahan Kavling" : "Land & Plots";
@@ -160,9 +157,7 @@ export function PropertyFilterSidebar({ propertyTypes, searchParams }: Props) {
 
       {/* 1. Tipe Listing */}
       <div>
-        <h3 className="mb-2 text-xs font-bold tracking-wider text-slate-500 uppercase">
-          {t("listingType")}
-        </h3>
+        <h3 className="mb-2 text-xs font-bold tracking-wider text-slate-500 uppercase">{t("listingType")}</h3>
         <div className="grid grid-cols-2 gap-1 rounded-xl bg-slate-100 p-1">
           <button
             type="button"
@@ -253,15 +248,10 @@ export function PropertyFilterSidebar({ propertyTypes, searchParams }: Props) {
 
       {/* 4. Rentang Harga (Rp) */}
       <div>
-        <h3 className="mb-2 text-xs font-bold tracking-wider text-slate-500 uppercase">
-          {t("priceRange")}
-        </h3>
+        <h3 className="mb-2 text-xs font-bold tracking-wider text-slate-500 uppercase">{t("priceRange")}</h3>
         <div className="grid grid-cols-2 gap-2.5">
           <div>
-            <label
-              htmlFor="filter-min-price"
-              className="mb-1 block text-[11px] font-semibold text-slate-500"
-            >
+            <label htmlFor="filter-min-price" className="mb-1 block text-[11px] font-semibold text-slate-500">
               {t("minPrice")}
             </label>
             <input
@@ -275,10 +265,7 @@ export function PropertyFilterSidebar({ propertyTypes, searchParams }: Props) {
             />
           </div>
           <div>
-            <label
-              htmlFor="filter-max-price"
-              className="mb-1 block text-[11px] font-semibold text-slate-500"
-            >
+            <label htmlFor="filter-max-price" className="mb-1 block text-[11px] font-semibold text-slate-500">
               {t("maxPrice")}
             </label>
             <input
@@ -324,9 +311,7 @@ export function PropertyFilterSidebar({ propertyTypes, searchParams }: Props) {
 
       {/* Desktop Sidebar Card yang mengikuti saat scroll - Rapi & Tanpa Scrollbar */}
       <aside className="hidden lg:sticky lg:top-24 lg:block lg:w-80 lg:shrink-0 lg:self-start">
-        <div className="rounded-3xl border border-slate-200/90 bg-white p-5 shadow-sm">
-          {filterContent}
-        </div>
+        <div className="rounded-3xl border border-slate-200/90 bg-white p-5 shadow-sm">{filterContent}</div>
       </aside>
 
       {/* Mobile Drawer Overlay */}

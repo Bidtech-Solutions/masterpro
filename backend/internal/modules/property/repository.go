@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"math"
 	"strings"
 	"time"
 
@@ -614,13 +615,13 @@ func (r *gormRepository) ListDashboard(ctx context.Context, agentID *uuid.UUID, 
 				City:     PlaceMini{ID: row.CityID, Slug: row.CitySlug, Name: row.CityName},
 				Province: PlaceMini{ID: int32(row.ProvinceID), Slug: row.ProvinceSlug, Name: row.ProvinceName},
 			},
-			LandArea:           row.LandArea,
-			BuildingArea:       row.BuildingArea,
-			Bedrooms:           row.Bedrooms,
-			Bathrooms:          row.Bathrooms,
-			TotalRooms:         row.TotalRooms,
-			CoverImage:         cover,
-			ImageCount:         row.ImageCount,
+			LandArea:     row.LandArea,
+			BuildingArea: row.BuildingArea,
+			Bedrooms:     row.Bedrooms,
+			Bathrooms:    row.Bathrooms,
+			TotalRooms:   row.TotalRooms,
+			CoverImage:   cover,
+			ImageCount:   row.ImageCount,
 			Agent: DashboardAgent{
 				ID:             row.AgentID,
 				AgentCode:      row.AgentCode,
@@ -830,7 +831,11 @@ func (r *gormRepository) AddImages(ctx context.Context, propertyID uuid.UUID, im
 		for i := range images {
 			images[i].ID = uuid.New()
 			images[i].PropertyID = propertyID
-			images[i].SortOrder = int16(count) + int16(i) + 1
+			order := count + int64(i) + 1
+			if order > math.MaxInt16 || order < 0 {
+				order = math.MaxInt16
+			}
+			images[i].SortOrder = int16(order)
 			images[i].CreatedAt = time.Now().UTC()
 			if !hasCover && i == 0 {
 				images[i].IsCover = true

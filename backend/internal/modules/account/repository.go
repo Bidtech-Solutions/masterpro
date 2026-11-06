@@ -80,4 +80,3 @@ func (r *gormRepository) UpdatePasswordAndRevokeOthers(ctx context.Context, user
 			Update("revoked_at", now).Error
 	})
 }
-

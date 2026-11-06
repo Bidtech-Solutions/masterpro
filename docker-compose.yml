@@ -16,6 +16,7 @@ services:
       - --entrypoints.web.address=:80
     ports:
       - "80:80"
+      - "3000:80"
       - "127.0.0.1:8081:8080"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -43,7 +44,7 @@ services:
     depends_on: [backend]
     labels:
       - traefik.enable=true
-      - traefik.http.routers.mp-web.rule=Host(`localhost`)
+      - traefik.http.routers.mp-web.rule=Host(`localhost`) || Host(`127.0.0.1`)
       - traefik.http.routers.mp-web.entrypoints=web
       - traefik.http.routers.mp-web.priority=10
       - traefik.http.services.mp-web.loadbalancer.server.port=3000
@@ -63,7 +64,7 @@ services:
       rustfs: { condition: service_started }
     labels:
       - traefik.enable=true
-      - traefik.http.routers.mp-api.rule=Host(`localhost`) && PathPrefix(`/api`)
+      - traefik.http.routers.mp-api.rule=(Host(`localhost`) || Host(`127.0.0.1`)) && PathPrefix(`/api`)
       - traefik.http.routers.mp-api.entrypoints=web
       - traefik.http.routers.mp-api.priority=50
       - traefik.http.services.mp-api.loadbalancer.server.port=8080

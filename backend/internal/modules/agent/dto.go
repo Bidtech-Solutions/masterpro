@@ -79,4 +79,3 @@ type ListFilter struct {
 	Status string
 	Sort   string // "newest", "name", "listings"
 }
-

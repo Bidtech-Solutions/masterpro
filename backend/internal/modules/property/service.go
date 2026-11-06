@@ -7,6 +7,7 @@ import (
 	"image"
 	_ "image/jpeg"
 	_ "image/png"
+	"math"
 	"mime/multipart"
 	"net/http"
 	"path/filepath"
@@ -606,7 +607,7 @@ func (s *service) UploadImages(ctx context.Context, principal middleware.Princip
 
 		cfg, _, err := image.DecodeConfig(f)
 		width, height := int32(1200), int32(800)
-		if err == nil && cfg.Width > 0 && cfg.Height > 0 {
+		if err == nil && cfg.Width > 0 && cfg.Height > 0 && cfg.Width <= math.MaxInt32 && cfg.Height <= math.MaxInt32 {
 			width = int32(cfg.Width)
 			height = int32(cfg.Height)
 		}
@@ -628,13 +629,18 @@ func (s *service) UploadImages(ctx context.Context, principal middleware.Princip
 		}
 		_ = f2.Close()
 
+		var sizeBytes int32
+		if fh.Size >= 0 && fh.Size <= math.MaxInt32 {
+			sizeBytes = int32(fh.Size)
+		}
+
 		newImg := models.PropertyImage{
 			ID:         imageID,
 			PropertyID: propertyID,
 			ObjectKey:  key,
 			Width:      width,
 			Height:     height,
-			SizeBytes:  int32(fh.Size),
+			SizeBytes:  sizeBytes,
 		}
 		newImages = append(newImages, newImg)
 	}
@@ -882,12 +888,12 @@ func (s *service) toDashboardDetail(p *models.Property) *PropertyDashboardDetail
 
 	return &PropertyDashboardDetail{
 		Detail: Detail{
-			ID:                p.ID.String(),
-			Code:              p.Code,
-			Slug:              p.Slug,
-			Title:             p.Title,
-			ListingType:       p.ListingType,
-			MarketType:        p.MarketType,
+			ID:          p.ID.String(),
+			Code:        p.Code,
+			Slug:        p.Slug,
+			Title:       p.Title,
+			ListingType: p.ListingType,
+			MarketType:  p.MarketType,
 			PropertyType: RefMini{
 				ID:     p.PropertyTypeID,
 				Slug:   typeSlug,
@@ -902,32 +908,32 @@ func (s *service) toDashboardDetail(p *models.Property) *PropertyDashboardDetail
 				City:     cityMini,
 				Province: provMini,
 			},
-			LandArea:           p.LandArea,
-			BuildingArea:       p.BuildingArea,
-			Bedrooms:           p.Bedrooms,
-			Bathrooms:          p.Bathrooms,
-			TotalRooms:         p.TotalRooms,
-			CoverImage:         cover,
-			ImageCount:         int64(len(p.Images)),
-			PublishedAt:        p.PublishedAt,
-			Description:        p.Description,
-			Address:            p.Address,
-			Latitude:           p.Latitude,
-			Longitude:          p.Longitude,
-			MaidBedrooms:      p.MaidBedrooms,
-			Floors:            p.Floors,
-			FloorLevel:        p.FloorLevel,
-			Carports:          p.Carports,
-			Garages:           p.Garages,
-			ElectricityVA:     p.ElectricityVA,
-			WaterSource:       p.WaterSource,
-			Certificate:       p.Certificate,
-			Furnishing:        p.Furnishing,
-			Facing:            p.Facing,
-			YearBuilt:         p.YearBuilt,
-			VideoURL:          p.VideoURL,
-			Facilities:        facilities,
-			Images:            detailImages,
+			LandArea:      p.LandArea,
+			BuildingArea:  p.BuildingArea,
+			Bedrooms:      p.Bedrooms,
+			Bathrooms:     p.Bathrooms,
+			TotalRooms:    p.TotalRooms,
+			CoverImage:    cover,
+			ImageCount:    int64(len(p.Images)),
+			PublishedAt:   p.PublishedAt,
+			Description:   p.Description,
+			Address:       p.Address,
+			Latitude:      p.Latitude,
+			Longitude:     p.Longitude,
+			MaidBedrooms:  p.MaidBedrooms,
+			Floors:        p.Floors,
+			FloorLevel:    p.FloorLevel,
+			Carports:      p.Carports,
+			Garages:       p.Garages,
+			ElectricityVA: p.ElectricityVA,
+			WaterSource:   p.WaterSource,
+			Certificate:   p.Certificate,
+			Furnishing:    p.Furnishing,
+			Facing:        p.Facing,
+			YearBuilt:     p.YearBuilt,
+			VideoURL:      p.VideoURL,
+			Facilities:    facilities,
+			Images:        detailImages,
 			Agent: DetailAgent{
 				AgentCode:      agentCode,
 				Name:           agentName,

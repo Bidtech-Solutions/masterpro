@@ -12,7 +12,10 @@ import type { LoginResponse, User } from "@/types/user";
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function safeNext(value: string | null): string {
-  return value && value.startsWith("/dashboard") && !value.startsWith("//") && !value.startsWith("/dashboard/login")
+  return value &&
+    value.startsWith("/dashboard") &&
+    !value.startsWith("//") &&
+    !value.startsWith("/dashboard/login")
     ? value
     : "/dashboard";
 }
@@ -113,9 +116,7 @@ export function LoginForm() {
         <h1 className="font-display text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
           {t("loginTitle")}
         </h1>
-        <p className="mt-1.5 text-xs text-slate-500 sm:text-sm">
-          {t("loginSubtitle")}
-        </p>
+        <p className="mt-1.5 text-xs text-slate-500 sm:text-sm">{t("loginSubtitle")}</p>
       </div>
 
       {/* Pesan Error Autentikasi */}
@@ -189,7 +190,11 @@ export function LoginForm() {
             aria-label={showPassword ? t("hidePassword") : t("showPassword")}
             className="absolute top-1/2 right-3 -translate-y-1/2 rounded-md p-1 text-slate-400 transition-colors hover:text-slate-700"
           >
-            {showPassword ? <EyeOff className="size-4" aria-hidden /> : <Eye className="size-4" aria-hidden />}
+            {showPassword ? (
+              <EyeOff className="size-4" aria-hidden />
+            ) : (
+              <Eye className="size-4" aria-hidden />
+            )}
           </button>
         </div>
         {fieldErrors.password ? (

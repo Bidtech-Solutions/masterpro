@@ -20,7 +20,7 @@ export function PhotoGallery({ images, title }: Props) {
 
   if (fullGallery.length === 0) {
     return (
-      <div className="relative flex aspect-[21/9] w-full items-center justify-center overflow-hidden rounded-2xl border border-slate-200/90 bg-slate-100 text-slate-400 ring-1 ring-inset ring-slate-900/10">
+      <div className="relative flex aspect-[21/9] w-full items-center justify-center overflow-hidden rounded-2xl border border-slate-200/90 bg-slate-100 text-slate-400 ring-1 ring-slate-900/10 ring-inset">
         <Images className="size-12" />
       </div>
     );
@@ -52,7 +52,7 @@ export function PhotoGallery({ images, title }: Props) {
         {/* Foto Utama / Kiri (Besar) */}
         <div
           onClick={() => openLightbox(0)}
-          className={`group relative aspect-[4/3] w-full cursor-pointer overflow-hidden rounded-2xl border border-slate-200/90 bg-slate-100 shadow-sm ring-1 ring-inset ring-slate-900/10 transition-shadow hover:shadow-md md:aspect-auto md:h-full md:rounded-3xl ${
+          className={`group relative aspect-[4/3] w-full cursor-pointer overflow-hidden rounded-2xl border border-slate-200/90 bg-slate-100 shadow-sm ring-1 ring-slate-900/10 transition-shadow ring-inset hover:shadow-md md:aspect-auto md:h-full md:rounded-3xl ${
             rightPhotos.length === 0 ? "md:col-span-12" : "md:col-span-7"
           }`}
         >
@@ -105,7 +105,7 @@ export function PhotoGallery({ images, title }: Props) {
                 <div
                   key={photo.id || galleryIdx}
                   onClick={() => openLightbox(galleryIdx)}
-                  className="group relative aspect-[4/3] w-full cursor-pointer overflow-hidden rounded-2xl border border-slate-200/90 bg-slate-100 shadow-sm ring-1 ring-inset ring-slate-900/10 transition-shadow hover:shadow-md md:aspect-auto md:h-full md:rounded-3xl"
+                  className="group relative aspect-[4/3] w-full cursor-pointer overflow-hidden rounded-2xl border border-slate-200/90 bg-slate-100 shadow-sm ring-1 ring-slate-900/10 transition-shadow ring-inset hover:shadow-md md:aspect-auto md:h-full md:rounded-3xl"
                 >
                   <Image
                     src={photo.url}

@@ -9,15 +9,87 @@ import (
 )
 
 // GenerateExcel menghasilkan workbook excelize sesuai spesifikasi PRD §6.6.
+// excelWriter membungkus excelize.File dengan pola sticky error (idiomatic Go).
+// Seluruh operasi penulisan sel dan format diperiksa secara berurutan;
+// jika terjadi error, error pertama disimpan dan operasi berikutnya dilewati dengan aman.
+type excelWriter struct {
+	f   *excelize.File
+	err error
+}
+
+func (w *excelWriter) SetCellValue(sheet, cell string, value any) {
+	if w.err != nil {
+		return
+	}
+	w.err = w.f.SetCellValue(sheet, cell, value)
+}
+
+func (w *excelWriter) SetCellStyle(sheet, topLeft, bottomRight string, styleID int) {
+	if w.err != nil {
+		return
+	}
+	w.err = w.f.SetCellStyle(sheet, topLeft, bottomRight, styleID)
+}
+
+func (w *excelWriter) SetRowHeight(sheet string, row int, height float64) {
+	if w.err != nil {
+		return
+	}
+	w.err = w.f.SetRowHeight(sheet, row, height)
+}
+
+func (w *excelWriter) SetColWidth(sheet, startCol, endCol string, width float64) {
+	if w.err != nil {
+		return
+	}
+	w.err = w.f.SetColWidth(sheet, startCol, endCol, width)
+}
+
+func (w *excelWriter) MergeCell(sheet, topLeft, bottomRight string) {
+	if w.err != nil {
+		return
+	}
+	w.err = w.f.MergeCell(sheet, topLeft, bottomRight)
+}
+
+func (w *excelWriter) SetSheetName(oldName, newName string) {
+	if w.err != nil {
+		return
+	}
+	w.err = w.f.SetSheetName(oldName, newName)
+}
+
+func (w *excelWriter) NewSheet(name string) {
+	if w.err != nil {
+		return
+	}
+	_, w.err = w.f.NewSheet(name)
+}
+
+func (w *excelWriter) SetPanes(sheet string, panes *excelize.Panes) {
+	if w.err != nil {
+		return
+	}
+	w.err = w.f.SetPanes(sheet, panes)
+}
+
+func (w *excelWriter) AutoFilter(sheet, rangeRef string, opts []excelize.AutoFilterOptions) {
+	if w.err != nil {
+		return
+	}
+	w.err = w.f.AutoFilter(sheet, rangeRef, opts)
+}
+
 func GenerateExcel(rows []ExportPropertyRow, stats *SummaryStats, adminName string, filterDesc string, siteURL string) (*excelize.File, error) {
 	f := excelize.NewFile()
+	w := &excelWriter{f: f}
 
 	sheet1 := "Daftar Properti"
 	sheet2 := "Ringkasan"
 
 	// Rename default sheet
-	f.SetSheetName("Sheet1", sheet1)
-	f.NewSheet(sheet2)
+	w.SetSheetName("Sheet1", sheet1)
+	w.NewSheet(sheet2)
 
 	// Time in WIB (UTC+7)
 	wibLoc := time.FixedZone("WIB", 7*3600)
@@ -262,20 +334,20 @@ func GenerateExcel(rows []ExportPropertyRow, stats *SummaryStats, adminName stri
 	// ==========================================
 
 	// Row 1: Title
-	f.MergeCell(sheet1, "A1", "AD1")
-	f.SetCellValue(sheet1, "A1", "Laporan Data Properti — MasterPro Real Estate")
-	f.SetCellStyle(sheet1, "A1", "AD1", titleStyle)
-	f.SetRowHeight(sheet1, 1, 28)
+	w.MergeCell(sheet1, "A1", "AD1")
+	w.SetCellValue(sheet1, "A1", "Laporan Data Properti — MasterPro Real Estate")
+	w.SetCellStyle(sheet1, "A1", "AD1", titleStyle)
+	w.SetRowHeight(sheet1, 1, 28)
 
 	// Row 2: Metadata Creator
-	f.SetCellValue(sheet1, "A2", fmt.Sprintf("Dibuat: %s oleh %s", dateStr, adminName))
-	f.SetCellStyle(sheet1, "A2", "AD2", metaStyle)
-	f.SetRowHeight(sheet1, 2, 18)
+	w.SetCellValue(sheet1, "A2", fmt.Sprintf("Dibuat: %s oleh %s", dateStr, adminName))
+	w.SetCellStyle(sheet1, "A2", "AD2", metaStyle)
+	w.SetRowHeight(sheet1, 2, 18)
 
 	// Row 3: Filter Summary
-	f.SetCellValue(sheet1, "A3", fmt.Sprintf("Filter: %s", filterDesc))
-	f.SetCellStyle(sheet1, "A3", "AD3", metaStyle)
-	f.SetRowHeight(sheet1, 3, 18)
+	w.SetCellValue(sheet1, "A3", fmt.Sprintf("Filter: %s", filterDesc))
+	w.SetCellStyle(sheet1, "A3", "AD3", metaStyle)
+	w.SetRowHeight(sheet1, 3, 18)
 
 	// Row 5: Column Headers
 	headers := []string{
@@ -288,13 +360,13 @@ func GenerateExcel(rows []ExportPropertyRow, stats *SummaryStats, adminName stri
 
 	for colIdx, h := range headers {
 		cell, _ := excelize.CoordinatesToCellName(colIdx+1, 5)
-		f.SetCellValue(sheet1, cell, h)
+		w.SetCellValue(sheet1, cell, h)
 	}
-	f.SetCellStyle(sheet1, "A5", "AD5", headerStyle)
-	f.SetRowHeight(sheet1, 5, 26)
+	w.SetCellStyle(sheet1, "A5", "AD5", headerStyle)
+	w.SetRowHeight(sheet1, 5, 26)
 
 	// Freeze pane below Row 5
-	_ = f.SetPanes(sheet1, &excelize.Panes{
+	w.SetPanes(sheet1, &excelize.Panes{
 		Freeze:      true,
 		Split:       false,
 		XSplit:      0,
@@ -322,7 +394,7 @@ func GenerateExcel(rows []ExportPropertyRow, stats *SummaryStats, adminName stri
 			cStyle = centerStyleZebra
 		}
 
-		f.SetRowHeight(sheet1, rowNum, 20)
+		w.SetRowHeight(sheet1, rowNum, 20)
 
 		if r.Status == "Tayang" && r.ListingType == "Jual" {
 			totalActiveSalePrice += r.Price
@@ -364,103 +436,103 @@ func GenerateExcel(rows []ExportPropertyRow, stats *SummaryStats, adminName stri
 		pubURL := fmt.Sprintf("%s/id/properties/%s", strings.TrimRight(siteURL, "/"), r.Slug)
 
 		// Set values & styles
-		f.SetCellValue(sheet1, fmt.Sprintf("A%d", rowNum), i+1)
-		f.SetCellStyle(sheet1, fmt.Sprintf("A%d", rowNum), fmt.Sprintf("A%d", rowNum), cStyle)
+		w.SetCellValue(sheet1, fmt.Sprintf("A%d", rowNum), i+1)
+		w.SetCellStyle(sheet1, fmt.Sprintf("A%d", rowNum), fmt.Sprintf("A%d", rowNum), cStyle)
 
-		f.SetCellValue(sheet1, fmt.Sprintf("B%d", rowNum), r.Code)
-		f.SetCellStyle(sheet1, fmt.Sprintf("B%d", rowNum), fmt.Sprintf("B%d", rowNum), cStyle)
+		w.SetCellValue(sheet1, fmt.Sprintf("B%d", rowNum), r.Code)
+		w.SetCellStyle(sheet1, fmt.Sprintf("B%d", rowNum), fmt.Sprintf("B%d", rowNum), cStyle)
 
-		f.SetCellValue(sheet1, fmt.Sprintf("C%d", rowNum), r.Title)
-		f.SetCellStyle(sheet1, fmt.Sprintf("C%d", rowNum), fmt.Sprintf("C%d", rowNum), dStyle)
+		w.SetCellValue(sheet1, fmt.Sprintf("C%d", rowNum), r.Title)
+		w.SetCellStyle(sheet1, fmt.Sprintf("C%d", rowNum), fmt.Sprintf("C%d", rowNum), dStyle)
 
-		f.SetCellValue(sheet1, fmt.Sprintf("D%d", rowNum), r.ListingType)
-		f.SetCellStyle(sheet1, fmt.Sprintf("D%d", rowNum), fmt.Sprintf("D%d", rowNum), cStyle)
+		w.SetCellValue(sheet1, fmt.Sprintf("D%d", rowNum), r.ListingType)
+		w.SetCellStyle(sheet1, fmt.Sprintf("D%d", rowNum), fmt.Sprintf("D%d", rowNum), cStyle)
 
-		f.SetCellValue(sheet1, fmt.Sprintf("E%d", rowNum), r.MarketType)
-		f.SetCellStyle(sheet1, fmt.Sprintf("E%d", rowNum), fmt.Sprintf("E%d", rowNum), cStyle)
+		w.SetCellValue(sheet1, fmt.Sprintf("E%d", rowNum), r.MarketType)
+		w.SetCellStyle(sheet1, fmt.Sprintf("E%d", rowNum), fmt.Sprintf("E%d", rowNum), cStyle)
 
-		f.SetCellValue(sheet1, fmt.Sprintf("F%d", rowNum), r.PropertyTypeName)
-		f.SetCellStyle(sheet1, fmt.Sprintf("F%d", rowNum), fmt.Sprintf("F%d", rowNum), cStyle)
+		w.SetCellValue(sheet1, fmt.Sprintf("F%d", rowNum), r.PropertyTypeName)
+		w.SetCellStyle(sheet1, fmt.Sprintf("F%d", rowNum), fmt.Sprintf("F%d", rowNum), cStyle)
 
-		f.SetCellValue(sheet1, fmt.Sprintf("G%d", rowNum), r.Province)
-		f.SetCellStyle(sheet1, fmt.Sprintf("G%d", rowNum), fmt.Sprintf("G%d", rowNum), dStyle)
+		w.SetCellValue(sheet1, fmt.Sprintf("G%d", rowNum), r.Province)
+		w.SetCellStyle(sheet1, fmt.Sprintf("G%d", rowNum), fmt.Sprintf("G%d", rowNum), dStyle)
 
-		f.SetCellValue(sheet1, fmt.Sprintf("H%d", rowNum), r.City)
-		f.SetCellStyle(sheet1, fmt.Sprintf("H%d", rowNum), fmt.Sprintf("H%d", rowNum), dStyle)
+		w.SetCellValue(sheet1, fmt.Sprintf("H%d", rowNum), r.City)
+		w.SetCellStyle(sheet1, fmt.Sprintf("H%d", rowNum), fmt.Sprintf("H%d", rowNum), dStyle)
 
-		f.SetCellValue(sheet1, fmt.Sprintf("I%d", rowNum), r.District)
-		f.SetCellStyle(sheet1, fmt.Sprintf("I%d", rowNum), fmt.Sprintf("I%d", rowNum), dStyle)
+		w.SetCellValue(sheet1, fmt.Sprintf("I%d", rowNum), r.District)
+		w.SetCellStyle(sheet1, fmt.Sprintf("I%d", rowNum), fmt.Sprintf("I%d", rowNum), dStyle)
 
-		f.SetCellValue(sheet1, fmt.Sprintf("J%d", rowNum), r.Address)
-		f.SetCellStyle(sheet1, fmt.Sprintf("J%d", rowNum), fmt.Sprintf("J%d", rowNum), dStyle)
+		w.SetCellValue(sheet1, fmt.Sprintf("J%d", rowNum), r.Address)
+		w.SetCellStyle(sheet1, fmt.Sprintf("J%d", rowNum), fmt.Sprintf("J%d", rowNum), dStyle)
 
-		f.SetCellValue(sheet1, fmt.Sprintf("K%d", rowNum), r.Price)
-		f.SetCellStyle(sheet1, fmt.Sprintf("K%d", rowNum), fmt.Sprintf("K%d", rowNum), pStyle)
+		w.SetCellValue(sheet1, fmt.Sprintf("K%d", rowNum), r.Price)
+		w.SetCellStyle(sheet1, fmt.Sprintf("K%d", rowNum), fmt.Sprintf("K%d", rowNum), pStyle)
 
-		f.SetCellValue(sheet1, fmt.Sprintf("L%d", rowNum), r.RentPeriod)
-		f.SetCellStyle(sheet1, fmt.Sprintf("L%d", rowNum), fmt.Sprintf("L%d", rowNum), cStyle)
+		w.SetCellValue(sheet1, fmt.Sprintf("L%d", rowNum), r.RentPeriod)
+		w.SetCellStyle(sheet1, fmt.Sprintf("L%d", rowNum), fmt.Sprintf("L%d", rowNum), cStyle)
 
-		f.SetCellValue(sheet1, fmt.Sprintf("M%d", rowNum), nego)
-		f.SetCellStyle(sheet1, fmt.Sprintf("M%d", rowNum), fmt.Sprintf("M%d", rowNum), cStyle)
+		w.SetCellValue(sheet1, fmt.Sprintf("M%d", rowNum), nego)
+		w.SetCellStyle(sheet1, fmt.Sprintf("M%d", rowNum), fmt.Sprintf("M%d", rowNum), cStyle)
 
-		f.SetCellValue(sheet1, fmt.Sprintf("N%d", rowNum), ltVal)
+		w.SetCellValue(sheet1, fmt.Sprintf("N%d", rowNum), ltVal)
 		if r.LandArea != nil {
-			f.SetCellStyle(sheet1, fmt.Sprintf("N%d", rowNum), fmt.Sprintf("N%d", rowNum), aStyle)
+			w.SetCellStyle(sheet1, fmt.Sprintf("N%d", rowNum), fmt.Sprintf("N%d", rowNum), aStyle)
 		} else {
-			f.SetCellStyle(sheet1, fmt.Sprintf("N%d", rowNum), fmt.Sprintf("N%d", rowNum), cStyle)
+			w.SetCellStyle(sheet1, fmt.Sprintf("N%d", rowNum), fmt.Sprintf("N%d", rowNum), cStyle)
 		}
 
-		f.SetCellValue(sheet1, fmt.Sprintf("O%d", rowNum), lbVal)
+		w.SetCellValue(sheet1, fmt.Sprintf("O%d", rowNum), lbVal)
 		if r.BuildingArea != nil {
-			f.SetCellStyle(sheet1, fmt.Sprintf("O%d", rowNum), fmt.Sprintf("O%d", rowNum), aStyle)
+			w.SetCellStyle(sheet1, fmt.Sprintf("O%d", rowNum), fmt.Sprintf("O%d", rowNum), aStyle)
 		} else {
-			f.SetCellStyle(sheet1, fmt.Sprintf("O%d", rowNum), fmt.Sprintf("O%d", rowNum), cStyle)
+			w.SetCellStyle(sheet1, fmt.Sprintf("O%d", rowNum), fmt.Sprintf("O%d", rowNum), cStyle)
 		}
 
-		f.SetCellValue(sheet1, fmt.Sprintf("P%d", rowNum), ktVal)
-		f.SetCellStyle(sheet1, fmt.Sprintf("P%d", rowNum), fmt.Sprintf("P%d", rowNum), cStyle)
+		w.SetCellValue(sheet1, fmt.Sprintf("P%d", rowNum), ktVal)
+		w.SetCellStyle(sheet1, fmt.Sprintf("P%d", rowNum), fmt.Sprintf("P%d", rowNum), cStyle)
 
-		f.SetCellValue(sheet1, fmt.Sprintf("Q%d", rowNum), kmVal)
-		f.SetCellStyle(sheet1, fmt.Sprintf("Q%d", rowNum), fmt.Sprintf("Q%d", rowNum), cStyle)
+		w.SetCellValue(sheet1, fmt.Sprintf("Q%d", rowNum), kmVal)
+		w.SetCellStyle(sheet1, fmt.Sprintf("Q%d", rowNum), fmt.Sprintf("Q%d", rowNum), cStyle)
 
-		f.SetCellValue(sheet1, fmt.Sprintf("R%d", rowNum), r.Certificate)
-		f.SetCellStyle(sheet1, fmt.Sprintf("R%d", rowNum), fmt.Sprintf("R%d", rowNum), cStyle)
+		w.SetCellValue(sheet1, fmt.Sprintf("R%d", rowNum), r.Certificate)
+		w.SetCellStyle(sheet1, fmt.Sprintf("R%d", rowNum), fmt.Sprintf("R%d", rowNum), cStyle)
 
-		f.SetCellValue(sheet1, fmt.Sprintf("S%d", rowNum), r.Furnishing)
-		f.SetCellStyle(sheet1, fmt.Sprintf("S%d", rowNum), fmt.Sprintf("S%d", rowNum), cStyle)
+		w.SetCellValue(sheet1, fmt.Sprintf("S%d", rowNum), r.Furnishing)
+		w.SetCellStyle(sheet1, fmt.Sprintf("S%d", rowNum), fmt.Sprintf("S%d", rowNum), cStyle)
 
-		f.SetCellValue(sheet1, fmt.Sprintf("T%d", rowNum), r.Status)
-		f.SetCellStyle(sheet1, fmt.Sprintf("T%d", rowNum), fmt.Sprintf("T%d", rowNum), cStyle)
+		w.SetCellValue(sheet1, fmt.Sprintf("T%d", rowNum), r.Status)
+		w.SetCellStyle(sheet1, fmt.Sprintf("T%d", rowNum), fmt.Sprintf("T%d", rowNum), cStyle)
 
-		f.SetCellValue(sheet1, fmt.Sprintf("U%d", rowNum), r.AgentName)
-		f.SetCellStyle(sheet1, fmt.Sprintf("U%d", rowNum), fmt.Sprintf("U%d", rowNum), dStyle)
+		w.SetCellValue(sheet1, fmt.Sprintf("U%d", rowNum), r.AgentName)
+		w.SetCellStyle(sheet1, fmt.Sprintf("U%d", rowNum), fmt.Sprintf("U%d", rowNum), dStyle)
 
-		f.SetCellValue(sheet1, fmt.Sprintf("V%d", rowNum), r.AgentCode)
-		f.SetCellStyle(sheet1, fmt.Sprintf("V%d", rowNum), fmt.Sprintf("V%d", rowNum), cStyle)
+		w.SetCellValue(sheet1, fmt.Sprintf("V%d", rowNum), r.AgentCode)
+		w.SetCellStyle(sheet1, fmt.Sprintf("V%d", rowNum), fmt.Sprintf("V%d", rowNum), cStyle)
 
-		f.SetCellValue(sheet1, fmt.Sprintf("W%d", rowNum), r.AgentWhatsapp)
-		f.SetCellStyle(sheet1, fmt.Sprintf("W%d", rowNum), fmt.Sprintf("W%d", rowNum), cStyle)
+		w.SetCellValue(sheet1, fmt.Sprintf("W%d", rowNum), r.AgentWhatsapp)
+		w.SetCellStyle(sheet1, fmt.Sprintf("W%d", rowNum), fmt.Sprintf("W%d", rowNum), cStyle)
 
-		f.SetCellValue(sheet1, fmt.Sprintf("X%d", rowNum), r.ViewCount)
-		f.SetCellStyle(sheet1, fmt.Sprintf("X%d", rowNum), fmt.Sprintf("X%d", rowNum), cStyle)
+		w.SetCellValue(sheet1, fmt.Sprintf("X%d", rowNum), r.ViewCount)
+		w.SetCellStyle(sheet1, fmt.Sprintf("X%d", rowNum), fmt.Sprintf("X%d", rowNum), cStyle)
 
-		f.SetCellValue(sheet1, fmt.Sprintf("Y%d", rowNum), r.WhatsappClickCount)
-		f.SetCellStyle(sheet1, fmt.Sprintf("Y%d", rowNum), fmt.Sprintf("Y%d", rowNum), cStyle)
+		w.SetCellValue(sheet1, fmt.Sprintf("Y%d", rowNum), r.WhatsappClickCount)
+		w.SetCellStyle(sheet1, fmt.Sprintf("Y%d", rowNum), fmt.Sprintf("Y%d", rowNum), cStyle)
 
-		f.SetCellValue(sheet1, fmt.Sprintf("Z%d", rowNum), publishedStr)
-		f.SetCellStyle(sheet1, fmt.Sprintf("Z%d", rowNum), fmt.Sprintf("Z%d", rowNum), cStyle)
+		w.SetCellValue(sheet1, fmt.Sprintf("Z%d", rowNum), publishedStr)
+		w.SetCellStyle(sheet1, fmt.Sprintf("Z%d", rowNum), fmt.Sprintf("Z%d", rowNum), cStyle)
 
-		f.SetCellValue(sheet1, fmt.Sprintf("AA%d", rowNum), closedStr)
-		f.SetCellStyle(sheet1, fmt.Sprintf("AA%d", rowNum), fmt.Sprintf("AA%d", rowNum), cStyle)
+		w.SetCellValue(sheet1, fmt.Sprintf("AA%d", rowNum), closedStr)
+		w.SetCellStyle(sheet1, fmt.Sprintf("AA%d", rowNum), fmt.Sprintf("AA%d", rowNum), cStyle)
 
-		f.SetCellValue(sheet1, fmt.Sprintf("AB%d", rowNum), createdStr)
-		f.SetCellStyle(sheet1, fmt.Sprintf("AB%d", rowNum), fmt.Sprintf("AB%d", rowNum), cStyle)
+		w.SetCellValue(sheet1, fmt.Sprintf("AB%d", rowNum), createdStr)
+		w.SetCellStyle(sheet1, fmt.Sprintf("AB%d", rowNum), fmt.Sprintf("AB%d", rowNum), cStyle)
 
-		f.SetCellValue(sheet1, fmt.Sprintf("AC%d", rowNum), updatedStr)
-		f.SetCellStyle(sheet1, fmt.Sprintf("AC%d", rowNum), fmt.Sprintf("AC%d", rowNum), cStyle)
+		w.SetCellValue(sheet1, fmt.Sprintf("AC%d", rowNum), updatedStr)
+		w.SetCellStyle(sheet1, fmt.Sprintf("AC%d", rowNum), fmt.Sprintf("AC%d", rowNum), cStyle)
 
-		f.SetCellValue(sheet1, fmt.Sprintf("AD%d", rowNum), pubURL)
-		f.SetCellStyle(sheet1, fmt.Sprintf("AD%d", rowNum), fmt.Sprintf("AD%d", rowNum), dStyle)
+		w.SetCellValue(sheet1, fmt.Sprintf("AD%d", rowNum), pubURL)
+		w.SetCellStyle(sheet1, fmt.Sprintf("AD%d", rowNum), fmt.Sprintf("AD%d", rowNum), dStyle)
 	}
 
 	// AutoFilter
@@ -468,80 +540,80 @@ func GenerateExcel(rows []ExportPropertyRow, stats *SummaryStats, adminName stri
 	if len(rows) == 0 {
 		lastDataRow = 5
 	}
-	_ = f.AutoFilter(sheet1, fmt.Sprintf("A5:AD%d", lastDataRow), []excelize.AutoFilterOptions{})
+	w.AutoFilter(sheet1, fmt.Sprintf("A5:AD%d", lastDataRow), []excelize.AutoFilterOptions{})
 
 	// Footer Row (Baris Akhir Total)
 	footerRow := lastDataRow + 1
-	f.SetRowHeight(sheet1, footerRow, 24)
+	w.SetRowHeight(sheet1, footerRow, 24)
 
-	f.MergeCell(sheet1, fmt.Sprintf("A%d", footerRow), fmt.Sprintf("J%d", footerRow))
-	f.SetCellValue(sheet1, fmt.Sprintf("A%d", footerRow), fmt.Sprintf("TOTAL: %d LISTING (Total Nilai Properti Tayang Dijual: Rp)", len(rows)))
-	f.SetCellStyle(sheet1, fmt.Sprintf("A%d", footerRow), fmt.Sprintf("J%d", footerRow), footerStyle)
+	w.MergeCell(sheet1, fmt.Sprintf("A%d", footerRow), fmt.Sprintf("J%d", footerRow))
+	w.SetCellValue(sheet1, fmt.Sprintf("A%d", footerRow), fmt.Sprintf("TOTAL: %d LISTING (Total Nilai Properti Tayang Dijual: Rp)", len(rows)))
+	w.SetCellStyle(sheet1, fmt.Sprintf("A%d", footerRow), fmt.Sprintf("J%d", footerRow), footerStyle)
 
-	f.SetCellValue(sheet1, fmt.Sprintf("K%d", footerRow), totalActiveSalePrice)
-	f.SetCellStyle(sheet1, fmt.Sprintf("K%d", footerRow), fmt.Sprintf("K%d", footerRow), footerPriceStyle)
+	w.SetCellValue(sheet1, fmt.Sprintf("K%d", footerRow), totalActiveSalePrice)
+	w.SetCellStyle(sheet1, fmt.Sprintf("K%d", footerRow), fmt.Sprintf("K%d", footerRow), footerPriceStyle)
 
-	f.MergeCell(sheet1, fmt.Sprintf("L%d", footerRow), fmt.Sprintf("AD%d", footerRow))
-	f.SetCellStyle(sheet1, fmt.Sprintf("L%d", footerRow), fmt.Sprintf("AD%d", footerRow), footerStyle)
+	w.MergeCell(sheet1, fmt.Sprintf("L%d", footerRow), fmt.Sprintf("AD%d", footerRow))
+	w.SetCellStyle(sheet1, fmt.Sprintf("L%d", footerRow), fmt.Sprintf("AD%d", footerRow), footerStyle)
 
 	// Set Column Widths for Sheet 1
 	colWidths := map[string]float64{
-		"A": 6,  // No
-		"B": 13, // Kode
-		"C": 35, // Judul
-		"D": 11, // Jual/Sewa
-		"E": 11, // Pasar
-		"F": 16, // Tipe
-		"G": 18, // Provinsi
-		"H": 18, // Kota
-		"I": 16, // Kecamatan
-		"J": 30, // Alamat
-		"K": 18, // Harga
-		"L": 14, // Periode Sewa
-		"M": 8,  // Nego
-		"N": 12, // LT
-		"O": 12, // LB
-		"P": 7,  // KT
-		"Q": 7,  // KM
-		"R": 12, // Sertifikat
-		"S": 16, // Furnishing
-		"T": 12, // Status
-		"U": 22, // Agen
-		"V": 14, // Kode Agen
-		"W": 16, // WA Agen
-		"X": 10, // Dilihat
-		"Y": 10, // Klik WA
-		"Z": 18, // Tayang
+		"A":  6,  // No
+		"B":  13, // Kode
+		"C":  35, // Judul
+		"D":  11, // Jual/Sewa
+		"E":  11, // Pasar
+		"F":  16, // Tipe
+		"G":  18, // Provinsi
+		"H":  18, // Kota
+		"I":  16, // Kecamatan
+		"J":  30, // Alamat
+		"K":  18, // Harga
+		"L":  14, // Periode Sewa
+		"M":  8,  // Nego
+		"N":  12, // LT
+		"O":  12, // LB
+		"P":  7,  // KT
+		"Q":  7,  // KM
+		"R":  12, // Sertifikat
+		"S":  16, // Furnishing
+		"T":  12, // Status
+		"U":  22, // Agen
+		"V":  14, // Kode Agen
+		"W":  16, // WA Agen
+		"X":  10, // Dilihat
+		"Y":  10, // Klik WA
+		"Z":  18, // Tayang
 		"AA": 18, // Ditutup
 		"AB": 18, // Dibuat
 		"AC": 18, // Diperbarui
 		"AD": 40, // URL
 	}
 	for col, width := range colWidths {
-		_ = f.SetColWidth(sheet1, col, col, width)
+		w.SetColWidth(sheet1, col, col, width)
 	}
 
 	// ==========================================
 	// 3. SHEET 2: RINGKASAN
 	// ==========================================
-	f.MergeCell(sheet2, "A1", "H1")
-	f.SetCellValue(sheet2, "A1", "Ringkasan & Statistik Data Properti")
-	f.SetCellStyle(sheet2, "A1", "H1", titleStyle)
-	f.SetRowHeight(sheet2, 1, 26)
+	w.MergeCell(sheet2, "A1", "H1")
+	w.SetCellValue(sheet2, "A1", "Ringkasan & Statistik Data Properti")
+	w.SetCellStyle(sheet2, "A1", "H1", titleStyle)
+	w.SetRowHeight(sheet2, 1, 26)
 
-	f.SetCellValue(sheet2, "A2", fmt.Sprintf("Data per %s", dateStr))
-	f.SetCellStyle(sheet2, "A2", "H2", metaStyle)
-	f.SetRowHeight(sheet2, 2, 18)
+	w.SetCellValue(sheet2, "A2", fmt.Sprintf("Data per %s", dateStr))
+	w.SetCellStyle(sheet2, "A2", "H2", metaStyle)
+	w.SetRowHeight(sheet2, 2, 18)
 
 	// Section 1: Berdasarkan Status
-	f.SetCellValue(sheet2, "A4", "1. Rekapitulasi Berdasarkan Status")
-	f.SetCellStyle(sheet2, "A4", "A4", titleStyle)
+	w.SetCellValue(sheet2, "A4", "1. Rekapitulasi Berdasarkan Status")
+	w.SetCellStyle(sheet2, "A4", "A4", titleStyle)
 
-	f.SetCellValue(sheet2, "A5", "Status")
-	f.SetCellValue(sheet2, "B5", "Jumlah Listing")
-	f.SetCellValue(sheet2, "C5", "Persentase")
-	f.SetCellStyle(sheet2, "A5", "C5", headerStyle)
-	f.SetRowHeight(sheet2, 5, 22)
+	w.SetCellValue(sheet2, "A5", "Status")
+	w.SetCellValue(sheet2, "B5", "Jumlah Listing")
+	w.SetCellValue(sheet2, "C5", "Persentase")
+	w.SetCellStyle(sheet2, "A5", "C5", headerStyle)
+	w.SetRowHeight(sheet2, 5, 22)
 
 	statusData := []struct {
 		Label string
@@ -564,28 +636,28 @@ func GenerateExcel(rows []ExportPropertyRow, stats *SummaryStats, adminName stri
 		if idx%2 == 1 {
 			st = dataStyleZebra
 		}
-		f.SetCellValue(sheet2, fmt.Sprintf("A%d", rNum), sd.Label)
-		f.SetCellValue(sheet2, fmt.Sprintf("B%d", rNum), sd.Count)
-		f.SetCellValue(sheet2, fmt.Sprintf("C%d", rNum), pct)
-		f.SetCellStyle(sheet2, fmt.Sprintf("A%d", rNum), fmt.Sprintf("C%d", rNum), st)
+		w.SetCellValue(sheet2, fmt.Sprintf("A%d", rNum), sd.Label)
+		w.SetCellValue(sheet2, fmt.Sprintf("B%d", rNum), sd.Count)
+		w.SetCellValue(sheet2, fmt.Sprintf("C%d", rNum), pct)
+		w.SetCellStyle(sheet2, fmt.Sprintf("A%d", rNum), fmt.Sprintf("C%d", rNum), st)
 	}
 
 	totStatusRow := 6 + len(statusData)
-	f.SetCellValue(sheet2, fmt.Sprintf("A%d", totStatusRow), "Total Listing")
-	f.SetCellValue(sheet2, fmt.Sprintf("B%d", totStatusRow), stats.TotalCount)
-	f.SetCellValue(sheet2, fmt.Sprintf("C%d", totStatusRow), "100.0%")
-	f.SetCellStyle(sheet2, fmt.Sprintf("A%d", totStatusRow), fmt.Sprintf("C%d", totStatusRow), footerStyle)
+	w.SetCellValue(sheet2, fmt.Sprintf("A%d", totStatusRow), "Total Listing")
+	w.SetCellValue(sheet2, fmt.Sprintf("B%d", totStatusRow), stats.TotalCount)
+	w.SetCellValue(sheet2, fmt.Sprintf("C%d", totStatusRow), "100.0%")
+	w.SetCellStyle(sheet2, fmt.Sprintf("A%d", totStatusRow), fmt.Sprintf("C%d", totStatusRow), footerStyle)
 
 	// Section 2: Berdasarkan Transaksi & Tipe
 	curRow := totStatusRow + 2
-	f.SetCellValue(sheet2, fmt.Sprintf("A%d", curRow), "2. Rekapitulasi Transaksi (Jual / Sewa)")
-	f.SetCellStyle(sheet2, fmt.Sprintf("A%d", curRow), fmt.Sprintf("A%d", curRow), titleStyle)
+	w.SetCellValue(sheet2, fmt.Sprintf("A%d", curRow), "2. Rekapitulasi Transaksi (Jual / Sewa)")
+	w.SetCellStyle(sheet2, fmt.Sprintf("A%d", curRow), fmt.Sprintf("A%d", curRow), titleStyle)
 
 	curRow++
-	f.SetCellValue(sheet2, fmt.Sprintf("A%d", curRow), "Jenis Transaksi")
-	f.SetCellValue(sheet2, fmt.Sprintf("B%d", curRow), "Jumlah Listing")
-	f.SetCellValue(sheet2, fmt.Sprintf("C%d", curRow), "Persentase")
-	f.SetCellStyle(sheet2, fmt.Sprintf("A%d", curRow), fmt.Sprintf("C%d", curRow), headerStyle)
+	w.SetCellValue(sheet2, fmt.Sprintf("A%d", curRow), "Jenis Transaksi")
+	w.SetCellValue(sheet2, fmt.Sprintf("B%d", curRow), "Jumlah Listing")
+	w.SetCellValue(sheet2, fmt.Sprintf("C%d", curRow), "Persentase")
+	w.SetCellStyle(sheet2, fmt.Sprintf("A%d", curRow), fmt.Sprintf("C%d", curRow), headerStyle)
 
 	txData := []struct {
 		Label string
@@ -604,22 +676,22 @@ func GenerateExcel(rows []ExportPropertyRow, stats *SummaryStats, adminName stri
 		if idx%2 == 1 {
 			st = dataStyleZebra
 		}
-		f.SetCellValue(sheet2, fmt.Sprintf("A%d", curRow), td.Label)
-		f.SetCellValue(sheet2, fmt.Sprintf("B%d", curRow), td.Count)
-		f.SetCellValue(sheet2, fmt.Sprintf("C%d", curRow), pct)
-		f.SetCellStyle(sheet2, fmt.Sprintf("A%d", curRow), fmt.Sprintf("C%d", curRow), st)
+		w.SetCellValue(sheet2, fmt.Sprintf("A%d", curRow), td.Label)
+		w.SetCellValue(sheet2, fmt.Sprintf("B%d", curRow), td.Count)
+		w.SetCellValue(sheet2, fmt.Sprintf("C%d", curRow), pct)
+		w.SetCellStyle(sheet2, fmt.Sprintf("A%d", curRow), fmt.Sprintf("C%d", curRow), st)
 	}
 
 	// Section 3: Berdasarkan Tipe Properti
 	curRow += 2
-	f.SetCellValue(sheet2, fmt.Sprintf("A%d", curRow), "3. Rekapitulasi Tipe Properti")
-	f.SetCellStyle(sheet2, fmt.Sprintf("A%d", curRow), fmt.Sprintf("A%d", curRow), titleStyle)
+	w.SetCellValue(sheet2, fmt.Sprintf("A%d", curRow), "3. Rekapitulasi Tipe Properti")
+	w.SetCellStyle(sheet2, fmt.Sprintf("A%d", curRow), fmt.Sprintf("A%d", curRow), titleStyle)
 
 	curRow++
-	f.SetCellValue(sheet2, fmt.Sprintf("A%d", curRow), "Tipe Properti")
-	f.SetCellValue(sheet2, fmt.Sprintf("B%d", curRow), "Jumlah Listing")
-	f.SetCellValue(sheet2, fmt.Sprintf("C%d", curRow), "Persentase")
-	f.SetCellStyle(sheet2, fmt.Sprintf("A%d", curRow), fmt.Sprintf("C%d", curRow), headerStyle)
+	w.SetCellValue(sheet2, fmt.Sprintf("A%d", curRow), "Tipe Properti")
+	w.SetCellValue(sheet2, fmt.Sprintf("B%d", curRow), "Jumlah Listing")
+	w.SetCellValue(sheet2, fmt.Sprintf("C%d", curRow), "Persentase")
+	w.SetCellStyle(sheet2, fmt.Sprintf("A%d", curRow), fmt.Sprintf("C%d", curRow), headerStyle)
 
 	for idx, tc := range stats.TypeCounts {
 		curRow++
@@ -631,26 +703,26 @@ func GenerateExcel(rows []ExportPropertyRow, stats *SummaryStats, adminName stri
 		if idx%2 == 1 {
 			st = dataStyleZebra
 		}
-		f.SetCellValue(sheet2, fmt.Sprintf("A%d", curRow), tc.TypeName)
-		f.SetCellValue(sheet2, fmt.Sprintf("B%d", curRow), tc.Count)
-		f.SetCellValue(sheet2, fmt.Sprintf("C%d", curRow), pct)
-		f.SetCellStyle(sheet2, fmt.Sprintf("A%d", curRow), fmt.Sprintf("C%d", curRow), st)
+		w.SetCellValue(sheet2, fmt.Sprintf("A%d", curRow), tc.TypeName)
+		w.SetCellValue(sheet2, fmt.Sprintf("B%d", curRow), tc.Count)
+		w.SetCellValue(sheet2, fmt.Sprintf("C%d", curRow), pct)
+		w.SetCellStyle(sheet2, fmt.Sprintf("A%d", curRow), fmt.Sprintf("C%d", curRow), st)
 	}
 
 	// Section 4: Performa Per Agen
 	curRow += 2
-	f.SetCellValue(sheet2, fmt.Sprintf("A%d", curRow), "4. Rekapitulasi Performa Mitra Agen")
-	f.SetCellStyle(sheet2, fmt.Sprintf("A%d", curRow), fmt.Sprintf("A%d", curRow), titleStyle)
+	w.SetCellValue(sheet2, fmt.Sprintf("A%d", curRow), "4. Rekapitulasi Performa Mitra Agen")
+	w.SetCellStyle(sheet2, fmt.Sprintf("A%d", curRow), fmt.Sprintf("A%d", curRow), titleStyle)
 
 	curRow++
-	f.SetCellValue(sheet2, fmt.Sprintf("A%d", curRow), "Nama Agen")
-	f.SetCellValue(sheet2, fmt.Sprintf("B%d", curRow), "Kode Agen")
-	f.SetCellValue(sheet2, fmt.Sprintf("C%d", curRow), "Tayang")
-	f.SetCellValue(sheet2, fmt.Sprintf("D%d", curRow), "Terjual")
-	f.SetCellValue(sheet2, fmt.Sprintf("E%d", curRow), "Tersewa")
-	f.SetCellValue(sheet2, fmt.Sprintf("F%d", curRow), "Draf")
-	f.SetCellValue(sheet2, fmt.Sprintf("G%d", curRow), "Total Listing")
-	f.SetCellStyle(sheet2, fmt.Sprintf("A%d", curRow), fmt.Sprintf("G%d", curRow), headerStyle)
+	w.SetCellValue(sheet2, fmt.Sprintf("A%d", curRow), "Nama Agen")
+	w.SetCellValue(sheet2, fmt.Sprintf("B%d", curRow), "Kode Agen")
+	w.SetCellValue(sheet2, fmt.Sprintf("C%d", curRow), "Tayang")
+	w.SetCellValue(sheet2, fmt.Sprintf("D%d", curRow), "Terjual")
+	w.SetCellValue(sheet2, fmt.Sprintf("E%d", curRow), "Tersewa")
+	w.SetCellValue(sheet2, fmt.Sprintf("F%d", curRow), "Draf")
+	w.SetCellValue(sheet2, fmt.Sprintf("G%d", curRow), "Total Listing")
+	w.SetCellStyle(sheet2, fmt.Sprintf("A%d", curRow), fmt.Sprintf("G%d", curRow), headerStyle)
 
 	for idx, as := range stats.AgentStats {
 		curRow++
@@ -660,37 +732,40 @@ func GenerateExcel(rows []ExportPropertyRow, stats *SummaryStats, adminName stri
 			st = dataStyleZebra
 			cSt = centerStyleZebra
 		}
-		f.SetCellValue(sheet2, fmt.Sprintf("A%d", curRow), as.AgentName)
-		f.SetCellStyle(sheet2, fmt.Sprintf("A%d", curRow), fmt.Sprintf("A%d", curRow), st)
+		w.SetCellValue(sheet2, fmt.Sprintf("A%d", curRow), as.AgentName)
+		w.SetCellStyle(sheet2, fmt.Sprintf("A%d", curRow), fmt.Sprintf("A%d", curRow), st)
 
-		f.SetCellValue(sheet2, fmt.Sprintf("B%d", curRow), as.AgentCode)
-		f.SetCellStyle(sheet2, fmt.Sprintf("B%d", curRow), fmt.Sprintf("B%d", curRow), cSt)
+		w.SetCellValue(sheet2, fmt.Sprintf("B%d", curRow), as.AgentCode)
+		w.SetCellStyle(sheet2, fmt.Sprintf("B%d", curRow), fmt.Sprintf("B%d", curRow), cSt)
 
-		f.SetCellValue(sheet2, fmt.Sprintf("C%d", curRow), as.ActiveCount)
-		f.SetCellStyle(sheet2, fmt.Sprintf("C%d", curRow), fmt.Sprintf("C%d", curRow), cSt)
+		w.SetCellValue(sheet2, fmt.Sprintf("C%d", curRow), as.ActiveCount)
+		w.SetCellStyle(sheet2, fmt.Sprintf("C%d", curRow), fmt.Sprintf("C%d", curRow), cSt)
 
-		f.SetCellValue(sheet2, fmt.Sprintf("D%d", curRow), as.SoldCount)
-		f.SetCellStyle(sheet2, fmt.Sprintf("D%d", curRow), fmt.Sprintf("D%d", curRow), cSt)
+		w.SetCellValue(sheet2, fmt.Sprintf("D%d", curRow), as.SoldCount)
+		w.SetCellStyle(sheet2, fmt.Sprintf("D%d", curRow), fmt.Sprintf("D%d", curRow), cSt)
 
-		f.SetCellValue(sheet2, fmt.Sprintf("E%d", curRow), as.RentedCount)
-		f.SetCellStyle(sheet2, fmt.Sprintf("E%d", curRow), fmt.Sprintf("E%d", curRow), cSt)
+		w.SetCellValue(sheet2, fmt.Sprintf("E%d", curRow), as.RentedCount)
+		w.SetCellStyle(sheet2, fmt.Sprintf("E%d", curRow), fmt.Sprintf("E%d", curRow), cSt)
 
-		f.SetCellValue(sheet2, fmt.Sprintf("F%d", curRow), as.DraftCount)
-		f.SetCellStyle(sheet2, fmt.Sprintf("F%d", curRow), fmt.Sprintf("F%d", curRow), cSt)
+		w.SetCellValue(sheet2, fmt.Sprintf("F%d", curRow), as.DraftCount)
+		w.SetCellStyle(sheet2, fmt.Sprintf("F%d", curRow), fmt.Sprintf("F%d", curRow), cSt)
 
-		f.SetCellValue(sheet2, fmt.Sprintf("G%d", curRow), as.TotalCount)
-		f.SetCellStyle(sheet2, fmt.Sprintf("G%d", curRow), fmt.Sprintf("G%d", curRow), cSt)
+		w.SetCellValue(sheet2, fmt.Sprintf("G%d", curRow), as.TotalCount)
+		w.SetCellStyle(sheet2, fmt.Sprintf("G%d", curRow), fmt.Sprintf("G%d", curRow), cSt)
 	}
 
 	// Widths for Sheet 2
-	_ = f.SetColWidth(sheet2, "A", "A", 28)
-	_ = f.SetColWidth(sheet2, "B", "B", 18)
-	_ = f.SetColWidth(sheet2, "C", "C", 14)
-	_ = f.SetColWidth(sheet2, "D", "D", 14)
-	_ = f.SetColWidth(sheet2, "E", "E", 14)
-	_ = f.SetColWidth(sheet2, "F", "F", 14)
-	_ = f.SetColWidth(sheet2, "G", "G", 16)
+	w.SetColWidth(sheet2, "A", "A", 28)
+	w.SetColWidth(sheet2, "B", "B", 18)
+	w.SetColWidth(sheet2, "C", "C", 14)
+	w.SetColWidth(sheet2, "D", "D", 14)
+	w.SetColWidth(sheet2, "E", "E", 14)
+	w.SetColWidth(sheet2, "F", "F", 14)
+	w.SetColWidth(sheet2, "G", "G", 16)
+
+	if w.err != nil {
+		return nil, fmt.Errorf("gagal menyusun dokumen excel: %w", w.err)
+	}
 
 	return f, nil
 }
-

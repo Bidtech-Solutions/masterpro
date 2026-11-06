@@ -106,4 +106,3 @@ func TestUserService_CreateAndPasswordPolicy(t *testing.T) {
 		t.Errorf("expected CANNOT_DEACTIVATE_SELF, got %v", err)
 	}
 }
-

@@ -3,11 +3,7 @@
 import { MapPin } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-import {
-  KEPRI_PROVINCE_CONFIG,
-  getCityById,
-  getDefaultDistrictForCity,
-} from "@/config/locations";
+import { KEPRI_PROVINCE_CONFIG, getCityById, getDefaultDistrictForCity } from "@/config/locations";
 
 interface CardLocationProps {
   provinceId: number;

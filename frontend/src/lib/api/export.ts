@@ -66,4 +66,3 @@ export async function downloadPropertiesExcel(params: PropertyExportParams = {})
   document.body.removeChild(link);
   window.URL.revokeObjectURL(blobUrl);
 }
-

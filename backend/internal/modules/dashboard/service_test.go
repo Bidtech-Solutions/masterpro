@@ -11,12 +11,12 @@ import (
 )
 
 type mockRepo struct {
-	agentIDByUserIDFn    func(ctx context.Context, userID uuid.UUID) (*uuid.UUID, error)
-	propertiesSummaryFn  func(ctx context.Context, agentID *uuid.UUID) (PropertiesSummary, error)
-	agentsSummaryFn      func(ctx context.Context) (AgentsSummary, error)
-	totalsSummaryFn      func(ctx context.Context, agentID *uuid.UUID) (TotalsSummary, error)
-	topViewedFn          func(ctx context.Context, agentID *uuid.UUID, limit int) ([]TopViewedProperty, error)
-	recentlyUpdatedFn    func(ctx context.Context, agentID *uuid.UUID, limit int) ([]RecentProperty, error)
+	agentIDByUserIDFn   func(ctx context.Context, userID uuid.UUID) (*uuid.UUID, error)
+	propertiesSummaryFn func(ctx context.Context, agentID *uuid.UUID) (PropertiesSummary, error)
+	agentsSummaryFn     func(ctx context.Context) (AgentsSummary, error)
+	totalsSummaryFn     func(ctx context.Context, agentID *uuid.UUID) (TotalsSummary, error)
+	topViewedFn         func(ctx context.Context, agentID *uuid.UUID, limit int) ([]TopViewedProperty, error)
+	recentlyUpdatedFn   func(ctx context.Context, agentID *uuid.UUID, limit int) ([]RecentProperty, error)
 }
 
 func (m *mockRepo) GetAgentIDByUserID(ctx context.Context, userID uuid.UUID) (*uuid.UUID, error) {
@@ -120,4 +120,3 @@ func TestGetSummary_Agent(t *testing.T) {
 		t.Errorf("expected 32 properties, got %d", res.Properties.Total)
 	}
 }
-

@@ -83,4 +83,3 @@ type SummaryStats struct {
 	TypeCounts []TypeCount
 	AgentStats []AgentStat
 }
-

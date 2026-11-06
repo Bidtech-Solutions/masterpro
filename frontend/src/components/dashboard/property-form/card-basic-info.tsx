@@ -74,7 +74,7 @@ export function CardBasicInfo({
               <button
                 type="button"
                 onClick={() => setListingType("sale")}
-                className={`rounded-lg py-2.5 px-3 text-xs font-bold transition-all ${
+                className={`rounded-lg px-3 py-2.5 text-xs font-bold transition-all ${
                   listingType === "sale"
                     ? "border border-[#BFDBFE] bg-white text-[#2563EB] shadow-xs"
                     : "bg-transparent font-medium text-slate-600 hover:text-slate-900"
@@ -91,7 +91,7 @@ export function CardBasicInfo({
                   }
                   setListingType("rent");
                 }}
-                className={`rounded-lg py-2.5 px-3 text-xs font-bold transition-all ${
+                className={`rounded-lg px-3 py-2.5 text-xs font-bold transition-all ${
                   listingType === "rent"
                     ? "border border-[#BFDBFE] bg-white text-[#2563EB] shadow-xs"
                     : "bg-transparent font-medium text-slate-600 hover:text-slate-900"
@@ -111,7 +111,7 @@ export function CardBasicInfo({
               <button
                 type="button"
                 onClick={() => setMarketType("primary")}
-                className={`rounded-lg py-2.5 px-3 text-xs font-bold transition-all ${
+                className={`rounded-lg px-3 py-2.5 text-xs font-bold transition-all ${
                   marketType === "primary"
                     ? "border border-[#BFDBFE] bg-white text-[#2563EB] shadow-xs"
                     : "bg-transparent font-medium text-slate-600 hover:text-slate-900"
@@ -122,7 +122,7 @@ export function CardBasicInfo({
               <button
                 type="button"
                 onClick={() => setMarketType("secondary")}
-                className={`rounded-lg py-2.5 px-3 text-xs font-bold transition-all ${
+                className={`rounded-lg px-3 py-2.5 text-xs font-bold transition-all ${
                   marketType === "secondary"
                     ? "border border-[#BFDBFE] bg-white text-[#2563EB] shadow-xs"
                     : "bg-transparent font-medium text-slate-600 hover:text-slate-900"
@@ -160,9 +160,7 @@ export function CardBasicInfo({
                         : "border border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50/50"
                   }`}
                 >
-                  <Icon
-                    className={`mb-2 size-6 ${isSelected ? "text-[#2563EB]" : "text-slate-500"}`}
-                  />
+                  <Icon className={`mb-2 size-6 ${isSelected ? "text-[#2563EB]" : "text-slate-500"}`} />
                   <span className="text-xs">{pt.label}</span>
                 </button>
               );
@@ -205,9 +203,7 @@ export function CardBasicInfo({
                 </span>
               )}
               {isMinMet && (
-                <span className="text-[11px] font-medium text-emerald-600">
-                  {t("descMinMet")}
-                </span>
+                <span className="text-[11px] font-medium text-emerald-600">{t("descMinMet")}</span>
               )}
               <span
                 className={`text-[11px] ${

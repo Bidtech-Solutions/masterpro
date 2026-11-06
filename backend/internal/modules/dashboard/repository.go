@@ -2,6 +2,7 @@ package dashboard
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"time"
 
@@ -25,7 +26,7 @@ func (r *Repository) GetAgentIDByUserID(ctx context.Context, userID uuid.UUID) (
 	var agent models.Agent
 	err := r.db.WithContext(ctx).Select("id").Where("user_id = ?", userID).Take(&agent).Error
 	if err != nil {
-		if err == gorm.ErrRecordNotFound {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil
 		}
 		return nil, err
@@ -174,4 +175,3 @@ func (r *Repository) GetRecentlyUpdated(ctx context.Context, agentID *uuid.UUID,
 	}
 	return result, nil
 }
-

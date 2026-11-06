@@ -61,9 +61,7 @@ export default function DashboardOverviewPage() {
             agents: summaryData.agents ?? emptySummary.agents,
             totals: summaryData.totals ?? emptySummary.totals,
             top_viewed: Array.isArray(summaryData.top_viewed) ? summaryData.top_viewed : [],
-            recently_updated: Array.isArray(summaryData.recently_updated)
-              ? summaryData.recently_updated
-              : [],
+            recently_updated: Array.isArray(summaryData.recently_updated) ? summaryData.recently_updated : [],
           });
         }
         if (mounted && Array.isArray(agentsData)) {
@@ -134,11 +132,7 @@ export default function DashboardOverviewPage() {
         {/* Kiri: Kesiapan Jaringan Agen */}
         {(!user || user.role === "admin") && (
           <div className="lg:col-span-7">
-            <AgentReadinessCard
-              activeAgents={activeAgents}
-              totalAgents={totalAgents}
-              agents={agents}
-            />
+            <AgentReadinessCard activeAgents={activeAgents} totalAgents={totalAgents} agents={agents} />
           </div>
         )}
 

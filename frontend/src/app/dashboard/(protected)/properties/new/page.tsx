@@ -229,7 +229,8 @@ export default function NewPropertyPage() {
       bathrooms: bathrooms !== "" && propertyType !== "tanah" ? Number(bathrooms) : undefined,
       maid_bedrooms: maidBedrooms !== "" && propertyType !== "tanah" ? Number(maidBedrooms) : undefined,
       floors: floors && propertyType !== "tanah" ? Number(floors.replace(/\D/g, "")) || undefined : undefined,
-      carports: carports && propertyType !== "tanah" ? Number(carports.replace(/\D/g, "")) || undefined : undefined,
+      carports:
+        carports && propertyType !== "tanah" ? Number(carports.replace(/\D/g, "")) || undefined : undefined,
       electricity_va: electricity ? Number(electricity) : undefined,
       water_source: waterSource || undefined,
       certificate: certificate || undefined,
@@ -302,7 +303,7 @@ export default function NewPropertyPage() {
       {toast && (
         <div
           className={`fixed right-6 bottom-6 z-50 flex items-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold text-white shadow-xl transition-all ${
-            toast.isError ? "bg-rose-900 border border-rose-700" : "bg-slate-900"
+            toast.isError ? "border border-rose-700 bg-rose-900" : "bg-slate-900"
           }`}
         >
           {toast.isError ? (

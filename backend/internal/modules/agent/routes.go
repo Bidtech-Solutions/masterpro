@@ -16,4 +16,3 @@ func RegisterRoutes(authed, admin *gin.RouterGroup, h *Handler) {
 	admin.PATCH("/agents/:id", h.Update)
 	admin.POST("/agents/:id/photo", h.UploadPhoto)
 }
-

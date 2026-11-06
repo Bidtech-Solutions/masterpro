@@ -250,9 +250,7 @@ function AgentDetailContent() {
         <h1 className="font-display text-2xl font-black tracking-tight text-slate-900 sm:text-3xl">
           {t("agentSummaryTitle")}
         </h1>
-        <p className="mt-1 text-xs text-slate-500 sm:text-sm">
-          {t("agentSummarySubtitle")}
-        </p>
+        <p className="mt-1 text-xs text-slate-500 sm:text-sm">{t("agentSummarySubtitle")}</p>
       </div>
 
       {/* Top Header Card */}
@@ -350,9 +348,7 @@ function AgentDetailContent() {
             <span>{t("tabActiveListings")}</span>
             <span
               className={`rounded-full px-2 py-0.5 text-xs font-extrabold ${
-                activeTab === "active"
-                  ? "bg-sky-50 text-sky-700"
-                  : "bg-slate-100 text-slate-500"
+                activeTab === "active" ? "bg-sky-50 text-sky-700" : "bg-slate-100 text-slate-500"
               }`}
             >
               {activeListings.length}
@@ -371,9 +367,7 @@ function AgentDetailContent() {
             <span>{t("tabTransactionHistory")}</span>
             <span
               className={`rounded-full px-2 py-0.5 text-xs font-extrabold ${
-                activeTab === "history"
-                  ? "bg-sky-50 text-sky-700"
-                  : "bg-slate-100 text-slate-500"
+                activeTab === "history" ? "bg-sky-50 text-sky-700" : "bg-slate-100 text-slate-500"
               }`}
             >
               {historyListings.length}
@@ -436,13 +430,7 @@ function AgentDetailContent() {
               >
                 <div className="flex min-w-0 items-center gap-4 sm:gap-5">
                   <div className="relative h-20 w-28 shrink-0 overflow-hidden rounded-xl border border-slate-100 bg-slate-100 shadow-2xs sm:h-22 sm:w-32">
-                    <Image
-                      src={item.imageUrl}
-                      alt={item.title}
-                      fill
-                      sizes="128px"
-                      className="object-cover"
-                    />
+                    <Image src={item.imageUrl} alt={item.title} fill sizes="128px" className="object-cover" />
                   </div>
 
                   <div className="min-w-0 space-y-1">
@@ -473,9 +461,7 @@ function AgentDetailContent() {
                       </span>
                     )}
 
-                    <p className="line-clamp-1 text-xs text-slate-400">
-                      {item.addressSpecs}
-                    </p>
+                    <p className="line-clamp-1 text-xs text-slate-400">{item.addressSpecs}</p>
                   </div>
                 </div>
 
@@ -483,9 +469,7 @@ function AgentDetailContent() {
                   <div className="font-display text-base font-black text-slate-900 sm:text-lg">
                     {formatPrice(item.price)}
                     {item.priceSuffix && (
-                      <span className="text-xs font-bold text-slate-500">
-                        {item.priceSuffix}
-                      </span>
+                      <span className="text-xs font-bold text-slate-500">{item.priceSuffix}</span>
                     )}
                   </div>
 
@@ -500,9 +484,7 @@ function AgentDetailContent() {
                         <span>&gt;</span>
                       </NextLink>
                     ) : (
-                      <span className="font-mono text-[11px] text-slate-400">
-                        {item.code}
-                      </span>
+                      <span className="font-mono text-[11px] text-slate-400">{item.code}</span>
                     )}
                   </div>
                 </div>
@@ -540,9 +522,7 @@ function AgentDetailContent() {
                   type="button"
                   onClick={() => setCurrentPage(pageNum)}
                   className={`size-7 rounded-lg text-xs font-bold transition-all ${
-                    isCurrent
-                      ? "bg-[#0284C7] text-white shadow-xs"
-                      : "text-slate-600 hover:bg-slate-100"
+                    isCurrent ? "bg-[#0284C7] text-white shadow-xs" : "text-slate-600 hover:bg-slate-100"
                   }`}
                 >
                   {pageNum}

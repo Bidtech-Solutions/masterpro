@@ -1,12 +1,4 @@
-import {
-  Bath,
-  BedDouble,
-  LandPlot,
-  Layers,
-  MapPin,
-  Ruler,
-  Zap,
-} from "lucide-react";
+import { Bath, BedDouble, LandPlot, Layers, MapPin, Ruler, Zap } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 import type { Locale } from "@/i18n/routing";
@@ -101,11 +93,9 @@ export function PropertySpecs({ property: p, locale }: Props) {
           <span className="rounded-md bg-blue-50 px-2.5 py-0.5 text-xs font-semibold text-blue-700">
             {typeName}
           </span>
-          <span className="text-xs font-medium text-slate-400">
-            {t("code", { code: p.code })}
-          </span>
+          <span className="text-xs font-medium text-slate-400">{t("code", { code: p.code })}</span>
         </div>
-        <h1 className="font-display text-2xl font-bold tracking-tight text-navy-900 md:text-3xl leading-snug">
+        <h1 className="font-display text-2xl leading-snug font-bold tracking-tight text-navy-900 md:text-3xl">
           {p.title}
         </h1>
         <div className="mt-2.5 flex items-center gap-1.5 text-sm text-slate-500">
@@ -132,9 +122,7 @@ export function PropertySpecs({ property: p, locale }: Props) {
 
       {/* Grid Tabel Spesifikasi Detail 2-Kolom */}
       <div className="mt-8 border-t border-slate-100 pt-6">
-        <h2 className="mb-4 text-base font-bold text-navy-900">
-          {t("overviewAndSpecs")}
-        </h2>
+        <h2 className="mb-4 text-base font-bold text-navy-900">{t("overviewAndSpecs")}</h2>
         <div className="grid grid-cols-1 gap-x-8 gap-y-3.5 text-sm md:grid-cols-2">
           <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
             <span className="text-slate-500">{t("specPropertyType")}</span>

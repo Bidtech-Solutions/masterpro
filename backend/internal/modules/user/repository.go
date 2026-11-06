@@ -115,4 +115,3 @@ func (r *gormRepository) RevokeAllUserSessions(ctx context.Context, userID uuid.
 		Where("user_id = ? AND revoked_at IS NULL", userID).
 		Update("revoked_at", now).Error
 }
-

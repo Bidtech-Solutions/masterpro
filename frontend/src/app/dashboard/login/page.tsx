@@ -55,7 +55,9 @@ export default async function DashboardLoginPage() {
 
         {/* Footer Hak Cipta */}
         <div className="relative z-10 text-xs text-slate-400">
-          <p>© {new Date().getFullYear()} {site.name}. Batam, Kepulauan Riau.</p>
+          <p>
+            © {new Date().getFullYear()} {site.name}. Batam, Kepulauan Riau.
+          </p>
         </div>
       </aside>
 
@@ -82,7 +84,7 @@ export default async function DashboardLoginPage() {
         </div>
 
         {/* Area Form Login */}
-        <div className="my-auto mx-auto w-full max-w-sm py-8">
+        <div className="mx-auto my-auto w-full max-w-sm py-8">
           <Suspense>
             <LoginForm />
           </Suspense>

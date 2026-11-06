@@ -276,9 +276,7 @@ export default function EditAgentProfilePage() {
               <p className="mt-4 font-display text-lg font-bold text-slate-900">
                 {editName || agent.user.name}
               </p>
-              <span className="mt-0.5 font-mono text-xs font-semibold text-sky-700">
-                {agent.agent_code}
-              </span>
+              <span className="mt-0.5 font-mono text-xs font-semibold text-sky-700">{agent.agent_code}</span>
 
               <input
                 ref={fileInputRef}
@@ -310,17 +308,13 @@ export default function EditAgentProfilePage() {
                 )}
               </div>
 
-              <p className="mt-2.5 text-[11px] text-slate-400">
-                Format JPG, PNG, atau WebP (Maks. 5 MB).
-              </p>
+              <p className="mt-2.5 text-[11px] text-slate-400">Format JPG, PNG, atau WebP (Maks. 5 MB).</p>
             </div>
 
             {/* Info Akun & Status Kemitraan */}
             <div className="mt-6 space-y-3 border-t border-slate-100 pt-5 text-xs">
               <div>
-                <label className="mb-1.5 block font-bold text-slate-700">
-                  Status Kemitraan Agen
-                </label>
+                <label className="mb-1.5 block font-bold text-slate-700">Status Kemitraan Agen</label>
                 <select
                   value={editStatus}
                   onChange={(e) => setEditStatus(e.target.value as "active" | "inactive")}
@@ -376,9 +370,7 @@ export default function EditAgentProfilePage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700">
-                  Email Kantor (Read-only)
-                </label>
+                <label className="block text-xs font-bold text-slate-700">Email Kantor (Read-only)</label>
                 <div className="relative mt-1.5">
                   <Mail className="absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-slate-400" />
                   <input
@@ -391,9 +383,7 @@ export default function EditAgentProfilePage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700">
-                  Nomor Telepon Seluler
-                </label>
+                <label className="block text-xs font-bold text-slate-700">Nomor Telepon Seluler</label>
                 <div className="relative mt-1.5">
                   <Phone className="absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-slate-400" />
                   <input
@@ -427,9 +417,7 @@ export default function EditAgentProfilePage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700">
-                  Area Layanan Utama
-                </label>
+                <label className="block text-xs font-bold text-slate-700">Area Layanan Utama</label>
                 <div className="relative mt-1.5">
                   <MapPin className="absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-slate-400" />
                   <input
@@ -454,7 +442,8 @@ export default function EditAgentProfilePage() {
                   className="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs text-slate-900 focus:border-sky-500 focus:outline-hidden sm:text-sm"
                 />
                 <p className="mt-1 text-[11px] text-slate-400">
-                  Deskripsi singkat keahlian agen yang akan tampil di halaman daftar agen dan kartu kontak properti.
+                  Deskripsi singkat keahlian agen yang akan tampil di halaman daftar agen dan kartu kontak
+                  properti.
                 </p>
               </div>
             </div>
@@ -481,4 +470,3 @@ export default function EditAgentProfilePage() {
     </div>
   );
 }
-

@@ -166,18 +166,18 @@ type Detail struct {
 
 // DashboardListQuery query GET /properties (API.md §12.1).
 type DashboardListQuery struct {
-	Q            string   `form:"q" binding:"omitempty,max=100"`
-	Status       string   `form:"status" binding:"omitempty,max=100"`
-	ListingType  string   `form:"listing_type" binding:"omitempty,oneof=sale rent"`
-	MarketType   string   `form:"market_type" binding:"omitempty,oneof=primary secondary"`
-	PropertyType string   `form:"property_type" binding:"omitempty,max=200"`
-	City         string   `form:"city" binding:"omitempty,max=100"`
-	AgentID      *string  `form:"agent_id" binding:"omitempty,uuid"`
-	MinPrice     *int64   `form:"min_price" binding:"omitempty,min=0"`
-	MaxPrice     *int64   `form:"max_price" binding:"omitempty,min=0"`
-	CreatedFrom  string   `form:"created_from" binding:"omitempty,datetime=2006-01-02"`
-	CreatedTo    string   `form:"created_to" binding:"omitempty,datetime=2006-01-02"`
-	Sort         string   `form:"sort" binding:"omitempty,oneof=newest price_asc price_desc popular land_area_desc"`
+	Q            string  `form:"q" binding:"omitempty,max=100"`
+	Status       string  `form:"status" binding:"omitempty,max=100"`
+	ListingType  string  `form:"listing_type" binding:"omitempty,oneof=sale rent"`
+	MarketType   string  `form:"market_type" binding:"omitempty,oneof=primary secondary"`
+	PropertyType string  `form:"property_type" binding:"omitempty,max=200"`
+	City         string  `form:"city" binding:"omitempty,max=100"`
+	AgentID      *string `form:"agent_id" binding:"omitempty,uuid"`
+	MinPrice     *int64  `form:"min_price" binding:"omitempty,min=0"`
+	MaxPrice     *int64  `form:"max_price" binding:"omitempty,min=0"`
+	CreatedFrom  string  `form:"created_from" binding:"omitempty,datetime=2006-01-02"`
+	CreatedTo    string  `form:"created_to" binding:"omitempty,datetime=2006-01-02"`
+	Sort         string  `form:"sort" binding:"omitempty,oneof=newest price_asc price_desc popular land_area_desc"`
 }
 
 // DashboardAgent ringkas pada PropertyCard dashboard (API.md §4.5).
@@ -198,31 +198,31 @@ type UserMini struct {
 
 // DashboardPropertyItem item tabel dashboard GET /properties (API.md §4.5).
 type DashboardPropertyItem struct {
-	ID                 string             `json:"id"`
-	Code               string             `json:"code"`
-	Slug               string             `json:"slug"`
-	Title              string             `json:"title"`
+	ID                 string                `json:"id"`
+	Code               string                `json:"code"`
+	Slug               string                `json:"slug"`
+	Title              string                `json:"title"`
 	Status             models.PropertyStatus `json:"status"`
-	ListingType        models.ListingType `json:"listing_type"`
-	MarketType         models.MarketType  `json:"market_type"`
-	PropertyType       RefMini            `json:"property_type"`
-	Price              int64              `json:"price"`
-	RentPeriod         *models.RentPeriod `json:"rent_period"`
-	IsPriceNegotiable  bool               `json:"is_price_negotiable"`
-	Location           Location           `json:"location"`
-	LandArea           *float64           `json:"land_area"`
-	BuildingArea       *float64           `json:"building_area"`
-	Bedrooms           *int16             `json:"bedrooms"`
-	Bathrooms          *int16             `json:"bathrooms"`
-	TotalRooms         *int16             `json:"total_rooms"`
-	CoverImage         *ImageMini         `json:"cover_image"`
-	ImageCount         int64              `json:"image_count"`
-	Agent              DashboardAgent     `json:"agent"`
-	ViewCount          int32              `json:"view_count"`
-	WhatsappClickCount int32              `json:"whatsapp_click_count"`
-	PublishedAt        *time.Time         `json:"published_at"`
-	CreatedAt          time.Time          `json:"created_at"`
-	UpdatedAt          time.Time          `json:"updated_at"`
+	ListingType        models.ListingType    `json:"listing_type"`
+	MarketType         models.MarketType     `json:"market_type"`
+	PropertyType       RefMini               `json:"property_type"`
+	Price              int64                 `json:"price"`
+	RentPeriod         *models.RentPeriod    `json:"rent_period"`
+	IsPriceNegotiable  bool                  `json:"is_price_negotiable"`
+	Location           Location              `json:"location"`
+	LandArea           *float64              `json:"land_area"`
+	BuildingArea       *float64              `json:"building_area"`
+	Bedrooms           *int16                `json:"bedrooms"`
+	Bathrooms          *int16                `json:"bathrooms"`
+	TotalRooms         *int16                `json:"total_rooms"`
+	CoverImage         *ImageMini            `json:"cover_image"`
+	ImageCount         int64                 `json:"image_count"`
+	Agent              DashboardAgent        `json:"agent"`
+	ViewCount          int32                 `json:"view_count"`
+	WhatsappClickCount int32                 `json:"whatsapp_click_count"`
+	PublishedAt        *time.Time            `json:"published_at"`
+	CreatedAt          time.Time             `json:"created_at"`
+	UpdatedAt          time.Time             `json:"updated_at"`
 }
 
 // PropertyDashboardDetail detail lengkap listing dashboard (API.md §4.5).
