@@ -68,12 +68,9 @@ export function PhotoGallery({ images, title }: Props) {
           {/* Top Scrim Gradient (Cinematic Vignette) - kontras universal untuk semua warna gambar */}
           <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-slate-950/85 via-slate-950/40 to-transparent sm:h-40 md:h-44" />
 
-          {/* Judul & Tag Properti (Universal Contrast: Putih Berbayangan di atas Scrim Gelap) */}
+          {/* Judul Properti (Universal Contrast: Putih Berbayangan di atas Scrim Gelap) */}
           <div className="pointer-events-none absolute top-4 left-4 z-10 max-w-[88%] select-none sm:top-5 sm:left-5 md:top-6 md:left-6 md:max-w-lg">
-            <span className="block text-[11px] font-bold tracking-widest text-cyan-300 uppercase drop-shadow-sm">
-              {t("detailPropertyTag")}
-            </span>
-            <h2 className="mt-1 line-clamp-2 font-display text-base leading-tight font-extrabold tracking-tight text-white drop-shadow-md sm:text-lg md:text-xl lg:text-2xl">
+            <h2 className="line-clamp-2 font-display text-base leading-tight font-extrabold tracking-tight text-white drop-shadow-md sm:text-lg md:text-xl lg:text-2xl">
               {title}
             </h2>
           </div>

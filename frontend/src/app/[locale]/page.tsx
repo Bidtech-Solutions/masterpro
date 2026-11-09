@@ -4,6 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { JsonLd } from "@/components/common/json-ld";
 import { SectionHeading } from "@/components/common/section-heading";
+import { HeroHeading } from "@/components/home/hero-heading";
 import { HeroSearch } from "@/components/home/hero-search";
 import { PartnerMarquee } from "@/components/home/partner-marquee";
 import { PopularCta } from "@/components/home/popular-cta";
@@ -11,7 +12,7 @@ import { PropertyCarousel } from "@/components/home/property-carousel";
 
 import { PropertyCard } from "@/components/property/property-card";
 import type { Locale } from "@/i18n/routing";
-import { getCitiesWithListings, getLatestProperties, getPropertyTypes } from "@/lib/api/endpoints";
+import { getLatestProperties, getPropertyTypes } from "@/lib/api/endpoints";
 import { buildMetadata, websiteJsonLd } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
@@ -33,11 +34,10 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
   setRequestLocale(locale);
   const t = await getTranslations("home");
 
-  const [sale, rent, propertyTypes, cities] = await Promise.all([
+  const [sale, rent, propertyTypes] = await Promise.all([
     getLatestProperties("sale"),
     getLatestProperties("rent"),
     getPropertyTypes(),
-    getCitiesWithListings(),
   ]);
 
   return (
@@ -50,24 +50,15 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
             fill
             priority
             sizes="100vw"
-            className="object-cover object-center"
+            className="animate-hero-zoom object-cover object-center"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-[#0A1128]/72 via-[#0A1128]/80 to-[#0A1128]/88" />
         </div>
         <div className="relative z-10 mx-auto w-full max-w-7xl">
-          <div className="max-w-4xl space-y-4 lg:max-w-5xl">
-            <h1 className="font-display text-display-mobile leading-[1.15] font-extrabold tracking-tight md:text-display lg:text-[3.25rem]">
-              {t("heroTitle")} <br className="hidden sm:inline" />
-              <span className="font-accent font-normal text-blue-400 italic">
-                {t("heroTitleAccent")}
-              </span>{" "}
-              {t("heroTitleSuffix")}
-            </h1>
-            <p className="max-w-2xl pt-1 text-base leading-relaxed font-normal text-slate-300 sm:text-lg">
-              {t("heroSubtitle")}
-            </p>
+          <HeroHeading />
+          <div className="animate-fade-up [animation-delay:900ms]">
+            <HeroSearch propertyTypes={propertyTypes} />
           </div>
-          <HeroSearch cities={cities} propertyTypes={propertyTypes} />
         </div>
       </section>
 

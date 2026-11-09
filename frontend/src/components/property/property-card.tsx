@@ -30,7 +30,6 @@ export function PropertyCard({ property: p, locale, variant = "compact", priorit
   const period =
     p.rent_period === "monthly" ? t("perMonth") : p.rent_period === "yearly" ? t("perYear") : null;
   const place = [p.location.district, p.location.city.name].filter(Boolean).join(", ");
-  const typeName = locale === "id" ? p.property_type.name_id : p.property_type.name_en;
 
   return (
     <article
@@ -62,11 +61,6 @@ export function PropertyCard({ property: p, locale, variant = "compact", priorit
 
         {/* Gradasi Vignette Bawah untuk Kontras Badge Kaca */}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/50 via-black/15 to-transparent" />
-
-        {/* Lencana Tipe Properti Mengambang (Floating Glass-morphism) */}
-        <span className="absolute bottom-3 left-3 rounded-full border border-slate-200/70 bg-white/90 px-3 py-1 font-display text-[11px] font-bold tracking-wide text-navy-950 shadow-xs backdrop-blur-md">
-          {typeName}
-        </span>
 
         {/* Indikator Jumlah Foto */}
         {p.image_count > 0 ? (
@@ -126,7 +120,7 @@ export function PropertyCard({ property: p, locale, variant = "compact", priorit
         </div>
 
         {/* Baris Tombol Aksi (Dual CTA) */}
-        <div className="mt-5 grid grid-cols-2 gap-3 border-t border-slate-100 pt-3.5">
+        <div className="mt-5 grid grid-cols-[2fr_3fr] gap-2.5 border-t border-slate-100 pt-3.5 sm:grid-cols-2 sm:gap-3">
           <Link
             href={href}
             className="group/btn flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-center text-xs font-bold text-slate-700 transition-all hover:border-blue-600 hover:bg-blue-50/50 hover:text-blue-600 active:scale-95 sm:text-sm"
@@ -142,7 +136,7 @@ export function PropertyCard({ property: p, locale, variant = "compact", priorit
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => trackPropertyEvent(p.slug, "whatsapp_click")}
-            className="flex items-center justify-center gap-1.5 rounded-xl bg-[#16A34A] px-3 py-2.5 text-center text-xs font-bold text-white shadow-sm shadow-emerald-600/20 transition-all hover:bg-[#15803D] hover:shadow-md hover:shadow-emerald-600/30 active:scale-95 sm:text-sm"
+            className="flex items-center justify-center gap-1.5 rounded-xl bg-[#16A34A] px-3 py-2.5 text-center text-xs font-bold whitespace-nowrap text-white shadow-sm shadow-emerald-600/20 transition-all hover:bg-[#15803D] hover:shadow-md hover:shadow-emerald-600/30 active:scale-95 sm:text-sm"
           >
             <WhatsAppIcon className="size-4 shrink-0 fill-current" />
             <span>{t("contactAgent")}</span>

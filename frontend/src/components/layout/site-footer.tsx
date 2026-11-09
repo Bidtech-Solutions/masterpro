@@ -2,6 +2,7 @@ import { Briefcase, Camera, Mail, MapPin, Phone, PlayCircle, ThumbsUp, type Luci
 import { getTranslations } from "next-intl/server";
 
 import { Logo } from "@/components/common/logo";
+import { popularDistricts, serviceCity } from "@/config/locations";
 import { footerPropertyLinks } from "@/config/navigation";
 import { site } from "@/config/site";
 import { Link } from "@/i18n/navigation";
@@ -24,9 +25,9 @@ export async function SiteFooter() {
   return (
     <footer className="w-full border-t border-[#0F1E36] bg-[#07132B] pt-16 pb-12 text-slate-300">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-10 border-b border-[#0F1E36] pb-12 md:grid-cols-2 lg:grid-cols-12">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-10 border-b border-[#0F1E36] pb-12 lg:grid-cols-12 lg:gap-10">
           {/* Kolom 1: Profil Perusahaan & Kontak */}
-          <div className="space-y-4 lg:col-span-4">
+          <div className="col-span-2 space-y-4 lg:col-span-4">
             <div className="flex items-center gap-2">
               <Logo variant="white" className="h-10" />
             </div>
@@ -98,13 +99,13 @@ export async function SiteFooter() {
             </FooterColumn>
           </div>
 
-          {/* Kolom 3: Kota Populer */}
+          {/* Kolom 3: Area Populer (kecamatan Kota Batam, PRD WEB-G-02) */}
           <div className="lg:col-span-2">
-            <FooterColumn title={t("popularCities")}>
-              {site.popularCities.map((c) => (
-                <li key={c.slug}>
-                  <Link href={{ pathname: "/properties", query: { city: c.slug } }} className={linkClass}>
-                    {c.name}
+            <FooterColumn title={t("popularAreas", { city: serviceCity.shortName })}>
+              {popularDistricts.map((d) => (
+                <li key={d}>
+                  <Link href={{ pathname: "/properties", query: { q: d } }} className={linkClass}>
+                    {d}
                   </Link>
                 </li>
               ))}
@@ -112,7 +113,7 @@ export async function SiteFooter() {
           </div>
 
           {/* Kolom 4: Perusahaan */}
-          <div className="lg:col-span-3">
+          <div className="col-span-2 sm:col-span-1 lg:col-span-3">
             <FooterColumn title={t("company")}>
               <li>
                 <Link href="/" className={linkClass}>
@@ -122,11 +123,6 @@ export async function SiteFooter() {
               <li>
                 <Link href="/properties" className={linkClass}>
                   {nav("properties")}
-                </Link>
-              </li>
-              <li>
-                <Link href="/join-agent" className={linkClass}>
-                  {nav("joinAgent")}
                 </Link>
               </li>
               <li>

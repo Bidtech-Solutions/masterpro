@@ -27,11 +27,4 @@ export const site = {
     { name: "LinkedIn", href: "https://linkedin.com/" },
     { name: "YouTube", href: "https://youtube.com/" },
   ],
-  popularCities: [
-    { name: "Kota Batam", slug: "kota-batam" },
-    { name: "Jakarta Selatan", slug: "kota-administrasi-jakarta-selatan" },
-    { name: "Tangerang Selatan", slug: "kota-tangerang-selatan" },
-    { name: "Bandung", slug: "kota-bandung" },
-    { name: "Surabaya", slug: "kota-surabaya" },
-  ],
 } as const;

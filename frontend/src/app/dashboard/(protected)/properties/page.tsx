@@ -27,6 +27,7 @@ import NextLink from "next/link";
 import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 
+import { serviceCity } from "@/config/locations";
 import { useAuth } from "@/hooks/use-auth";
 import { apiRequest } from "@/lib/api/client";
 import { downloadPropertiesExcel } from "@/lib/api/export";
@@ -193,7 +194,7 @@ export default function PropertiesDashboardPage() {
       // Property Type
       if (typeFilter !== "all" && p.property_type.slug !== typeFilter) return false;
 
-      // City Filter (normalisasi spasi agar "Kota Tanjungpinang" cocok dengan "Kota Tanjung Pinang")
+      // City Filter (normalisasi spasi & huruf besar-kecil)
       if (cityFilter !== "all") {
         const normPropCity = p.location.city.name.toLowerCase().replace(/\s+/g, "");
         const normFilterCity = cityFilter.toLowerCase().replace(/\s+/g, "");
@@ -662,13 +663,7 @@ export default function PropertiesDashboardPage() {
               className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-medium text-slate-700 focus:border-sky-500 focus:outline-hidden"
             >
               <option value="all">{t("filterAllCities")}</option>
-              <option value="Kota Batam">Kota Batam</option>
-              <option value="Kota Tanjungpinang">Kota Tanjungpinang</option>
-              <option value="Kabupaten Bintan">Kabupaten Bintan</option>
-              <option value="Kabupaten Karimun">Kabupaten Karimun</option>
-              <option value="Kabupaten Natuna">Kabupaten Natuna</option>
-              <option value="Kabupaten Lingga">Kabupaten Lingga</option>
-              <option value="Kabupaten Kepulauan Anambas">Kabupaten Kepulauan Anambas</option>
+              <option value={serviceCity.name}>{serviceCity.name}</option>
             </select>
           </div>
 

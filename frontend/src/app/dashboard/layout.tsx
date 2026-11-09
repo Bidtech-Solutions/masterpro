@@ -15,7 +15,7 @@ export const metadata: Metadata = {
 export default async function DashboardRootLayout({ children }: LayoutProps<"/dashboard">) {
   const messages = await getMessages();
   return (
-    <html lang="id" className={fontVariables}>
+    <html lang="id" className={fontVariables} data-scroll-behavior="smooth">
       <body className="min-h-dvh bg-slate-50">
         <NextIntlClientProvider locale="id" messages={{ dashboard: messages.dashboard }}>
           {children}

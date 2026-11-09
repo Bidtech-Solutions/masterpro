@@ -6,7 +6,7 @@ import { absoluteUrl, alternateLanguages } from "@/lib/seo";
 
 export const revalidate = 3600;
 
-const staticPages: Exclude<AppPathname, "/properties/[slug]">[] = ["/", "/properties", "/join-agent"];
+const staticPages: Exclude<AppPathname, "/properties/[slug]">[] = ["/", "/properties"];
 
 type Href = Parameters<typeof absoluteUrl>[0];
 

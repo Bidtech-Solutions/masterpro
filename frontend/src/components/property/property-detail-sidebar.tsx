@@ -3,18 +3,21 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 
+import { ShareButtons } from "@/components/property/share-buttons";
 import type { Locale } from "@/i18n/routing";
 import { trackPropertyEvent } from "@/lib/api/client";
 import { formatPriceFull } from "@/lib/format";
-import { whatsappUrl } from "@/lib/whatsapp";
+import { propertyShareMessage, whatsappUrl } from "@/lib/whatsapp";
 import type { PropertyDetail } from "@/types/property";
 
 interface Props {
   property: PropertyDetail;
   locale: Locale;
+  /** URL absolut halaman detail untuk tombol bagikan (WEB-D-09). */
+  shareUrl: string;
 }
 
-export function PropertyDetailSidebar({ property: p, locale }: Props) {
+export function PropertyDetailSidebar({ property: p, locale, shareUrl }: Props) {
   const t = useTranslations("propertyDetail");
   const tCommon = useTranslations("common");
 
@@ -98,6 +101,10 @@ export function PropertyDetailSidebar({ property: p, locale }: Props) {
           <WhatsAppIcon className="size-5 shrink-0 fill-current transition-transform duration-300 group-hover:scale-110" />
           <span>{tCommon("contactAgent")}</span>
         </a>
+
+        <hr className="my-5 border-slate-100" />
+
+        <ShareButtons message={propertyShareMessage(p, shareUrl, locale)} title={p.title} url={shareUrl} />
       </div>
     </aside>
   );

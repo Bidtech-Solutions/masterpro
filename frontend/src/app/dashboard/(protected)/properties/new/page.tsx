@@ -15,6 +15,7 @@ import { CardLocation } from "@/components/dashboard/property-form/card-location
 import { CardMedia, type PhotoItem } from "@/components/dashboard/property-form/card-media";
 import { CardPricing } from "@/components/dashboard/property-form/card-pricing";
 import { CardSpecs } from "@/components/dashboard/property-form/card-specs";
+import { defaultDistrict, serviceCity, serviceProvince } from "@/config/locations";
 import { apiRequest } from "@/lib/api/client";
 import type { ListingType, MarketType, RentPeriod } from "@/types/property";
 
@@ -34,10 +35,8 @@ export default function NewPropertyPage() {
   const [rentPeriod, setRentPeriod] = useState<RentPeriod | null>(null);
   const [isNegotiable, setIsNegotiable] = useState(false);
 
-  // Card 3: Location (Default province & city, but address is clean)
-  const [provinceId, setProvinceId] = useState(21);
-  const [cityId, setCityId] = useState(2171);
-  const [district, setDistrict] = useState("Batam Kota");
+  // Card 3: Location — wilayah terkunci Kota Batam (PRD §4.1)
+  const [district, setDistrict] = useState<string>(defaultDistrict);
   const [postalCode, setPostalCode] = useState("");
   const [address, setAddress] = useState("");
   const [latitude, setLatitude] = useState<number | null>(null);
@@ -217,8 +216,8 @@ export default function NewPropertyPage() {
       price: price,
       rent_period: listingType === "rent" ? (rentPeriod ?? "monthly") : null,
       is_price_negotiable: isNegotiable,
-      province_id: provinceId,
-      city_id: cityId,
+      province_id: serviceProvince.id,
+      city_id: serviceCity.id,
       district: district.trim() || undefined,
       address: address.trim() || undefined,
       latitude: latitude ?? undefined,
@@ -364,10 +363,6 @@ export default function NewPropertyPage() {
 
           {/* Card 3: Lokasi Properti */}
           <CardLocation
-            provinceId={provinceId}
-            setProvinceId={setProvinceId}
-            cityId={cityId}
-            setCityId={setCityId}
             district={district}
             setDistrict={setDistrict}
             postalCode={postalCode}
