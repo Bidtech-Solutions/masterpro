@@ -1,5 +1,6 @@
 import "server-only";
 
+import { serviceCity } from "@/config/locations";
 import { catalogPageSize, homeCarouselSize } from "@/config/search";
 import type {
   ListingType,
@@ -8,7 +9,7 @@ import type {
   PublicPropertyQuery,
   PublicSort,
 } from "@/types/property";
-import type { City, PropertyType } from "@/types/reference";
+import type { PropertyType } from "@/types/reference";
 
 import { cacheTags, serverGet } from "./server";
 
@@ -18,7 +19,7 @@ export async function getLatestProperties(listing: ListingType) {
   const res = await serverGet<PropertyCard[]>("/public/properties", {
     revalidate: 0,
     tags: [cacheTags.propertiesList],
-    query: { listing_type: listing, sort: "newest", per_page: homeCarouselSize },
+    query: { listing_type: listing, city: serviceCity.slug, sort: "newest", per_page: homeCarouselSize },
   });
   return res?.data ?? [];
 }
@@ -35,15 +36,6 @@ export async function getPropertyTypes() {
   const res = await serverGet<PropertyType[]>("/public/property-types", {
     revalidate: 300,
     tags: [cacheTags.reference, cacheTags.propertiesList],
-  });
-  return res?.data ?? [];
-}
-
-export async function getCitiesWithListings() {
-  const res = await serverGet<City[]>("/public/locations/cities", {
-    revalidate: 60,
-    tags: [cacheTags.reference, cacheTags.propertiesList],
-    query: { has_listings: true, limit: 100 },
   });
   return res?.data ?? [];
 }
@@ -87,8 +79,8 @@ export function webQueryToApi(sp: Record<string, string | string[] | undefined>)
     listing_type: listing === "sale" || listing === "rent" ? listing : undefined,
     market_type: market === "primary" || market === "secondary" ? market : undefined,
     property_type: one("type"),
-    province: one("province"),
-    city: one("city"),
+    // Cakupan wilayah khusus Kota Batam (PRD §4.1): province/city dari URL diabaikan.
+    city: serviceCity.slug,
     min_price: num("min_price"),
     max_price: num("max_price"),
     min_land_area: num("min_land_area"),

@@ -25,7 +25,8 @@
     },
     "errorTitle": "Something went wrong",
     "errorDescription": "We couldn't load the data. Please try again shortly.",
-    "retry": "Try again"
+    "retry": "Try again",
+    "back": "Back"
   },
   "nav": {
     "home": "Home",
@@ -44,7 +45,6 @@
   "footer": {
     "tagline": "Your Trusted Property Solution. Leading partner for buying, selling, and renting residential and commercial property with verified legality.",
     "propertyTypes": "Property Types",
-    "popularCities": "Popular Cities",
     "company": "Company",
     "houseForSale": "Houses for Sale",
     "apartmentForRent": "Apartments for Rent",
@@ -58,7 +58,8 @@
     "termsConditions": "Terms & Conditions",
     "contactOffice": "Contact Office",
     "copyright": "© {year} MasterPro Real Estate. All rights reserved.",
-    "social": "MasterPro on {name}"
+    "social": "MasterPro on {name}",
+    "popularAreas": "Popular Areas in {city}"
   },
   "home": {
     "heroTitle": "Ask About Your Dream Property with",
@@ -66,7 +67,7 @@
     "heroTitleAccent": "the Property",
     "heroSubtitle": "Houses, apartments, shophouses, boarding houses and land — for sale or rent — with trusted professional agents keeping your transaction safe.",
     "searchLocation": "Location",
-    "searchLocationAll": "All Locations",
+    "searchLocationAll": "All of {city}",
     "searchType": "Property Type",
     "searchTypeAll": "All Property Types",
     "searchPrice": "Price Range",
@@ -171,11 +172,11 @@
     "kprTitle": "Mortgage (KPR) Calculator",
     "kprSubtitle": "Calculate estimated monthly mortgage installments with reliable interest rates.",
     "kprPropertyPrice": "Property Price",
-    "kprDownPayment": "Down Payment (%)",
-    "kprTenor": "Loan Term (Tenor)",
+    "kprDownPayment": "Down Payment",
+    "kprTenor": "Loan Term",
     "kprTenorYears": "{years} Years",
-    "kprInterestRate": "Annual Interest Rate (%)",
-    "kprMonthlyEstimation": "ESTIMATED MONTHLY INSTALLMENT",
+    "kprInterestRate": "Annual Interest Rate",
+    "kprMonthlyEstimation": "Estimated monthly installment",
     "kprLoanPrincipal": "Loan Principal",
     "kprTotalPayment": "Estimated Total Payment",
     "kprMinimumIncome": "Minimum Income",
@@ -190,16 +191,17 @@
     "viewAllPhotos": "View All Photos",
     "photoModalTitle": "Property Photo Gallery",
     "close": "Close",
-    "detailPropertyTag": "Property Detail",
-    "mapTitle": "Property Location Map",
-    "mapSatelliteMode": "View Satellite Imagery",
-    "mapInteractiveMode": "Interactive Map Mode",
-    "mapToggleMode": "Toggle map mode",
-    "mapOpenGoogleMaps": "Google Maps",
-    "mapPropertyLocation": "Property Location",
-    "mapLandmarkFerry": "Batam Centre Ferry Terminal",
-    "mapLandmarkMall": "Mega Mall Batam Centre",
-    "whatsappPrefill": "Hello {agentName}, I am interested in the property \"{title}\" (Code: {code}) on MasterPro. Can you share more details?"
+    "mapTitle": "Property Location",
+    "mapOpenGoogleMaps": "Open in Google Maps",
+    "whatsappPrefill": "Hello {agentName}, I am interested in the property \"{title}\" (Code: {code}) on MasterPro. Can you share more details?",
+    "mapApproximate": "The agent has not set an exact location yet — the map shows central {city}.",
+    "kprDownPaymentAmount": "Down payment",
+    "kprDisclaimer": "Simulation results are estimates, not an official offer from a bank.",
+    "shareTitle": "Share Property",
+    "shareWhatsapp": "WhatsApp",
+    "shareCopy": "Copy Link",
+    "shareCopied": "Copied",
+    "shareMore": "More"
   },
   "joinAgent": {
     "title": "Become a MasterPro Property Agent",
@@ -472,9 +474,6 @@
     "district": "District",
     "postalCode": "Postal Code",
     "fullAddress": "Full Address / Cluster Name",
-    "mapCoordinates": "Coordinates: {coords}",
-    "mapCoordinatesHint": "Accurate coordinates help buyers find the cluster on Google Maps",
-    "pickMapPoint": "Select Point on Map",
     "cardSpecsTitle": "Property / Building Specifications",
     "cardSpecsSubtitle": "Physical dimensions, layout, utility installations, and legal documents",
     "landArea": "Land Area (LT)",
@@ -623,6 +622,16 @@
     "loginFeature3Desc": "Centralized control for Super Admins, Operational Admins, and Partner Agents.",
     "emailPlaceholder": "name@masterpro.co.id",
     "passwordPlaceholder": "Enter your account password",
-    "loginSecurityNote": "Protected by HTTP-Only session encryption & MasterPro password complexity policy."
+    "loginSecurityNote": "Protected by HTTP-Only session encryption & MasterPro password complexity policy.",
+    "serviceAreaLockedHint": "MasterPro currently only serves listings in {city}.",
+    "mapPickTitle": "Location Pin on Map",
+    "mapPickHint": "Click the map or drag the pin to the property location. You can also enter coordinates or paste a Google Maps link.",
+    "mapNotSet": "Pin not set yet",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "mapsLinkLabel": "Paste Google Maps Link",
+    "mapsLinkPlaceholder": "https://www.google.com/maps/place/...",
+    "mapsLinkHint": "Open the location in Google Maps, copy the link from the address bar, and paste it here.",
+    "mapsLinkInvalid": "No coordinates found. Use the full link from the address bar (not a maps.app.goo.gl short link)."
   }
 }

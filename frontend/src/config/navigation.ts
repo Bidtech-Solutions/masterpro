@@ -1,10 +1,9 @@
 import type { AppPathname } from "@/i18n/routing";
 
-/** Menu header (PRD WEB-G-01). `label` = kunci di messages namespace "nav". */
+/** Menu header (PRD WEB-G-01). `label` = kunci di messages namespace "nav". Daftar Agen disembunyikan (PRD §5.5). */
 export const headerNav = [
   { href: "/", label: "home" },
   { href: "/properties", label: "properties" },
-  { href: "/join-agent", label: "joinAgent" },
 ] as const satisfies ReadonlyArray<{ href: AppPathname; label: string }>;
 
 /** Tautan kolom "Tipe Properti" footer (PRD WEB-G-02). `label` = kunci namespace "footer". */

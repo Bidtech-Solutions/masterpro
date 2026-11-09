@@ -25,7 +25,8 @@
     },
     "errorTitle": "Terjadi kendala",
     "errorDescription": "Data belum dapat dimuat. Silakan coba beberapa saat lagi.",
-    "retry": "Coba lagi"
+    "retry": "Coba lagi",
+    "back": "Kembali"
   },
   "nav": {
     "home": "Beranda",
@@ -44,7 +45,6 @@
   "footer": {
     "tagline": "Solusi Properti Terpercaya Anda. Mitra terdepan transaksi jual, beli, dan sewa properti residensial serta komersial dengan legalitas terverifikasi.",
     "propertyTypes": "Tipe Properti",
-    "popularCities": "Kota Populer",
     "company": "Perusahaan",
     "houseForSale": "Rumah Dijual",
     "apartmentForRent": "Apartemen Disewa",
@@ -58,7 +58,8 @@
     "termsConditions": "Syarat & Ketentuan",
     "contactOffice": "Hubungi Kantor",
     "copyright": "© {year} MasterPro Real Estate. Semua hak dilindungi undang-undang.",
-    "social": "Media sosial MasterPro di {name}"
+    "social": "Media sosial MasterPro di {name}",
+    "popularAreas": "Area Populer {city}"
   },
   "home": {
     "heroTitle": "Tanyakan Properti Impianmu ke",
@@ -66,7 +67,7 @@
     "heroTitleAccent": "Master-nya",
     "heroSubtitle": "Rumah, apartemen, ruko, kos, dan tanah — dijual maupun disewa — didampingi agen profesional terpercaya untuk keamanan transaksi Anda.",
     "searchLocation": "Lokasi",
-    "searchLocationAll": "Semua Lokasi",
+    "searchLocationAll": "Seluruh {city}",
     "searchType": "Tipe Properti",
     "searchTypeAll": "Semua Tipe Properti",
     "searchPrice": "Rentang Harga",
@@ -171,11 +172,11 @@
     "kprTitle": "Simulasi Angsuran KPR",
     "kprSubtitle": "Hitung perkiraan cicilan bulanan KPR dengan kalkulasi suku bunga terpercaya.",
     "kprPropertyPrice": "Harga Properti",
-    "kprDownPayment": "Uang Muka / DP (%)",
-    "kprTenor": "Jangka Waktu (Tenor)",
+    "kprDownPayment": "Uang Muka (DP)",
+    "kprTenor": "Jangka Waktu",
     "kprTenorYears": "{years} Tahun",
-    "kprInterestRate": "Suku Bunga Pertahun (%)",
-    "kprMonthlyEstimation": "ESTIMASI ANGSURAN / BULAN",
+    "kprInterestRate": "Suku Bunga per Tahun",
+    "kprMonthlyEstimation": "Estimasi cicilan per bulan",
     "kprLoanPrincipal": "Pokok Pinjaman",
     "kprTotalPayment": "Estimasi Total Bayar",
     "kprMinimumIncome": "Minimal Penghasilan",
@@ -190,16 +191,17 @@
     "viewAllPhotos": "Lihat Semua Foto",
     "photoModalTitle": "Galeri Foto Properti",
     "close": "Tutup",
-    "detailPropertyTag": "Detail Properti",
-    "mapTitle": "Peta Lokasi Properti",
-    "mapSatelliteMode": "Lihat Foto Satelit",
-    "mapInteractiveMode": "Mode Peta Interaktif",
-    "mapToggleMode": "Ganti mode peta",
-    "mapOpenGoogleMaps": "Google Maps",
-    "mapPropertyLocation": "Lokasi Properti",
-    "mapLandmarkFerry": "Terminal Ferry Batam Centre",
-    "mapLandmarkMall": "Mega Mall Batam Centre",
-    "whatsappPrefill": "Halo {agentName}, saya tertarik dengan properti \"{title}\" (Kode: {code}) di MasterPro. Bisa info lebih lanjut?"
+    "mapTitle": "Lokasi Properti",
+    "mapOpenGoogleMaps": "Buka di Google Maps",
+    "whatsappPrefill": "Halo {agentName}, saya tertarik dengan properti \"{title}\" (Kode: {code}) di MasterPro. Bisa info lebih lanjut?",
+    "mapApproximate": "Titik lokasi persis belum diisi agen — peta menampilkan pusat {city}.",
+    "kprDownPaymentAmount": "Uang Muka",
+    "kprDisclaimer": "Hasil simulasi bersifat estimasi, bukan penawaran resmi dari bank.",
+    "shareTitle": "Bagikan Properti",
+    "shareWhatsapp": "WhatsApp",
+    "shareCopy": "Salin Tautan",
+    "shareCopied": "Tersalin",
+    "shareMore": "Lainnya"
   },
   "joinAgent": {
     "title": "Bergabung Menjadi Agen Properti MasterPro",
@@ -472,9 +474,6 @@
     "district": "Kecamatan",
     "postalCode": "Kode Pos",
     "fullAddress": "Alamat Lengkap / Nama Klaster",
-    "mapCoordinates": "Titik Koordinat: {coords}",
-    "mapCoordinatesHint": "Koordinat akurat memudahkan pembeli menemukan klaster di Google Maps",
-    "pickMapPoint": "Pilih Titik di Peta",
     "cardSpecsTitle": "Spesifikasi Hunian / Bangunan",
     "cardSpecsSubtitle": "Ukuran fisik, tata ruang, instalasi utilitas, dan dokumen kepemilikan",
     "landArea": "Luas Tanah (LT)",
@@ -623,6 +622,16 @@
     "loginFeature3Desc": "Kontrol terpusat untuk Super Admin, Admin Operasional, dan Mitra Agen.",
     "emailPlaceholder": "nama@masterpro.co.id",
     "passwordPlaceholder": "Masukkan kata sandi akun Anda",
-    "loginSecurityNote": "Dilindungi enkripsi sesi HTTP-Only & kebijakan kompleksitas kata sandi MasterPro."
+    "loginSecurityNote": "Dilindungi enkripsi sesi HTTP-Only & kebijakan kompleksitas kata sandi MasterPro.",
+    "serviceAreaLockedHint": "Saat ini MasterPro hanya melayani listing di {city}.",
+    "mapPickTitle": "Titik Lokasi di Peta",
+    "mapPickHint": "Klik peta atau geser pin ke lokasi properti. Bisa juga isi koordinat atau tempel tautan Google Maps.",
+    "mapNotSet": "Titik belum dipilih",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "mapsLinkLabel": "Tempel Tautan Google Maps",
+    "mapsLinkPlaceholder": "https://www.google.com/maps/place/...",
+    "mapsLinkHint": "Buka lokasi di Google Maps, salin tautan dari bilah alamat, lalu tempel di sini.",
+    "mapsLinkInvalid": "Koordinat tidak ditemukan. Gunakan tautan lengkap dari bilah alamat (bukan tautan pendek maps.app.goo.gl)."
   }
 }

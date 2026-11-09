@@ -13,7 +13,7 @@
 | Area | Keputusan | Implementasi |
 |---|---|---|
 | Font aksen | **Playfair Display** italic (500/600) untuk 1–3 kata penekanan di heading: "Master-nya Properti", "Terbaru", "Kami". Maksimal satu aksen per heading; tidak untuk body/tombol. | `--font-accent`, komponen `SectionHeading` prop `accent` |
-| Header | Tinggi 80 px, putih, shadow tipis. Menu: Beranda · Properti · Daftar Agen (aktif: teks `blue-600` bold + garis bawah 2 px). Kanan: pill ID/EN + tombol primary **Masuk** (ikon login) ke dashboard. | `components/layout/site-header.tsx` |
+| Header | Tinggi 80 px, putih, shadow tipis. Menu: Beranda · Properti (Daftar Agen disembunyikan, PRD §5.5; aktif: teks `blue-600` bold + garis bawah 2 px). Kanan: pill ID/EN + tombol primary **Masuk** (ikon login) ke dashboard. | `components/layout/site-header.tsx` |
 | Hero | Foto full-bleed + overlay gradien `navy-950/90 → navy-900/75 → blue-700/40` (kiri→kanan) dan `navy-950/95` dari bawah. Judul putih, aksen `sky-300`. Tidak memakai pita dekoratif. | `components/home/hero-search.tsx`, foto `public/images/hero.jpg` |
 | Kotak pencarian | Kartu putih radius 24 px. Tiga field ber-label overline uppercase `slate-500`: **Lokasi** (ikon pin), **Tipe Properti** (ikon gedung), **Rentang Harga** (ikon uang); field latar `slate-50`, border `slate-200`, fokus border `blue-600`. Tombol primary **Cari Properti** (ikon cari). Tanpa tab Beli/Sewa & chip kategori. | sda |
 | Heading section | Plus Jakarta Sans 800 `navy-900` + kata aksen Playfair italic `blue-600`. Kanan: tombol pill "Lihat Semua →" (`blue-50`, teks `blue-700`, hover `blue-600` putih) + tombol panah bulat 40 px. | `components/common/section-heading.tsx` |
@@ -262,9 +262,9 @@ Kartu putih; header `navy-800` teks putih; baris rentang harga + persentase besa
 |---|---|
 | **Beranda** | Header → Hero (foto + pita gradien, judul, subjudul, kotak pencarian, chip kategori) → Dijual Terbaru (judul section + "Lihat semua", carousel kartu, panah) → Disewa Terbaru (latar `blue-50`) → Partner marquee ("Bermitra dengan bank terpercaya") → CTA Populer (banner gradien brand radius `xl`, ilustrasi pin/rumah, tombol putih) → Footer |
 | **Properti** | Header → judul + bar pencarian sticky → baris: jumlah hasil, chip filter aktif, dropdown urutan → [sidebar filter 280 px | grid kartu 3 kolom] → paginasi → Footer |
-| **Detail** | Header → breadcrumb → galeri → [kolom kiri: judul+badge+lokasi+kode, chip spesifikasi, deskripsi, tabel spesifikasi, fasilitas, video, lokasi/maps, kalkulator KPR | kolom kanan sticky: kartu agen] → Properti serupa → CTA → Footer; mobile: bar bawah sticky harga + WhatsApp |
+| **Detail** | Header → breadcrumb → galeri → [kolom kiri: judul+badge+lokasi+kode, chip spesifikasi, deskripsi, tabel spesifikasi, fasilitas, video, peta lokasi satelit (Leaflet + Esri World Imagery, pin di koordinat listing, tombol Buka di Google Maps), kalkulator KPR (hanya listing jual) | kolom kanan sticky: kartu harga + agen + tombol WhatsApp + tombol Bagikan] → Properti serupa → CTA → Footer; mobile: bar bawah sticky harga + WhatsApp |
 | **Daftar Agen** | Header → Hero (judul, subjudul, tombol WhatsApp, ilustrasi agen) → Keuntungan (grid ikon) → Struktur Komisi → Alur Pendaftaran (flowchart) → FAQ → Kontak (kartu WhatsApp/telepon, email, alamat + peta statis, sosmed) → Footer |
-| **Header** | lihat §0 (80 px, menu Beranda/Properti/Daftar Agen, pill ID/EN, tombol Masuk) |
+| **Header** | lihat §0 (80 px, menu Beranda/Properti, pill ID/EN, tombol Masuk) |
 | **Footer** | latar `navy-950`, teks `slate-300`; 4 kolom (brand+alamat+sosmed · Properti · Kota populer · Perusahaan/Bantuan); baris bawah hak cipta + "Masuk Agen" |
 
 ### 7.2 Dashboard

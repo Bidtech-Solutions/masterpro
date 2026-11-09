@@ -7,6 +7,7 @@ import "@/styles/globals.css";
 
 import { GoogleAnalytics } from "@/components/common/google-analytics";
 import { JsonLd } from "@/components/common/json-ld";
+import { NavigationTracker } from "@/components/common/navigation-tracker";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { site } from "@/config/site";
@@ -51,7 +52,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
   };
 
   return (
-    <html lang={locale} className={fontVariables}>
+    <html lang={locale} className={fontVariables} data-scroll-behavior="smooth">
       <body className="flex min-h-dvh flex-col">
         <a
           href="#konten"
@@ -60,6 +61,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
           {t("skipToContent")}
         </a>
         <NextIntlClientProvider messages={clientMessages}>
+          <NavigationTracker />
           <SiteHeader />
           <main id="konten" className="flex-1">
             {children}

@@ -4,21 +4,21 @@ import { Banknote, Building2, ChevronDown, MapPin, Search } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState, type FormEvent } from "react";
 
+import { serviceCity } from "@/config/locations";
 import { priceRanges } from "@/config/search";
 import { useRouter } from "@/i18n/navigation";
-import type { City, PropertyType } from "@/types/reference";
+import type { PropertyType } from "@/types/reference";
 
 interface Props {
-  cities: City[];
   propertyTypes: PropertyType[];
 }
 
-/** Kotak pencarian hero sesuai master_pro_landing_page (1).html. */
-export function HeroSearch({ cities, propertyTypes }: Props) {
+/** Kotak pencarian hero sesuai master_pro_landing_page (1).html. Lokasi = kecamatan Kota Batam (PRD WEB-H-01). */
+export function HeroSearch({ propertyTypes }: Props) {
   const t = useTranslations("home");
   const locale = useLocale();
   const router = useRouter();
-  const [city, setCity] = useState("");
+  const [district, setDistrict] = useState("");
   const [type, setType] = useState("");
   const [price, setPrice] = useState("");
 
@@ -26,7 +26,7 @@ export function HeroSearch({ cities, propertyTypes }: Props) {
     e.preventDefault();
     const range = priceRanges.find((r) => r.value === price);
     const query: Record<string, string> = {};
-    if (city) query.city = city;
+    if (district) query.q = district;
     if (type) query.type = type;
     if (range && "min" in range) query.min_price = String(range.min);
     if (range && "max" in range) query.max_price = String(range.max);
@@ -54,17 +54,18 @@ export function HeroSearch({ cities, propertyTypes }: Props) {
               <MapPin className="pointer-events-none absolute left-3 size-5 text-slate-400" />
               <select
                 id="searchLocation"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-                className="w-full cursor-pointer appearance-none rounded-xl border border-slate-200 bg-slate-50 py-2.5 pr-3 pl-10 text-sm font-semibold text-slate-800 transition focus:bg-white focus:ring-2 focus:ring-blue-600 focus:outline-none"
+                value={district}
+                onChange={(e) => setDistrict(e.target.value)}
+                className="w-full cursor-pointer appearance-none rounded-xl border border-slate-200 bg-slate-50 py-2.5 pr-8 pl-10 text-sm font-semibold text-slate-800 transition focus:bg-white focus:ring-2 focus:ring-blue-600 focus:outline-none"
               >
-                <option value="">{t("searchLocationAll")}</option>
-                {cities.map((c) => (
-                  <option key={c.id} value={c.slug}>
-                    {c.name}, {c.province.name}
+                <option value="">{t("searchLocationAll", { city: serviceCity.shortName })}</option>
+                {serviceCity.districts.map((d) => (
+                  <option key={d.value} value={d.value}>
+                    {d.label}
                   </option>
                 ))}
               </select>
+              <ChevronDown className="pointer-events-none absolute right-3 size-4 text-slate-400" />
             </div>
           </div>
 

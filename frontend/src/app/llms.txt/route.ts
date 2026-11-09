@@ -9,13 +9,12 @@ export function GET() {
     new URL(getPathname({ href, locale }), site.url).toString();
   const body = `# ${site.name}
 
-> MasterPro Real Estate adalah perusahaan yang menaungi jaringan agen properti untuk penjualan properti primary (baru) dan secondary (bekas) — rumah, apartemen, ruko, gedung kos, dan tanah — serta penyewaan rumah, ruko, dan apartemen di Indonesia.
+> MasterPro Real Estate adalah perusahaan yang menaungi jaringan agen properti untuk penjualan properti primary (baru) dan secondary (bekas) — rumah, apartemen, ruko, gedung kos, dan tanah — serta penyewaan rumah, ruko, dan apartemen di Kota Batam, Kepulauan Riau.
 
 ## Halaman utama
 
 - [Beranda](${url("/")}): pencarian properti berdasarkan lokasi, tipe, dan harga
 - [Katalog properti](${url("/properties")}): daftar properti dijual & disewa dengan filter
-- [Daftar agen](${url("/join-agent")}): program kemitraan agen, struktur komisi, dan kontak admin
 - [English version](${url("/", "en")})
 
 ## Detail lengkap

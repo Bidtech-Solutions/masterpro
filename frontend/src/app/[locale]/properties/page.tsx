@@ -3,17 +3,13 @@ import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Pagination } from "@/components/common/pagination";
+import { HeroHeading } from "@/components/home/hero-heading";
 import { HeroSearch } from "@/components/home/hero-search";
 import { PropertyCard } from "@/components/property/property-card";
 import { PropertyFilterSidebar } from "@/components/property/property-filter-sidebar";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
-import {
-  getCitiesWithListings,
-  getPropertyTypes,
-  listPublicProperties,
-  webQueryToApi,
-} from "@/lib/api/endpoints";
+import { getPropertyTypes, listPublicProperties, webQueryToApi } from "@/lib/api/endpoints";
 import { buildMetadata } from "@/lib/seo";
 
 // Halaman membaca searchParams → dirender dinamis; data API di-cache 60 dtk (PRD §9.2).
@@ -26,12 +22,12 @@ export async function generateMetadata({
   const sp = await searchParams;
   const t = await getTranslations({ locale, namespace: "seo" });
   const tp = await getTranslations({ locale, namespace: "properties" });
-  // Filter selain listing/type/city/page → noindex (PRD §9.3).
-  const indexable = Object.keys(sp).every((k) => ["listing", "type", "city", "page"].includes(k));
+  // Filter selain listing/type/page → noindex (PRD §9.3). `city` diabaikan karena katalog khusus Batam.
+  const indexable = Object.keys(sp).every((k) => ["listing", "type", "page"].includes(k));
   // Canonical memuat filter yang boleh diindeks agar halaman terfilter tidak ber-canonical ke katalog polos.
   const query: Record<string, string> = {};
   if (indexable) {
-    for (const k of ["listing", "type", "city"]) {
+    for (const k of ["listing", "type"]) {
       const v = [sp[k]].flat()[0];
       if (v) query[k] = v;
     }
@@ -58,11 +54,7 @@ export default async function PropertiesPage({ params, searchParams }: PageProps
   const sp = await searchParams;
   const query = webQueryToApi(sp);
 
-  const [result, propertyTypes, cities] = await Promise.all([
-    listPublicProperties(query),
-    getPropertyTypes(),
-    getCitiesWithListings(),
-  ]);
+  const [result, propertyTypes] = await Promise.all([listPublicProperties(query), getPropertyTypes()]);
 
   const items = result?.data ?? [];
   const meta = result?.meta;
@@ -83,19 +75,10 @@ export default async function PropertiesPage({ params, searchParams }: PageProps
           <div className="absolute inset-0 bg-gradient-to-b from-[#0A1128]/72 via-[#0A1128]/80 to-[#0A1128]/88" />
         </div>
         <div className="relative z-10 mx-auto w-full max-w-7xl">
-          <div className="max-w-4xl space-y-4 lg:max-w-5xl">
-            <h1 className="font-display text-display-mobile leading-[1.15] font-extrabold tracking-tight md:text-display lg:text-[3.25rem]">
-              {th("heroTitle")} <br className="hidden sm:inline" />
-              <span className="font-accent font-normal text-blue-400 italic">
-                {th("heroTitleAccent")}
-              </span>{" "}
-              {th("heroTitleSuffix")}
-            </h1>
-            <p className="max-w-2xl pt-1 text-base leading-relaxed font-normal text-slate-300 sm:text-lg">
-              {th("heroSubtitle")}
-            </p>
+          <HeroHeading />
+          <div className="animate-fade-up [animation-delay:900ms]">
+            <HeroSearch propertyTypes={propertyTypes} />
           </div>
-          <HeroSearch cities={cities} propertyTypes={propertyTypes} />
         </div>
       </section>
 
