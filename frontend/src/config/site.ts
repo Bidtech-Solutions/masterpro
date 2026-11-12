@@ -8,8 +8,11 @@ export const site = {
   mediaUrl: process.env.NEXT_PUBLIC_MEDIA_URL ?? "http://media.localhost",
   /** ID pengukuran Google Analytics 4 (G-…); kosong = analytics nonaktif. */
   gaId: process.env.NEXT_PUBLIC_GA_ID ?? "",
-  logo: "/brand/logo.png",
-  logoWhite: "/brand/logo-white.png",
+  logo: "/images/masterpro/Maspro-03.png",
+  logoWhite: "/images/masterpro/Maspro-08.png",
+  logoHorizontal: "/images/masterpro/Maspro-02.png",
+  logoVertical: "/images/masterpro/Maspro-03.png",
+  logoVerticalWhite: "/images/masterpro/Maspro-07.png",
   ogImage: "/brand/og-default.jpg",
   contact: {
     address: "Jl. Raja H. Fisabilillah No. 88, Batam Centre, Kota Batam, Kepulauan Riau 29461",

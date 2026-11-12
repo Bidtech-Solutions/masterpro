@@ -29,7 +29,7 @@ export async function SiteFooter() {
           {/* Kolom 1: Profil Perusahaan & Kontak */}
           <div className="col-span-2 space-y-4 lg:col-span-4">
             <div className="flex items-center gap-2">
-              <Logo variant="white" className="h-10" />
+              <Logo variant="white" className="h-11 sm:h-12" />
             </div>
             <p className="max-w-sm pr-4 text-sm leading-relaxed text-slate-300">{t("tagline")}</p>
 
