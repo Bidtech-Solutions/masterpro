@@ -36,10 +36,11 @@ export default async function DashboardLoginPage() {
           <Image
             src={site.logoWhite}
             alt={site.name}
-            width={160}
-            height={44}
+            width={1640}
+            height={500}
+            sizes="180px"
             priority
-            className="h-9 w-auto object-contain"
+            className="h-11 w-auto object-contain"
           />
         </div>
 
@@ -69,9 +70,10 @@ export default async function DashboardLoginPage() {
             <Image
               src={site.logo}
               alt={site.name}
-              width={120}
-              height={32}
-              className="h-7 w-auto object-contain"
+              width={1048}
+              height={863}
+              sizes="120px"
+              className="h-11 w-auto object-contain"
             />
           </div>
           <NextLink
