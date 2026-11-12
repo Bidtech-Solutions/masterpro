@@ -7,6 +7,8 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Suspense, useEffect, useState } from "react";
 
+import { Logo } from "@/components/common/logo";
+import { Link } from "@/i18n/navigation";
 import { apiRequest, notifyAuthChange, subscribeAuthChange } from "@/lib/api/client";
 import { isApiError } from "@/lib/api/errors";
 import type { User } from "@/types/user";
@@ -122,14 +124,19 @@ export function MobileMenu({ initialLoggedIn = false }: MobileMenuProps) {
             onClick={() => setOpen(false)}
           />
           <div className="absolute inset-y-0 right-0 flex w-80 max-w-[85vw] flex-col gap-5 overflow-y-auto bg-white p-6 shadow-popover">
-            <button
-              type="button"
-              onClick={() => setOpen(false)}
-              aria-label={t("closeMenu")}
-              className="flex size-11 items-center justify-center self-end rounded-md text-navy-900 hover:bg-slate-100"
-            >
-              <X className="size-6" aria-hidden />
-            </button>
+            <div className="flex items-center justify-between">
+              <Link href="/" onClick={() => setOpen(false)} aria-label={t("home")}>
+                <Logo className="h-11" />
+              </Link>
+              <button
+                type="button"
+                onClick={() => setOpen(false)}
+                aria-label={t("closeMenu")}
+                className="flex size-11 items-center justify-center rounded-md text-navy-900 hover:bg-slate-100"
+              >
+                <X className="size-6" aria-hidden />
+              </button>
+            </div>
 
             <nav>
               <NavLinks orientation="vertical" onNavigate={() => setOpen(false)} />

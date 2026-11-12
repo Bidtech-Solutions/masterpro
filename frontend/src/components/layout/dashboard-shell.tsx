@@ -90,9 +90,10 @@ export function DashboardShell({ children }: { children: ReactNode }) {
           <Image
             src={site.logoWhite}
             alt={site.name}
-            width={140}
-            height={36}
-            className="h-8 w-auto"
+            width={1640}
+            height={500}
+            sizes="150px"
+            className="h-9 w-auto object-contain"
             priority
           />
         </NextLink>
@@ -127,9 +128,10 @@ export function DashboardShell({ children }: { children: ReactNode }) {
             <Image
               src={site.logoWhite}
               alt={site.name}
-              width={160}
-              height={40}
-              className="h-9 w-auto"
+              width={1640}
+              height={500}
+              sizes="180px"
+              className="h-10 w-auto object-contain"
               priority
             />
           </NextLink>
