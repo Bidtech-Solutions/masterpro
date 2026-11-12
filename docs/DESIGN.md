@@ -55,7 +55,10 @@ Turunan desain dari logo:
 
 - Area bebas minimum = tinggi huruf "M" di sekeliling logo.
 - Ukuran minimum: logo lengkap 120 px lebar; di bawah itu pakai **logo-mark** (pin saja) — mis. favicon, avatar default.
-- Di atas latar gelap/foto: varian putih (`logo-white.svg`) — **[minta ke klien]** versi SVG resmi berwarna, putih, dan mark.
+- Aset resmi tersimpan di `frontend/public/images/masterpro/`:
+  - **Header latar terang**: `Maspro-03.png` (simbol pin biru + `"MASTER"` hitam & `"PRO"` biru navy).
+  - **Latar gelap (horizontal)**: `Maspro-08.png` (simbol pin biru + wordmark `"MASTER PRO REAL ESTATE"` putih).
+  - **Varian lainnya**: `Maspro-01.png` / `Maspro-02.png` (`"PRO"` biru terang), `Maspro-04.png` (horizontal navy), `Maspro-07.png` (vertikal latar gelap), dan `Profil.png` (square 1:1).
 - Jangan: mengubah warna wordmark, memberi bayangan/outline, memutar, atau meletakkan versi berwarna di atas foto ramai.
 
 ---
