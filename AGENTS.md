@@ -11,6 +11,9 @@ Sebelum mengubah kode, baca bagian yang relevan dari:
 | `docs/PRD.md` | Kebutuhan (ID seperti `PRP-03`), aturan bisnis §7, arsitektur §10, **struktur proyek §12**, **skema DB §13**, env §14, Docker/Traefik §15, CI/CD §16, konvensi §18 |
 | `docs/API.md` | Kontrak REST API — sumber kebenaran endpoint, field, dan kode error |
 | `docs/DESIGN.md` | Token desain, komponen, layout halaman |
+| `docs/PRD-AGEN.md` | **DRAFT, belum diimplementasi.** Sprint program agen: jaringan leader–member, mesin komisi per sisi, sharing profit, invoice, pemisahan repo web/dashboard/backend & subdomain `agen.masterpro.co.id`. ID kebutuhan `A1`–`A9` (Sprint A) dan `B1`–`B9` (Sprint B) |
+
+`docs/PRD-AGEN.md` hanya dibaca bila tugas menyangkut agen/leader/komisi/penjualan/invoice. Dokumen ini **belum menjadi acuan baku**: beberapa isinya bertentangan dengan `docs/PRD.md` v1.0 (struktur repo §12, lokasi dashboard, skema komisi §7.8, halaman Daftar Agen §5.5; daftar lengkap di banner dokumen itu). Jangan mengimplementasikannya, dan jangan mengubah struktur/skema/kontrak berdasarkan dokumen itu, sampai pengguna menyatakan konflik tersebut diselesaikan dan `docs/PRD.md`, `docs/API.md`, serta `AGENTS.md` ini diperbarui (docs-first).
 
 Bila permintaan pengguna bertentangan dengan dokumen ini, **berhenti dan tanyakan** — jangan memilih sendiri.
 
